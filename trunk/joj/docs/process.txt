@@ -1,0 +1,96 @@
+1.安装yii，生成joj
+设置php路径到环境变量
+走到htdocs根目录，执行
+Z:\project\xampp174\htdocs>yii\framework\yiic webapp joj
+2.在Eclipse中创建项目，并从现有源代码中创建
+
+3.创建csp数据库，编码采用 utf8_general_ci
+4.
+
+修改数据库配置protected/config/main.php
+		'db'=>array(
+			'connectionString' => 'mysql:host=localhost;dbname=yiwiki',
+			'emulatePrepare' => true,
+			'username' => 'root',
+			'password' => '',
+			'charset' => 'utf8',
+			'tablePrefix' => 'tbl_',
+		),
+
+5.安装giix
+Installing giix 
+===============
+
+1) Extract the directories "giix-core" and "giix-components" from the
+downloaded archive into your application's protected/extensions directory.
+
+2) Configure the gii generator path in your application, like:
+'modules' => array(
+	'gii' => array(
+		'class' => 'system.gii.GiiModule',
+		'generatorPaths' => array(
+			'ext.giix-core', // giix generators
+		),
+	),
+),
+
+3) Configure your application to automatically load the giix component classes
+when needed, like:
+'import' => array(
+	...
+	'ext.giix-components.*', // giix components
+),
+
+It is recommended to set at least the 'password' and 'ipFilters' properties
+in gii for security.
+Read the gii documentation at <http://www.yiiframework.com/doc/api/GiiModule>.
+
+Additionaly, you may remove the entire 'giix-core' directory and generator
+configuration (step 2 above) when releasing your Web application for improved
+security.
+
+
+6.美化url
+		'urlManager'=>array(
+			'urlFormat'=>'path',
+			'rules'=>array(
+				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
+				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
+				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+			),
+		),
+
+7.安装使用http://www.yiiframework.com/extension/yii-user
+注意直接解压到modules目录而不是models目录，不然就出现这个人的错
+http://www.yiiframework.com/forum/index.php?/topic/12890-%E5%AE%89%E8%A3%85yii-user%E6%8A%A5%E9%94%99/
+安装yii时一开始暂时不插入数据到用户表，因为我们后面要移植数据进去
+安装时，要修改yii
+//从老系统中复制数据，并且，转换时间
+insert into tbl_users(username,password,activkey,email,createtime,lastvisit) select username,password,password,email,UNIX_TIMESTAMP(created),UNIX_TIMESTAMP(modified) from oj_users;
+DELETE  FROM `tbl_profiles`;
+INSERT INTO `tbl_profiles` (`user_id`, `lastname`, `firstname`, `birthday`)  select id,SUBSTRING(real_name,1,1),SUBSTRING(real_name,2),'0000-00-00' from oj_users;
+UPDATE `tbl_profiles` set `lastname` ='无' where `lastname` IS NULL OR `lastname`='';
+UPDATE `tbl_profiles` set `firstname` ='名' where `firstname` IS NULL OR `firstname`='';
+
+8.安装完giix和yii-user后
+	// autoloading model and component classes
+	'import'=>array(
+		'application.models.*',
+		'application.components.*',
+		'ext.giix-components.*', // giix components
+		'application.modules.user.models.*',
+        'application.modules.user.components.*',
+	),
+	'modules'=>array(
+        'user',
+    	// uncomment the following to enable the Gii tool
+		'gii'=>array(
+			'class'=>'system.gii.GiiModule',
+			'password'=>'123456',
+		 	// If removed, Gii defaults to localhost only. Edit carefully to taste.
+			'ipFilters'=>array('127.0.0.1','::1'),
+			'generatorPaths' => array(
+				'ext.giix-core', // giix generators
+			),	
+		),
+	),
