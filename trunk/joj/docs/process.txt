@@ -9,7 +9,7 @@ Z:\project\xampp174\htdocs>yii\framework\yiic webapp joj
 
 修改数据库配置protected/config/main.php
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=yiwiki',
+			'connectionString' => 'mysql:host=localhost;dbname=csp',
 			'emulatePrepare' => true,
 			'username' => 'root',
 			'password' => '',
@@ -71,6 +71,13 @@ DELETE  FROM `tbl_profiles`;
 INSERT INTO `tbl_profiles` (`user_id`, `lastname`, `firstname`, `birthday`)  select id,SUBSTRING(real_name,1,1),SUBSTRING(real_name,2),'0000-00-00' from oj_users;
 UPDATE `tbl_profiles` set `lastname` ='无' where `lastname` IS NULL OR `lastname`='';
 UPDATE `tbl_profiles` set `firstname` ='名' where `firstname` IS NULL OR `firstname`='';
+UPDATE tbl_users set status=1;
+
+修改yii-user的UserIdentity.php
+因为phpcake用的是sha1+salt加密的，我们照办
+		else if(Yii::app()->controller->module->encrypting($this->password)!==$user->password
+		&& (sha1('uvzzzucucuuuuuuuuuuuucauddddddddddddud'.$this->password)!==$user->password))
+把admin设成超级用户`superuser`,字段设为1
 
 8.安装完giix和yii-user后
 	// autoloading model and component classes
@@ -94,3 +101,10 @@ UPDATE `tbl_profiles` set `firstname` ='名' where `firstname` IS NULL OR `firstn
 			),	
 		),
 	),
+9.用Admin登录
+添加nickname字段 添加identitynumber字段
+继续更新数据
+UPDATE `tbl_profiles` , oj_users set `nickname` =oj_users.nick_name where `tbl_profiles`.`user_id`=oj_users.id;
+UPDATE `tbl_profiles` ,oj_users set `identitynumber` =oj_users.identity_number where `tbl_profiles`.`user_id`=oj_users.id;
+
+数据基本迁移完毕，此时可以登录 并且除了用户单位以外其余的都有了
