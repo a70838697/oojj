@@ -108,3 +108,12 @@ UPDATE `tbl_profiles` , oj_users set `nickname` =oj_users.nick_name where `tbl_p
 UPDATE `tbl_profiles` ,oj_users set `identitynumber` =oj_users.identity_number where `tbl_profiles`.`user_id`=oj_users.id;
 
 数据基本迁移完毕，此时可以登录 并且除了用户单位以外其余的都有了
+10.添加tbl_submitions,tbl_tests,tbl_submitions,tbl_problem_judgers这些表
+中间碰到导出数据时的一个问题2M限制
+http://bbs.phpchina.com/thread-42379-1-1.html
+如果同一个机器 直接复制到另外的database就可以了
+用gii生成模型，发现giix好像没有用
+
+生成模型
+添加Problem的关系和crud
+
