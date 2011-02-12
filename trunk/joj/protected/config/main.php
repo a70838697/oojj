@@ -23,15 +23,46 @@ return array(
 	),
 	'modules'=>array(
         'user',
-    	// uncomment the following to enable the Gii tool
+		// uncomment the following to enable the Gii tool
 		'gii'=>array(
 			'class'=>'system.gii.GiiModule',
 			'password'=>'123456',
-		 	// If removed, Gii defaults to localhost only. Edit carefully to taste.
+			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 			'generatorPaths' => array(
 				'ext.giix-core', // giix generators
-			),	
+			),
+		),
+		// RBAM Configuration
+		'rbam'=>array(
+			'initialise'=>true,
+			'rbacManagerRole'=>'RBAC Manager',
+		 	'authItemsManagerRole'=>'Auth Items Manager',
+			'authAssignmentsManagerRole'=>'Auth Assignments Manager',
+			'authenticatedRole'=>'Authenticated',
+			'guestRole'=>'Guest',
+			'pageSize'=>10,
+			'relationshipsPageSize'=>5,
+			'userClass'=>'User',
+			'userIdAttribute'=>'id',
+			'userNameAttribute'=>'username',
+			'userCriteria'=>array(),
+			'layout'=>'rbam.views.layouts.main',
+			'applicationLayout'=>'application.views.layouts.main',
+			'baseUrl'=>null,
+			'baseScriptUrl'=>null,
+			'cssFile'=>null,
+			'showConfirmation'=>3000,
+			'juiShow'=>'fade',
+			'juiHide'=>'puff',
+			'juiScriptUrl'=>null,
+			'juiThemeUrl'=>null,
+			'juiTheme'=>'base',
+			'juiScriptFile'=>'jquery-ui.min.js',
+			'juiCssFile'=>'jquery-ui.css',
+			'initialise'=>null,
+			'exclude'=>'rbam',
+			'development'=>true,		
 		),
 	),
 
@@ -51,6 +82,7 @@ return array(
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
+
 		/*
 		'db'=>array(
 			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
@@ -65,6 +97,10 @@ return array(
 			'charset' => 'utf8',
 			'tablePrefix' => 'tbl_',
 		),
+        'authManager'=>array(
+            'class'=>'CDbAuthManager',
+            'connectionID'=>'db',
+        ),		
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
