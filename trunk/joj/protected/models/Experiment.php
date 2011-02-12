@@ -44,9 +44,9 @@ class Experiment extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('course_id, sequence, description, user_id, begin, end, created, exercise_id', 'required'),
-			array('course_id, experiment_type_id, user_id, status, exercise_id', 'numerical', 'integerOnly'=>true),
-			array('name', 'length', 'max'=>256),
+			array('course_id, name, sequence,due_time, description, user_id, begin, end, created, exercise_id', 'required'),
+			array('course_id, experiment_type_id,due_time, user_id, status, exercise_id', 'numerical', 'integerOnly'=>true),
+			array('name', 'length', 'max'=>40),
 			array('sequence', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.

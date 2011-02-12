@@ -108,6 +108,8 @@ UPDATE `tbl_profiles` , oj_users set `nickname` =oj_users.nick_name where `tbl_p
 UPDATE `tbl_profiles` ,oj_users set `identitynumber` =oj_users.identity_number where `tbl_profiles`.`user_id`=oj_users.id;
 
 数据基本迁移完毕，此时可以登录 并且除了用户单位以外其余的都有了
+9.5 修改problems表的设置
+
 10.添加tbl_submitions,tbl_tests,tbl_submitions,tbl_problem_judgers这些表
 中间碰到导出数据时的一个问题2M限制
 http://bbs.phpchina.com/thread-42379-1-1.html
@@ -117,6 +119,11 @@ http://bbs.phpchina.com/thread-42379-1-1.html
 生成模型
 添加Problem的关系和crud
 
+Experiment迁移
+insert into tbl_experiments(course_id,sequence,name,modified,exercise_id,begin,end,user_id,due_time,	description) select 1,'',name,UNIX_TIMESTAMP(created),id,UNIX_TIMESTAMP(begin),UNIX_TIMESTAMP(end),1,UNIX_TIMESTAMP(end),	memo from oj_exercises where id>1;
+复制为Collection表
+insert into tbl_collections(course_id,sequence,name,modified,exercise_id,begin,end,user_id,due_time,	description) select 1,'',name,UNIX_TIMESTAMP(created),id,UNIX_TIMESTAMP(begin),UNIX_TIMESTAMP(end),1,UNIX_TIMESTAMP(end),	memo from oj_exercises where id=1;
+修改collection结构
 10.AuthManager
 1.CDbAuthManager,需要把framework/web/auth/schema.sql导入你的数据库
 安装rbam
