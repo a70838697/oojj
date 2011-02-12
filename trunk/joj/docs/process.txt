@@ -121,3 +121,5 @@ http://bbs.phpchina.com/thread-42379-1-1.html
 1.CDbAuthManager,需要把framework/web/auth/schema.sql导入你的数据库
 安装rbam
 但是这个东西有两个问题 参考http://www.yiiframework.com/forum/index.php?/topic/14235-rbam-role-based-access-control-manager/page__st__20__gopid__80537#entry80537
+关于权限的处理，还有缺省角色的问题
+http://www.orzero.net/2010/06/yii-%E9%AA%8C%E8%AF%81%E5%92%8C%E6%8E%88%E6%9D%83-authentication-and-authorization.html
