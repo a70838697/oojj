@@ -59,6 +59,20 @@ security.
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
+6.1去掉讨厌的index.php
+根目录下加一个.htaccess文件
+DirectoryIndex index.php
+
+Options +FollowSymLinks
+IndexIgnore */*
+RewriteEngine on
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule . index.php
 
 7.安装使用http://www.yiiframework.com/extension/yii-user
 注意直接解压到modules目录而不是models目录，不然就出现这个人的错

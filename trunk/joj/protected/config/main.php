@@ -68,6 +68,9 @@ return array(
 
 	// application components
 	'components'=>array(
+		'syntaxhighlighter' => array(
+			'class' => 'ext.JMSyntaxHighlighter.JMSyntaxHighlighter',
+		),
 		'user'=>array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,

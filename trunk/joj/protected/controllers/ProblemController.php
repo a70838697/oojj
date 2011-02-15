@@ -6,7 +6,8 @@ class ProblemController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
+	public $layout='//layouts/column1';
+	public $contentMenu=null;
 
 	/**
 	 * @return array action filters
@@ -73,6 +74,7 @@ class ProblemController extends Controller
 		if(isset($_POST['Problem']))
 		{
 			$model->attributes=$_POST['Problem'];
+			$model->user_id=Yii::app()->user->id;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -96,7 +98,9 @@ class ProblemController extends Controller
 
 		if(isset($_POST['Problem']))
 		{
+			
 			$model->attributes=$_POST['Problem'];
+
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -131,7 +135,20 @@ class ProblemController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Problem');
+		$dataProvider=new CActiveDataProvider('Problem',
+			array(
+			    'criteria'=>array(
+			        //'condition'=>'status=1',
+			        //'order'=>'create_time DESC',
+			        'select'=>array('title','id'),
+			        'with'=>Yii::app()->user->isGuest?array('acceptedCount','submitedCount'):array('acceptedCount','submitedCount','myAcceptedCount','mySubmitedCount'),
+			    ),
+			    'pagination'=>array(
+			        'pageSize'=>20,
+			    ),
+			)
+		);
+		$dataProvider->pagination->pageSize = 50;	
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));

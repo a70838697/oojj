@@ -6,8 +6,8 @@ class SubmitionController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
-
+	public $layout='//layouts/column1';
+	public $contentMenu=null;
 	/**
 	 * @return array action filters
 	 */
@@ -87,6 +87,7 @@ class SubmitionController extends Controller
 	{
 		$model=$this->loadModel($id);
 
+		
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
@@ -127,7 +128,19 @@ class SubmitionController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Submition');
+		$dataProvider=new CActiveDataProvider('Submition',
+			array(
+			    'criteria'=>array(
+			        //'condition'=>'status=1',
+			        'order'=>'created DESC',
+			        'select'=>array('id','LENGTH(source) AS code_length','user_id','problem_id','status','created','used_time','used_memory','compiler_id','result'),
+			        //'with'=>Yii::app()->user->isGuest?array('acceptedCount','submitedCount'):array('acceptedCount','submitedCount','myAcceptedCount','mySubmitedCount'),
+			    ),
+			    'pagination'=>array(
+			        'pageSize'=>40,
+			    ),
+			)
+		);
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));

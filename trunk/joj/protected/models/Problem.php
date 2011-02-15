@@ -29,9 +29,21 @@ class Problem extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * @return Problem the static model class
 	 */
+	public $compiler_set_array=array();
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+	
+	protected function afterConstruct()
+	{
+	    parent::afterConstruct();
+	    $this->compiler_set=UCompilerLookup::values(-1);
+	}
+	protected function afterFind()
+	{
+	    parent::afterFind();
+	    $this->compiler_set=UCompilerLookup::values($this->compiler_set);
 	}
 
 	/**
@@ -50,18 +62,48 @@ class Problem extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('submission_no, accepted_no, description, input, output, input_sample, output_sample, hint', 'required'),
-			array('user_id, time_limit, memory_limit, flag, visibility', 'numerical', 'integerOnly'=>true),
+			array('compiler_set','lookupComiplers'),
+			array('description, title,time_limit, memory_limit,input, output, input_sample, output_sample, hint,compiler_set', 'required'),
+			array('user_id, time_limit, memory_limit,compiler_set, flag, visibility', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>512),
-			array('submission_no, accepted_no', 'length', 'max'=>10),
 			array('source', 'length', 'max'=>128),
 			array('created, modified', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, title, time_limit, memory_limit, submission_no, accepted_no, description, source, input, output, input_sample, output_sample, hint, flag, visibility, created, modified', 'safe', 'on'=>'search'),
+			array('id, user_id, title, time_limit, memory_limit, description, source, input, output, input_sample, output_sample, hint, flag, visibility, created, modified', 'safe', 'on'=>'search'),
+			array('modified','default',
+	              'value'=>new CDbExpression('NOW()'),
+	              'setOnEmpty'=>false,'on'=>'update'),
+	        array('created,modified','default',
+	              'value'=>new CDbExpression('NOW()'),
+	              'setOnEmpty'=>false,'on'=>'insert'),			
 		);
 	}
-
+    public function lookupComiplers($attribute,$params)
+    {
+    	$compiler_bit_set=0;
+    	foreach ($this->compiler_set as $bit)
+    	{
+    		$compiler_bit_set|=$bit;
+    	}
+    	$validated_compiler_set=UCompilerLookup::validateCompilerSet($compiler_bit_set);
+        if($validated_compiler_set==0)
+        {
+            $this->addError('compiler_set','Please choose at least one compiler.');
+            return;
+        }
+    	if($validated_compiler_set==UCompilerLookup::validateCompilerSet(-1))
+    	{
+    		$this->compiler_set=-1;
+    	}
+    	else
+    	{
+	    	$this->compiler_set=$compiler_bit_set;
+    	}
+    	    	
+    }
+	
+	
 	/**
 	 * @return array relational rules.
 	 */
@@ -69,7 +111,7 @@ class Problem extends CActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return array(
+		$results=array(
 	        'tests' => array(self::HAS_MANY, 'Test', 'problem_id'
 //	            'condition'=>'comments.status='.Comment::STATUS_APPROVED,
 //	            'order'=>'comments.create_time DESC'
@@ -77,7 +119,15 @@ class Problem extends CActiveRecord
        		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 			'submitions' => array(self::HAS_MANY, 'Submition', 'problem_id'),
 	        'specialjudger' => array(self::HAS_ONE, 'ProblemJudger', 'problem_id'),
+			'submitedCount' => array(self::STAT, 'Submition', 'problem_id'),
+			'acceptedCount' => array(self::STAT, 'Submition', 'problem_id','condition'=>'status='.ULookup::JUDGE_RESULT_ACCEPTED,),
 		);
+		if(!Yii::app()->user->isGuest)
+		{
+			$results['mySubmitedCount']=array(self::STAT, 'Submition', 'problem_id','condition'=>'user_id='.Yii::app()->user->id);
+			$results['myAcceptedCount']=array(self::STAT, 'Submition', 'problem_id','condition'=>'status='.ULookup::JUDGE_RESULT_ACCEPTED .' and user_id='.Yii::app()->user->id,);
+		}
+		return $results;
 	}
 
 	/**
@@ -89,6 +139,7 @@ class Problem extends CActiveRecord
 			'id' => 'ID',
 			'user_id' => 'User',
 			'title' => 'Title',
+			'compiler_set' => 'Pragramming Languages',
 			'time_limit' => 'Time Limit',
 			'memory_limit' => 'Memory Limit',
 			'submission_no' => 'Submission No',

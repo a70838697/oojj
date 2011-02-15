@@ -19,6 +19,7 @@
  */
 class Submition extends CActiveRecord
 {
+	public $code_length;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Submition the static model class
@@ -70,6 +71,7 @@ class Submition extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
@@ -84,13 +86,14 @@ class Submition extends CActiveRecord
 			'problem_id' => 'Problem',
 			'exercise_id' => 'Exercise',
 			'source' => 'Source',
-			'result' => 'Result',
+			'result' => 'Message',
 			'used_time' => 'Used Time',
 			'used_memory' => 'Used Memory',
 			'status' => 'Status',
-			'compiler_id' => 'Compiler',
-			'created' => 'Created',
-			'modified' => 'Modified',
+			'compiler_id' => 'Language',
+			'code_length'=>'Code Len.',
+			'created' => 'Submiting time',
+			'modified' => 'Re-submiting time',
 		);
 	}
 
