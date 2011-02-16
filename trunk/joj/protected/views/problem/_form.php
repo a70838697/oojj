@@ -93,7 +93,7 @@
 			),
 	    // additional javascript options for the tabs plugin
 	    'options'=>array(
-	        'collapsible'=>false,
+	        'collapsible'=>true,
 	    ),
 	));
 	?>

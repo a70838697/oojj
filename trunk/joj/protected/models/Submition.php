@@ -70,8 +70,8 @@ class Submition extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+		'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id'),
 		);
 	}
 

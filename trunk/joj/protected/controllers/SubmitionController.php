@@ -132,12 +132,20 @@ class SubmitionController extends Controller
 			array(
 			    'criteria'=>array(
 			        //'condition'=>'status=1',
-			        'order'=>'created DESC',
-			        'select'=>array('id','LENGTH(source) AS code_length','user_id','problem_id','status','created','used_time','used_memory','compiler_id','result'),
-			        //'with'=>Yii::app()->user->isGuest?array('acceptedCount','submitedCount'):array('acceptedCount','submitedCount','myAcceptedCount','mySubmitedCount'),
+			        'order'=>'t.created DESC',
+			        'select'=>array('id','LENGTH(t.source) AS code_length','user_id','problem_id','status','t.created','used_time','used_memory','compiler_id','result'),
+					'together'=>true,
+			        'with'=>array(
+			        	'user'=>array(
+        					'select'=>array('username'),
+						),
+						'problem'=>array(
+        					'select'=>array('title'),
+						),
+					),
 			    ),
 			    'pagination'=>array(
-			        'pageSize'=>40,
+			        'pageSize'=>30,
 			    ),
 			)
 		);

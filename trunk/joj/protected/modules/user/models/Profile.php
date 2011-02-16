@@ -166,4 +166,8 @@ class Profile extends UActiveRecord
 			return $this->_model;
 		}
 	}
+	public function getAdminFields() {
+		$this->_model=ProfileField::model()->findAll();
+		return $this->_model;
+	}	
 }

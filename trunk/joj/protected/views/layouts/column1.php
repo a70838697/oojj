@@ -9,13 +9,13 @@
 		'items'=>array(
 			array('label'=>'Problem', 'url'=>array('#'), 
 				'items'=>array(
-					array('label'=>'List Problem', 'url'=>array('index')),
-					array('label'=>'Create Problem', 'url'=>array('create')),
+					array('label'=>'List Problem', 'url'=>array('/problem/index')),
+					array('label'=>'Create Problem', 'url'=>array('/problem/create')),
 				),
 			),
 			array('label'=>'Submition', 'url'=>array('#'), 
 				'items'=>array(
-					array('label'=>'List Submition', 'url'=>array('/submition/index')),
+					array('label'=>'Recent Submitions', 'url'=>array('/submition/index')),
 				),
 			),
 		),

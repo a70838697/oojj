@@ -37,7 +37,7 @@
 		<?php echo CHtml::error($model,'status'); ?>
 	</div>
 <?php 
-		$profileFields=$profile->getFields();
+		$profileFields=$profile->getAdminFields();
 		if ($profileFields) {
 			foreach($profileFields as $field) {
 			?>

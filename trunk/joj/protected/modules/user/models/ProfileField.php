@@ -2,6 +2,7 @@
 
 class ProfileField extends CActiveRecord
 {
+	const VISIBLE_ALL_READONLY=4;
 	const VISIBLE_ALL=3;
 	const VISIBLE_REGISTER_USER=2;
 	const VISIBLE_ONLY_OWNER=1;
@@ -105,15 +106,15 @@ class ProfileField extends CActiveRecord
     {
         return array(
             'forAll'=>array(
-                'condition'=>'visible='.self::VISIBLE_ALL,
+                'condition'=>'visible='.self::VISIBLE_ALL .' or visible='.self::VISIBLE_ALL_READONLY,
                 'order'=>'position',
             ),
             'forUser'=>array(
-                'condition'=>'visible>='.self::VISIBLE_REGISTER_USER,
+                'condition'=>'visible>='.self::VISIBLE_REGISTER_USER .' or visible='.self::VISIBLE_ALL_READONLY,
                 'order'=>'position',
             ),
             'forOwner'=>array(
-                'condition'=>'visible>='.self::VISIBLE_ONLY_OWNER,
+                'condition'=>'visible>='.self::VISIBLE_ONLY_OWNER .' or visible='.self::VISIBLE_ALL_READONLY,
                 'order'=>'position',
             ),
             'forRegistration'=>array(
@@ -191,6 +192,7 @@ class ProfileField extends CActiveRecord
 				self::REQUIRED_YES_NOT_SHOW_REG => UserModule::t('Yes'),
 			),
 			'visible' => array(
+				self::VISIBLE_ALL_READONLY => UserModule::t('For all read only'),
 				self::VISIBLE_ALL => UserModule::t('For all'),
 				self::VISIBLE_REGISTER_USER => UserModule::t('Registered users'),
 				self::VISIBLE_ONLY_OWNER => UserModule::t('Only owner'),

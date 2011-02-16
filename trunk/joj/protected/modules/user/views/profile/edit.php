@@ -23,7 +23,7 @@ $this->breadcrumbs=array(
 <?php 
 		$profileFields=$profile->getFields();
 		if ($profileFields) {
-			foreach($profileFields as $field) {
+			foreach($profileFields as $field) { if($field->visible!=ProfileField::VISIBLE_ALL_READONLY){
 			?>
 	<div class="row">
 		<?php echo CHtml::activeLabelEx($profile,$field->varname);
@@ -40,6 +40,7 @@ $this->breadcrumbs=array(
 		echo CHtml::error($profile,$field->varname); ?>
 	</div>	
 			<?php
+			}
 			}
 		}
 ?>

@@ -125,7 +125,22 @@ class User extends CActiveRecord
             'select' => 'id, username, email, createtime, lastvisit, superuser, status',
         );
     }
-	
+    public function afterSave()
+    {
+		if(parent::afterSave())
+		{
+			if($this->status==1)
+			{
+				$this->profile->group=20;
+			}
+			else
+			{
+				$this->profile->group=0;				
+			}
+		}
+		return true;
+    	
+    }
 	public static function itemAlias($type,$code=NULL) {
 		$_items = array(
 			'UserStatus' => array(

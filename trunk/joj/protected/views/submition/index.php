@@ -37,6 +37,13 @@ $opts = array(
 // apply tooltip on the jQuery selector (1 parameter)
 QTip::qtipd('.mes', $opts);
 ?>
+<script language="javascript">
+ $(document).ready(function() {
+   var refreshId = setInterval(function() {
+	   $.fn.yiiGridView.update('submition-grid');
+   }, 6000);
+});
+</script>
 <h1>Submitions</h1>
 <?php
 	$this->widget('zii.widgets.grid.CGridView', array(
