@@ -48,22 +48,7 @@
 		?>
 		<?php echo $form->error($model,'compiler_set'); ?>
 	</div>
-	
-<!-- 
-	<div class="row">
-		<?php echo $form->labelEx($model,'flag'); ?>
-		<?php echo $form->textField($model,'flag'); ?>
-		<?php echo $form->error($model,'flag'); ?>
-	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'visibility'); ?>
-		<?php echo $form->textField($model,'visibility'); ?>
-		<?php echo $form->error($model,'visibility'); ?>
-	</div>
- -->
-
-	
 	<div class="row buttons">
 		<?php
 		$this->widget('zii.widgets.jui.CJuiButton', array(

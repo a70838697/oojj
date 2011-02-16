@@ -42,6 +42,7 @@ class UserIdentity extends CUserIdentity
 		else {
 			$this->_id=$user->id;
 			$this->username=$user->username;
+			$this->setState('group', $user->profile->group);
 			$this->errorCode=self::ERROR_NONE;
 		}
 		return !$this->errorCode;

@@ -20,4 +20,16 @@ class Controller extends CController
 	 * for more details on how to specify this property.
 	 */
 	public $breadcrumbs=array();
+	public function checkAccess($params=array())
+	{
+		if(!Yii::app()->user->checkAccess(Yii::app()->controller->id.":".$this->getAction()->getId(),
+			$params))
+		{
+			if(Yii::app()->user->getIsGuest())
+				Yii::app()->user->loginRequired();
+			else
+				throw new CHttpException(403,Yii::t('You are not authorized to perform this action.'));
+		}
+		
+	}
 }

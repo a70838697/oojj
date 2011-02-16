@@ -2,6 +2,7 @@
 
 class ProblemController extends Controller
 {
+	
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
@@ -32,13 +33,14 @@ class ProblemController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
+				'actions'=>array('create','delete','update'),
+			//	'roles'=>array('Teacher',"Admin"),
+				'users'=>array('*'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
-			),
+				'actions'=>array('admin'),
+				'roles'=>array('Admin'),
+			),	
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
@@ -77,8 +79,10 @@ class ProblemController extends Controller
 			$model->user_id=Yii::app()->user->id;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
+			if(is_int($model->compiler_set))
+				$model->compiler_set=UCompilerLookup::values($model->compiler_set);
 		}
-
+		
 		$this->render('create',array(
 			'model'=>$model,
 		));
@@ -92,7 +96,8 @@ class ProblemController extends Controller
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
-
+		
+		$this->checkAccess(array('model'=>$model));
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
@@ -100,7 +105,7 @@ class ProblemController extends Controller
 		{
 			
 			$model->attributes=$_POST['Problem'];
-
+			
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -120,7 +125,10 @@ class ProblemController extends Controller
 		if(Yii::app()->request->isPostRequest)
 		{
 			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
+			$model=$this->loadModel($id);
+			$this->checkAccess(array('model'=>$model));
+			$model->visibility=ULookup::RECORD_STATUS_DELETE;
+			$model->save();
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
@@ -138,7 +146,7 @@ class ProblemController extends Controller
 		$dataProvider=new CActiveDataProvider('Problem',
 			array(
 			    'criteria'=>array(
-			        //'condition'=>'status=1',
+			        'condition'=>'visibility='.ULookup::RECORD_STATUS_PUBLIC,
 			        //'order'=>'create_time DESC',
 			        'select'=>array('title','id'),
 			        'with'=>Yii::app()->user->isGuest?array('acceptedCount','submitedCount'):array('acceptedCount','submitedCount','myAcceptedCount','mySubmitedCount'),

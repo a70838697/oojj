@@ -7,7 +7,7 @@
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'My Web Application',
+	'name'=>'OJJ: Online Judge of JNU',
 
 	// preloading 'log' component
 	'preload'=>array('log'),
@@ -104,7 +104,7 @@ return array(
         'authManager'=>array(
             'class'=>'CDbAuthManager',
             'connectionID'=>'db',
-			'defaultRoles'=>array('authenticated', 'guest'),
+			'defaultRoles'=>array('Authenticated', 'Guest', 'Student', 'Teacher', 'Admin'),
         ),		
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors

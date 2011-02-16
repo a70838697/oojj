@@ -9,8 +9,6 @@
  * @property string $title
  * @property integer $time_limit
  * @property integer $memory_limit
- * @property string $submission_no
- * @property string $accepted_no
  * @property string $description
  * @property string $source
  * @property string $input
@@ -18,13 +16,13 @@
  * @property string $input_sample
  * @property string $output_sample
  * @property string $hint
- * @property integer $flag
  * @property integer $visibility
  * @property string $created
  * @property string $modified
  */
 class Problem extends CActiveRecord
 {
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Problem the static model class
@@ -64,13 +62,13 @@ class Problem extends CActiveRecord
 		return array(
 			array('compiler_set','lookupComiplers'),
 			array('description, title,time_limit, memory_limit,input, output, input_sample, output_sample, hint,compiler_set', 'required'),
-			array('user_id, time_limit, memory_limit,compiler_set, flag, visibility', 'numerical', 'integerOnly'=>true),
+			array('user_id, time_limit, memory_limit,compiler_set,  visibility', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>512),
 			array('source', 'length', 'max'=>128),
 			array('created, modified', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, title, time_limit, memory_limit, description, source, input, output, input_sample, output_sample, hint, flag, visibility, created, modified', 'safe', 'on'=>'search'),
+			array('id, user_id, title, time_limit, memory_limit, description, source, input, output, input_sample, output_sample, hint,  visibility, created, modified', 'safe', 'on'=>'search'),
 			array('modified','default',
 	              'value'=>new CDbExpression('NOW()'),
 	              'setOnEmpty'=>false,'on'=>'update'),
@@ -142,8 +140,6 @@ class Problem extends CActiveRecord
 			'compiler_set' => 'Pragramming Languages',
 			'time_limit' => 'Time Limit',
 			'memory_limit' => 'Memory Limit',
-			'submission_no' => 'Submission No',
-			'accepted_no' => 'Accepted No',
 			'description' => 'Description',
 			'source' => 'Source',
 			'input' => 'Input',
@@ -151,7 +147,6 @@ class Problem extends CActiveRecord
 			'input_sample' => 'Input Sample',
 			'output_sample' => 'Output Sample',
 			'hint' => 'Hint',
-			'flag' => 'Flag',
 			'visibility' => 'Visibility',
 			'created' => 'Created',
 			'modified' => 'Modified',
@@ -174,8 +169,6 @@ class Problem extends CActiveRecord
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('time_limit',$this->time_limit);
 		$criteria->compare('memory_limit',$this->memory_limit);
-		$criteria->compare('submission_no',$this->submission_no,true);
-		$criteria->compare('accepted_no',$this->accepted_no,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('source',$this->source,true);
 		$criteria->compare('input',$this->input,true);
@@ -183,7 +176,6 @@ class Problem extends CActiveRecord
 		$criteria->compare('input_sample',$this->input_sample,true);
 		$criteria->compare('output_sample',$this->output_sample,true);
 		$criteria->compare('hint',$this->hint,true);
-		$criteria->compare('flag',$this->flag);
 		$criteria->compare('visibility',$this->visibility);
 		$criteria->compare('created',$this->created,true);
 		$criteria->compare('modified',$this->modified,true);

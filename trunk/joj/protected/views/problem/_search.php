@@ -31,16 +31,6 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'submission_no'); ?>
-		<?php echo $form->textField($model,'submission_no',array('size'=>10,'maxlength'=>10)); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->label($model,'accepted_no'); ?>
-		<?php echo $form->textField($model,'accepted_no',array('size'=>10,'maxlength'=>10)); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->label($model,'description'); ?>
 		<?php echo $form->textArea($model,'description',array('rows'=>6, 'cols'=>50)); ?>
 	</div>
@@ -73,11 +63,6 @@
 	<div class="row">
 		<?php echo $form->label($model,'hint'); ?>
 		<?php echo $form->textArea($model,'hint',array('rows'=>6, 'cols'=>50)); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->label($model,'flag'); ?>
-		<?php echo $form->textField($model,'flag'); ?>
 	</div>
 
 	<div class="row">

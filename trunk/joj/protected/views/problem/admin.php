@@ -47,20 +47,12 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'title',
 		'time_limit',
 		'memory_limit',
-		'submission_no',
-		/*
-		'accepted_no',
-		'description',
-		'source',
-		'input',
-		'output',
-		'input_sample',
-		'output_sample',
-		'hint',
-		'flag',
 		'visibility',
 		'created',
 		'modified',
+		/*
+		'description',
+		'source',
 		*/
 		array(
 			'class'=>'CButtonColumn',
