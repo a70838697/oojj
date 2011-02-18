@@ -24,7 +24,10 @@ echo UCHtml::cssFile('pager.css');
 			'name'=>'solved',
 			'visible'=>!Yii::app()->user->isGuest,
 			'type'=>'raw',
-			'value'=>'$data->mySubmitedCount==0?"":UCHtml::image(($data->myAcceptedCount>0?"done.gif":"tried.gif"))',
+			'value'=>'$data->mySubmitedCount==0?"":(UCHtml::image($data->myAcceptedCount>0?"done.gif":"tried.gif").
+			($data->myAcceptedCount==0?"0":CHtml::link($data->myAcceptedCount,array("submition/index/mine/1/problem/".$data->id)))
+			."/".CHtml::link($data->mySubmitedCount,array("submition/index/mine/1/problem/".$data->id))
+			)',
 		),
 		'id',
 		array(
@@ -35,10 +38,12 @@ echo UCHtml::cssFile('pager.css');
 		array(
 			'header'=>'Ratio(Accepted/Total)',
 			'type'=>'raw',
-			'value'=>'($data->submitedCount==0)?"0%(0/0)":"".round($data->acceptedCount*100.0/$data->submitedCount,1)."%(".$data->acceptedCount."/".$data->submitedCount.")"',
+			'value'=>'($data->submitedCount==0)?"0%(0/0)":"".round($data->acceptedCount*100.0/$data->submitedCount,1)."%(".
+			($data->acceptedCount==0?"0":CHtml::link($data->acceptedCount,array("submition/index/problem/".$data->id)))
+			."/".CHtml::link($data->submitedCount,array("submition/index/problem/".$data->id))
+			.")"',
 		),
 		/*
-		'accepted_no',
 		'description',
 		'source',
 		'input',

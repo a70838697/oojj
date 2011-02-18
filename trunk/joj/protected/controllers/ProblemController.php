@@ -33,14 +33,14 @@ class ProblemController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','delete','update'),
+				'actions'=>array('create','delete','update','submited','accepted','notAccepted'),
 			//	'roles'=>array('Teacher',"Admin"),
-				'users'=>array('*'),
+				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin'),
 				'roles'=>array('Admin'),
-			),	
+			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
@@ -53,11 +53,19 @@ class ProblemController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$problem=$this->loadModel($id);
-		$submition=Yii::app()->user->isGuest?null:$this->newSubmition($problem);
+		$model=$this->loadModel($id);
+		$this->checkAccess(array('model'=>$model));
+		
+		$submition=$this->canAccess(array('model'=>$model),'Create','Submition')?$this->newSubmition($model):null;
 
+		$buttons=array(
+			'submit'=>!is_null($submition),
+			'update'=>$this->canAccess(array('model'=>$model),'Update'),
+			'delete'=>$this->canAccess(array('model'=>$model),'Delete'),
+		);
 		$this->render('view',array(
-			'model'=>$problem,
+			'model'=>$model,
+			'buttons'=>$buttons,
 			'submition'=>$submition,
 		));
 	}
@@ -143,25 +151,72 @@ class ProblemController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Problem',
+		$dataProvider=new EActiveDataProvider('Problem',
 			array(
-			    'criteria'=>array(
-			        'condition'=>'visibility='.ULookup::RECORD_STATUS_PUBLIC,
-			        //'order'=>'create_time DESC',
-			        'select'=>array('title','id'),
-			        'with'=>Yii::app()->user->isGuest?array('acceptedCount','submitedCount'):array('acceptedCount','submitedCount','myAcceptedCount','mySubmitedCount'),
-			    ),
-			    'pagination'=>array(
-			        'pageSize'=>20,
+				'scopes'=>array('titled','public','allCount'),
+				'pagination'=>array(
+			        	'pageSize'=>50,
 			    ),
 			)
-		);
-		$dataProvider->pagination->pageSize = 50;	
+		);		
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}
-
+	/**
+	 * Lists all models.
+	 */
+	public function actionSubmited()
+	{
+		$dataProvider=new EActiveDataProvider('Problem',
+			array(
+				'scopes'=>array('titled','public','mySubmited'),
+				
+				'pagination'=>array(
+			        	'pageSize'=>50,
+			    ),
+			)
+		);		
+		$this->render('index',array(
+			'dataProvider'=>$dataProvider,
+		));
+	}
+	/**
+	 * Lists all models.
+	 */
+	public function actionAccepted()
+	{
+		$dataProvider=new EActiveDataProvider('Problem',
+			array(
+				'scopes'=>array('titled','public','myAccepted'),
+				
+				'pagination'=>array(
+			        	'pageSize'=>50,
+			    ),
+			)
+		);		
+		$this->render('index',array(
+			'dataProvider'=>$dataProvider,
+		));
+	}	
+	/**
+	 * Lists all models.
+	 */
+	public function actionNotAccepted()
+	{
+		$dataProvider=new EActiveDataProvider('Problem',
+			array(
+				'scopes'=>array('titled','public','myNotAccepted'),
+				
+				'pagination'=>array(
+			        	'pageSize'=>50,
+			    ),
+			)
+		);		
+		$this->render('index',array(
+			'dataProvider'=>$dataProvider,
+		));
+	}	
 	/**
 	 * Manages all models.
 	 */
@@ -213,7 +268,7 @@ class ProblemController extends Controller
 	protected function newSubmition($problem)
 	{
 		$submition=new Submition;
-		if(isset($_POST['ajax']) && $_POST['ajax']==='submition-form')
+		if(isset($_GET['ajax']) && $_POST['ajax']==='submition-form')
 		{
 			echo CActiveForm::validate($submition);
 			Yii::app()->end();
@@ -227,8 +282,9 @@ class ProblemController extends Controller
 			if($submition->save())
 			{
 				//if($comment->status==Comment::STATUS_PENDING)
-				Yii::app()->user->setFlash('submitionSubmitted','Thank you for your submition. Your submition will be judged.');
-				$this->refresh();
+				//Yii::app()->user->setFlash('submitionSubmitted','Thank you for your submition. Your submition will be judged.');
+				//$this->refresh();
+				$this->redirect(array('/submition/view','id'=>$submition->id));				
 			}
 		}
 		return $submition;

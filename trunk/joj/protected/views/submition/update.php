@@ -15,4 +15,4 @@ $this->menu=array(
 
 <h1>Update Submition <?php echo $model->id; ?></h1>
 
-<?php echo $this->renderPartial('_form', array('model'=>$model,'compiler_set'=>$model->problem->compiler_set)); ?>
+<?php echo $this->renderPartial('_form', array('model'=>$model,'problem'=>$model->problem)); ?>

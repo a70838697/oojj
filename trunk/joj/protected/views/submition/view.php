@@ -12,10 +12,43 @@ $this->menu=array(
 	array('label'=>'Manage Submition', 'url'=>array('admin')),
 );
 ?>
-
-<h1>View Submition #<?php echo $model->id; ?></h1>
-
-<?php $this->widget('zii.widgets.CDetailView', array(
+<h1>View Submition #<?php echo $model->id; ?> <?php echo  ' to '.CHtml::link($model->problem->id.'.'.CHtml::encode($model->problem->title),array("problem/view","id"=>$model->problem->id));?></h1>
+<?php
+if(!Yii::app()->user->isGuest)
+$this->widget('ext.JuiButtonSet.JuiButtonSet', array(
+    'items' => array(
+/*
+        array(
+            'label'=>'Menu button 1',
+            'icon-position'=>'left',
+            'url'=>array('create') //urls like 'create', 'update' & 'delete' generates an icon beside the button
+        ),
+*/
+        array(
+            'label'=>'Update this submition',
+            'icon-position'=>'left',
+	        'visible'=>$this->canAccess(array('model'=>$model),'update'),
+            'url'=>array('update', 'id'=>$model->id),
+        ), 
+        array(
+            'label'=>'My submitions to the problem',
+            'icon-position'=>'left',
+            'icon'=>'document',
+        	'url'=>array('/submition/index/problem/'.$model->problem_id.'/mine/1'),
+        ),
+        array(
+            'label'=>'Accepted submitions to the problem',
+            'icon-position'=>'left',
+            'icon'=>'document',
+        	'url'=>array('/submition/index/problem/'.$model->problem_id.'/status/1'),
+        ),
+         
+    ),
+    'htmlOptions' => array('style' => 'clear: both;'),
+));
+?>
+<?php 
+$this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
 		'id',
@@ -35,7 +68,7 @@ $this->menu=array(
 		array(
             'name'=>'status',
             'type'=>'raw',
-            'value'=> ULookup::$JUDGE_RESULT_MESSAGES[$model->status],
+            'value'=> '<div style="display:none" id="loading">'.UCHtml::image("loading.gif").'loading</div><div id="toRefresh1">'.ULookup::$JUDGE_RESULT_MESSAGES[$model->status].'</div>',
         ),
 		array(
             'name'=>'used_time',
@@ -52,8 +85,8 @@ $this->menu=array(
         array(
 			'name'=>'result',
             'type'=>'raw',
-            'value'=>'<pre>'.CHtml::encode($model->result).'</pre>',
-			'visible'=>strlen($model->result)>0,
+            'value'=>'<pre id="toRefresh2">'.CHtml::encode($model->result).'</pre>',
+			//'visible'=>strlen($model->result)>0,
         ),
 		'created',
         array(
@@ -74,5 +107,28 @@ $this->menu=array(
         ),
     ),
 )); ?>
+
+<?php ?>
 <?php Yii::app()->syntaxhighlighter->addHighlighter(); ?>
 
+<?php if($model->status==ULookup::JUDGE_RESULT_PENDING){
+?>
+<script language=javascript>
+$("#loading").show();
+function refreshsubmition()
+{
+	$('#toRefresh1').html('');
+	$.getJSON('<?php echo $model->getUrl(); ?>',function(data){if(data.ok){
+			$('#toRefresh1').html(data.status);
+			$('#toRefresh2').html(data.result);
+		   $("#loading").hide();
+		}
+		else setTimeout("refreshsubmition()",2000);
+	})
+}
+refreshsubmition();
+</script>
+
+<?php 
+}
+?>

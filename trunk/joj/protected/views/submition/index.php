@@ -2,7 +2,7 @@
 $this->breadcrumbs=array(
 	'Submitions',
 );
-
+$needRefresh=(Yii::app()->request->getQuery('refresh',null)!==null);
 $this->menu=array(
 	array('label'=>'Create Submition', 'url'=>array('create')),
 	array('label'=>'Manage Submition', 'url'=>array('admin')),
@@ -37,20 +37,22 @@ $opts = array(
 // apply tooltip on the jQuery selector (1 parameter)
 QTip::qtipd('.mes', $opts);
 ?>
-<script language="javascript">
+<?php if($needRefresh) {
+	echo CHtml::script('
  $(document).ready(function() {
    var refreshId = setInterval(function() {
-	   $.fn.yiiGridView.update('submition-grid');
+	   $.fn.yiiGridView.update(\'submition-grid\');
    }, 6000);
-});
-</script>
-<h1>Submitions</h1>
+});');
+}
+ ?>
+<h1><?php echo (Yii::app()->request->getQuery('mine',null)!==null)?'My ':'';?> Submitions <?php if($problem!==null) echo  ' for '.CHtml::link($problem->id.'.'.CHtml::encode($problem->title),array("problem/view","id"=>$problem->id));?></h1>
 <?php
 	$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'submition-grid',
 	'dataProvider'=>$dataProvider,
-	'ajaxUpdate'=>false,
-	'template'=>'{summary}{items}',
+	'ajaxUpdate'=>true,
+	'template'=>$needRefresh?'{summary}{items}':'{summary}{pager}{items}{pager}',
 	'columns'=>array(
 		array(
 			'name'=>'id',
@@ -60,6 +62,7 @@ QTip::qtipd('.mes', $opts);
 		array(
 			'name'=>'Author',
 			'type'=>'raw',
+			'visible'=>(Yii::app()->request->getQuery('mine',null)===null),
 			'value'=>'CHtml::link(CHtml::encode($data->user->username),array("user/user/view","id"=>$data->user_id))',
 		),
 		array(
@@ -70,6 +73,7 @@ QTip::qtipd('.mes', $opts);
 		array(
 			'name'=>'problem',
 			'type'=>'raw',
+			'visible'=>($problem==null),
 			'value'=>'CHtml::link(CHtml::encode($data->problem->title),array("problem/view","id"=>$data->problem_id))',
 		),
 		'created',

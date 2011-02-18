@@ -14,7 +14,7 @@
  * @property integer $superuser
  * @property integer $status
  */
-class User extends CActiveRecord
+class UUser extends User
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -35,7 +35,6 @@ class User extends CActiveRecord
 
 	/**
 	 * @return array validation rules for model attributes.
-	 */
 	public function rules()
 	{
 		// NOTE: you should only define rules for those attributes that
@@ -50,7 +49,19 @@ class User extends CActiveRecord
 			array('id, username, password, email, activkey, createtime, lastvisit, superuser, status', 'safe', 'on'=>'search'),
 		);
 	}
-
+	 */
+	public function scopes()
+    {
+		$alias = $this->getTableAlias(false,false);
+        return array(
+            'username'=>array(
+		        'select'=>array("{$alias}.username"),
+        	),     
+            'public'=>array(
+            	'condition'=>"{$alias}.visibility=".ULookup::RECORD_STATUS_PUBLIC,
+            ),
+        );
+    }
 	/**
 	 * @return array relational rules.
 	 */
@@ -59,6 +70,7 @@ class User extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'submitedCount' => array(self::STAT, 'Problem', '','condition'=>'EXISTS(SELECT 1 FROM {{submition}} as sb WHERE sb.user_id=t.id )'),
 		);
 	}
 
@@ -79,7 +91,11 @@ class User extends CActiveRecord
 			'status' => 'Status',
 		);
 	}
-
+	public function defaultScope()
+    {
+        return array(
+        );
+    }
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.

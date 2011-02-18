@@ -4,6 +4,7 @@
 	'id'=>'submition-form',
 	'enableAjaxValidation'=>false,
 ));
+
  ?>
 
 	<p>Current Authenticated Author :<b><?php echo Yii::app()->user->name?></b></p>
@@ -11,10 +12,15 @@
 
 	<?php echo $form->errorSummary($model); ?>
 
+	<div class="row">
+		<?php echo $form->label($problem,'title'); ?>
+		<?php echo CHtml::link(CHtml::encode($problem->title),
+                                 array('problem/view','id'=>$model->id)); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'compiler_id'); ?>
-		<?php echo $form->dropDownList($model,'compiler_id',UCompilerLookup::items($compiler_set)); ?>
+		<?php echo $form->dropDownList($model,'compiler_id',UCompilerLookup::items($problem->compiler_set)); ?>
 		<?php echo $form->error($model,'compiler_id'); ?>
 	</div>
 

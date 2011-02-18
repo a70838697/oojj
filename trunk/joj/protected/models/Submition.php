@@ -61,7 +61,32 @@ class Submition extends CActiveRecord
 			array('id, user_id, problem_id, exercise_id, source, result, used_time, used_memory, status, compiler_id, created, modified', 'safe', 'on'=>'search'),
 		);
 	}
-
+	public $mySubmitedCount;
+	public function scopes()
+    {
+		$alias = $this->getTableAlias(false,false);
+    	return array(
+            'recentlist'=>array(
+            	'order'=>"{$alias}.created DESC",
+		        'select'=>array("{$alias}.id","LENGTH({$alias}.source) AS code_length","{$alias}.user_id","{$alias}.problem_id","{$alias}.status","{$alias}.created","{$alias}.used_time","{$alias}.used_memory","{$alias}.compiler_id","{$alias}.result"),
+        		'with'=>array(
+        			'user:username',
+        			'problem:titled',
+        		),
+        	),     
+        	'mine'=>array(
+                'condition'=>Yii::app()->user->isGuest?
+        			"{$alias}.visibility=".ULookup::RECORD_STATUS_PUBLIC :
+        			("{$alias}.user_id=".Yii::app()->user->id ." AND {$alias}.visibility!=".ULookup::RECORD_STATUS_PRIVATE),
+        	),
+            'accepted'=>array(
+            	'condition'=>"{$alias}.status=".ULookup::JUDGE_RESULT_ACCEPTED,
+            ),
+            'public'=>array(
+            	'condition'=>"{$alias}.visibility=".ULookup::RECORD_STATUS_PUBLIC,
+            ),
+        );
+    }
 	/**
 	 * @return array relational rules.
 	 */
@@ -70,11 +95,19 @@ class Submition extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-		'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id'),
+		'user' => array(self::BELONGS_TO, 'UUser', 'user_id','select'=>array('username')),
+		'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id','select'=>array('title','compiler_set'),'joinType'=>'INNER JOIN'),
 		);
 	}
-
+	public function getUrl($model=null)
+	{
+		if($model===null) return Yii::app()->createUrl('submition/view', array(
+			'id'=>$this->id,
+			//'title'=>$this->name,
+		));
+		//	$course=$this->course;
+		return $model->url.'#c'.$this->id;
+	}
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */

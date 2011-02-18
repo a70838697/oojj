@@ -31,12 +31,12 @@ class SubmitionController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array('create','update','delete'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+				'actions'=>array('admin'),
+				'roles'=>array('Admin'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -50,31 +50,51 @@ class SubmitionController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
-		));
+		$model=$this->loadModel($id);
+		$this->checkAccess(array('model'=>$model));		
+		if(Yii::app()->request->isAjaxRequest )
+		{
+			$result=array(
+				'ok'=>$model->status!=ULookup::JUDGE_RESULT_PENDING,//you can check time, if timeout, no result
+				'status'=>ULookup::$JUDGE_RESULT_MESSAGES[$model->status],
+				'result'=>$model->result,
+			);
+			echo json_encode($result);
+			die;
+		}
+		else{
+			$this->render('view',array(
+				'model'=>$model,
+			));
+		}
 	}
 
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate($id)
 	{
-		$model=new Submition;
-
+		$problem=Problem::model()->findByPk((int)$id);
+		if($problem===null)
+			throw new CHttpException(404,'The requested page does not exist.');		
+		
+		$this->checkAccess(array('model'=>$problem));
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
+		$model=new Submition;
+		
 		if(isset($_POST['Submition']))
 		{
 			$model->attributes=$_POST['Submition'];
+			$model->problem_id=$problem->id;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
 		$this->render('create',array(
 			'model'=>$model,
+			'problem'=>$problem,
 		));
 	}
 
@@ -88,12 +108,21 @@ class SubmitionController extends Controller
 		$model=$this->loadModel($id);
 
 		
+		$this->checkAccess(array('model'=>$model));
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Submition']))
 		{
+			unset($_POST['Submition']['status']);
+			$status=null;
+			if(isset($_POST['Submition']['source'])&& $_POST['Submition']['source']!=$model->source )
+			{
+				$status=0;				
+			}
 			$model->attributes=$_POST['Submition'];
+			//reset the status to pending
+			if($status!==0)$model->status=0;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -113,8 +142,11 @@ class SubmitionController extends Controller
 		if(Yii::app()->request->isPostRequest)
 		{
 			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
-
+			$model=$this->loadModel($id);
+			$this->checkAccess(array('model'=>$model));
+			$model->visibility=ULookup::RECORD_STATUS_DELETE;
+			$model->save();
+						
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
@@ -128,29 +160,39 @@ class SubmitionController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Submition',
+		$scopes=array('recentlist');
+		
+		if(Yii::app()->request->getQuery('mine',null)!==null)
+			$scopes[]='mine';
+		else $scopes[]='public';
+		$criteria=new CDbCriteria(array(
+	    ));
+	    $status=Yii::app()->request->getQuery('status',null);
+		if($status!==null && preg_match("/^\d$/",$status))
+		{
+	    	$criteria->compare('t.status',(int)($status));
+		}
+	    
+	    $problem=null;
+		if(Yii::app()->request->getQuery('problem',null)!==null)
+		{
+			$problem=Problem::model()->findByPk((int)(Yii::app()->request->getQuery('problem')));
+			if($problem===null)
+				throw new CHttpException(404,'The requested page does not exist.');			
+	    	$criteria->compare('problem_id',(int)(Yii::app()->request->getQuery('problem')));
+		}
+		$dataProvider=new EActiveDataProvider('Submition',
 			array(
-			    'criteria'=>array(
-			        //'condition'=>'status=1',
-			        'order'=>'t.created DESC',
-			        'select'=>array('id','LENGTH(t.source) AS code_length','user_id','problem_id','status','t.created','used_time','used_memory','compiler_id','result'),
-					'together'=>true,
-			        'with'=>array(
-			        	'user'=>array(
-        					'select'=>array('username'),
-						),
-						'problem'=>array(
-        					'select'=>array('title'),
-						),
-					),
-			    ),
-			    'pagination'=>array(
-			        'pageSize'=>30,
+				'criteria'=>$criteria,
+				'scopes'=>$scopes,
+				'pagination'=>array(
+			        	'pageSize'=>30,
 			    ),
 			)
 		);
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
+			'problem'=>$problem,
 		));
 	}
 

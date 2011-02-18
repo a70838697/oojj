@@ -101,7 +101,37 @@ class Problem extends CActiveRecord
     	    	
     }
 	
-	
+	public function scopes()
+    {
+		$alias = $this->getTableAlias(false,false);
+        return array(
+            'titled'=>array(
+		        'select'=>array("{$alias}.title"),
+        	),     
+            'public'=>array(
+            	'condition'=>"{$alias}.visibility=".ULookup::RECORD_STATUS_PUBLIC,
+            ),
+            'allCount'=>array(
+			        'with'=>Yii::app()->user->isGuest?array('acceptedCount','submitedCount'):array('acceptedCount','submitedCount','myAcceptedCount','mySubmitedCount'),
+            ),
+            'myCount'=>array(
+			        'with'=>array('myAcceptedCount','mySubmitedCount'),
+            ),
+            'mySubmited'=>array(
+            	'condition'=>"exists(select 'X' from {{submitions}} where {{submitions}}.problem_id={$alias}.id and {{submitions}}.user_id=".Yii::app()->user->id.")",
+            	'with'=>array('myAcceptedCount','mySubmitedCount'),
+            ),
+            'myAccepted'=>array(
+            	'condition'=>"exists(select 'X' from {{submitions}} as cs where cs.problem_id={$alias}.id and cs.user_id=".Yii::app()->user->id." and cs.status=". ULookup::JUDGE_RESULT_ACCEPTED .")",
+            	'with'=>array('myAcceptedCount','mySubmitedCount'),
+            ),
+            'myNotAccepted'=>array(
+            	//'condition'=>"exists(select 'X' from {{submitions}} where {{submitions}}.problem_id={$alias}.id and {{submitions}}.user_id=".Yii::app()->user->id.") and not exists(select 'X' from {{submitions}} as cs where cs.problem_id={$alias}.id  and cs.user_id=".Yii::app()->user->id." and cs.status=". ULookup::JUDGE_RESULT_ACCEPTED .")",
+            	'condition'=>"exists(select 'X' from {{submitions}} where {{submitions}}.problem_id={$alias}.id and {{submitions}}.user_id=".Yii::app()->user->id.") and not exists(select 'X' from {{submitions}} as cs where cs.problem_id={$alias}.id  and cs.user_id=".Yii::app()->user->id." and cs.status=". ULookup::JUDGE_RESULT_ACCEPTED .")",
+            	'with'=>array('myAcceptedCount','mySubmitedCount'),
+            ),
+      	);
+    }
 	/**
 	 * @return array relational rules.
 	 */
@@ -114,7 +144,7 @@ class Problem extends CActiveRecord
 //	            'condition'=>'comments.status='.Comment::STATUS_APPROVED,
 //	            'order'=>'comments.create_time DESC'
 			),
-       		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+       		'user' => array(self::BELONGS_TO, 'UUser', 'user_id','select'=>array('username')),
 			'submitions' => array(self::HAS_MANY, 'Submition', 'problem_id'),
 	        'specialjudger' => array(self::HAS_ONE, 'ProblemJudger', 'problem_id'),
 			'submitedCount' => array(self::STAT, 'Submition', 'problem_id'),
@@ -136,7 +166,7 @@ class Problem extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'user_id' => 'User',
-			'title' => 'Title',
+			'title' => 'Problem Title',
 			'compiler_set' => 'Pragramming Languages',
 			'time_limit' => 'Time Limit',
 			'memory_limit' => 'Memory Limit',

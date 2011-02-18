@@ -7,6 +7,12 @@ class UCHtml
     public static function image($url) {
         return CHtml::image( Yii::app()->baseUrl."/images/".$url);
     }
+    public static function url($url) {
+        return Yii::app()->baseUrl.'/'.$url;
+    }    
+    public static function imageFile($url) {
+        return ( Yii::app()->baseUrl."/images/".$url);
+    }    
     /**
     * Makes the given URL relative to the /css directory
     */
@@ -16,7 +22,7 @@ class UCHtml
     /**
     * Makes the given URL relative to the /js directory
     */
-    public static function jsFile($url) {
-        return CHtml::jsFile(Yii::app()->baseUrl.'/js/'.$url);
+    public static function scriptFile($url) {
+        return CHtml::scriptFile(Yii::app()->baseUrl.'/js/'.$url);
     }
 }

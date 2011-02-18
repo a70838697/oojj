@@ -21,9 +21,10 @@ $attrs=$model->attributeLabels();
 
 <center><font size='6'><?php echo $model->id.'. '.CHtml::encode($model->title);?></font>
 <?php echo ($model->submitedCount==0)?"0%(0/0)":"".round($model->acceptedCount*100.0/$model->submitedCount,1)."%(".$model->acceptedCount."/".$model->submitedCount.")";?>
-<font color='blue'><?php echo $model->time_limit.'ms,'.($model->memory_limit>>20).'M'?></font>
+<font color='red'><?php echo $model->time_limit.'ms,'.($model->memory_limit>>20).'M'?></font>
 </center>
 <?php
+if(!Yii::app()->user->isGuest)
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
 /*
@@ -38,13 +39,36 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
+	        'visible'=>!Yii::app()->user->isGuest&& $buttons['submit'],
         	'linkOptions'=>array('onclick'=>'return showDialogue();',)
         ),
         array(
             'label'=>'Update this problem',
             'icon-position'=>'left',
+	        'visible'=>!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
             'url'=>array('update', 'id'=>$model->id),
+        ), 
+        array(
+            'label'=>'My submitions to this problem',
+            'icon-position'=>'left',
+        	'visible'=>!Yii::app()->user->isGuest,
+            'icon'=>'circle-plus',
+        	'url'=>array('/submition/index/problem/'.$model->id.'/mine/1'),
         ),        
+        array(
+            'label'=>'Submitions statistics',
+            'icon-position'=>'left',
+        	'visible'=>!Yii::app()->user->isGuest,
+            'icon'=>'document',
+        	'url'=>array('/submition/index/problem/'.$model->id.''),
+        ),
+        array(
+            'label'=>'Accepted Submitions',
+            'icon-position'=>'left',
+        	'visible'=>!Yii::app()->user->isGuest,
+            'icon'=>'document',
+        	'url'=>array('/submition/index/problem/'.$model->id.'/status/1'),
+        ),                 
     ),
     'htmlOptions' => array('style' => 'clear: both;'),
 ));
@@ -66,7 +90,7 @@ if(strlen($model->input)>0) $tabs[$attrs['input']]='<div>'.($model->input).'</di
 if(strlen($model->output)>0) $tabs[$attrs['output']]='<div>'.($model->output).'</div>';
 if(strlen($model->input_sample)>0) $tabs[$attrs['input_sample']]='<pre>'.($model->input_sample).'</pre>';
 if(strlen($model->output_sample)>0) $tabs[$attrs['output_sample']]='<pre>'.($model->output_sample).'</pre>';
-if(strlen($model->hint)>0) $tabs[$attrs['hint']]='<div>'.($model->hint).'</div>';
+if(strlen(trim($model->hint))>0) $tabs[$attrs['hint']]='<div>'.($model->hint).'</div>';
 
 $this->widget('zii.widgets.jui.CJuiTabs', array(
     'tabs'=>$tabs,
@@ -92,7 +116,7 @@ $this->widget('zii.widgets.jui.CJuiTabs', array(
 )); ?>
 
 <?php 
-if(!(Yii::app()->user->isGuest)){
+if($buttons['submit']){
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id'=>'submitiondialog',
     'options'=>array(
@@ -114,7 +138,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	<?php else: ?>
 		<?php $this->renderPartial('/submition/_form',array(
 			'model'=>$submition,
-			'compiler_set'=>$model->compiler_set,
+			'problem'=>$model,
 		)); ?>
 	<?php endif; ?>
 
