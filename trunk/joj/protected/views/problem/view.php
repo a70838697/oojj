@@ -57,14 +57,12 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
         array(
             'label'=>'Submitions statistics',
             'icon-position'=>'left',
-        	'visible'=>!Yii::app()->user->isGuest,
             'icon'=>'document',
         	'url'=>array('/submition/index/problem/'.$model->id.''),
         ),
         array(
             'label'=>'Accepted Submitions',
             'icon-position'=>'left',
-        	'visible'=>!Yii::app()->user->isGuest,
             'icon'=>'document',
         	'url'=>array('/submition/index/problem/'.$model->id.'/status/1'),
         ),                 
