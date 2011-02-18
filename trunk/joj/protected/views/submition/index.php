@@ -48,6 +48,11 @@ QTip::qtipd('.mes', $opts);
  ?>
 <h1><?php echo (Yii::app()->request->getQuery('mine',null)!==null)?'My ':'';?> Submitions <?php if($problem!==null) echo  ' for '.CHtml::link($problem->id.'.'.CHtml::encode($problem->title),array("problem/view","id"=>$problem->id));?></h1>
 <?php
+		if(Yii::app()->request->isAjaxRequest )
+		{
+			Yii::app()->getClientScript()->registerCoreScript('yii'); 			
+		}
+
 	$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'submition-grid',
 	'dataProvider'=>$dataProvider,
