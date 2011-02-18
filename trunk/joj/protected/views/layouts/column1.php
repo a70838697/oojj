@@ -30,7 +30,7 @@ function view_problem_by_id()
 			),
 			array('label'=>'Submition', 'url'=>array('#'), 
 				'items'=>array(
-					array('label'=>'Recent Submitions', 'url'=>array('/submition/index')),
+					array('label'=>'Recent Submitions', 'url'=>array('/submition/index/refresh')),
 				),
 			),
 			array('label'=>'My', 'url'=>array('#'),
