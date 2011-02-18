@@ -24,7 +24,6 @@ $attrs=$model->attributeLabels();
 <font color='red'><?php echo $model->time_limit.'ms,'.($model->memory_limit>>20).'M'?></font>
 </center>
 <?php
-if(!Yii::app()->user->isGuest)
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
 /*
