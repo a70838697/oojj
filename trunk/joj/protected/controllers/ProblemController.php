@@ -116,6 +116,8 @@ class ProblemController extends Controller
 			
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
+			if(is_int($model->compiler_set))
+				$model->compiler_set=UCompilerLookup::values($model->compiler_set);
 		}
 
 		$this->render('update',array(
