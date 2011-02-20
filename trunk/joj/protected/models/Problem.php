@@ -43,7 +43,12 @@ class Problem extends CActiveRecord
 	    parent::afterFind();
 	    $this->compiler_set=UCompilerLookup::values($this->compiler_set);
 	}
-
+	protected function afterSave()
+	{
+	    parent::afterSave();
+	    if(is_int($this->compiler_set))
+	    	$this->compiler_set=UCompilerLookup::values($this->compiler_set);
+	}
 	/**
 	 * @return string the associated database table name
 	 */
