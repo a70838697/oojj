@@ -122,7 +122,7 @@ class SubmitionController extends Controller
 			}
 			$model->attributes=$_POST['Submition'];
 			//reset the status to pending
-			if($status!==0)$model->status=0;
+			if($status===0)$model->status=0;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}

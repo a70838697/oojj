@@ -43,7 +43,12 @@ QTip::qtipd('.mes', $opts);
    var refreshId = setInterval(function() {
 	   $.fn.yiiGridView.update(\'submition-grid\');
    }, 6000);
-});');
+});
+function resetQtip()
+{
+$(".mes").qtip({\'position\':{\'corner\':{\'target\':\'rightMiddle\',\'tooltip\':\'leftMiddle\'}},\'content\':false,\'show\':{\'when\':{\'event\':\'mouseover\'}},\'hide\':{\'when\':{\'event\':\'mouseout\'}},\'style\':{\'color\':\'red\',\'name\':\'cream\',\'width\':500,\'border\':{\'width\':3,\'radius\':5}}});
+}
+');
 }
  ?>
 <h1><?php echo (Yii::app()->request->getQuery('mine',null)!==null)?'My ':'';?> Submitions <?php if($problem!==null) echo  ' for '.CHtml::link($problem->id.'.'.CHtml::encode($problem->title),array("problem/view","id"=>$problem->id));?></h1>
@@ -57,6 +62,7 @@ QTip::qtipd('.mes', $opts);
 	'id'=>'submition-grid',
 	'dataProvider'=>$dataProvider,
 	'ajaxUpdate'=>true,
+	'afterAjaxUpdate'=>'function(){resetQtip();}',
 	'template'=>$needRefresh?'{summary}{items}':'{summary}{pager}{items}{pager}',
 	'columns'=>array(
 		array(
