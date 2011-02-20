@@ -49,6 +49,12 @@ class Problem extends CActiveRecord
 	    if(is_int($this->compiler_set))
 	    	$this->compiler_set=UCompilerLookup::values($this->compiler_set);
 	}
+	protected function beforeSave()
+	{
+	    parent::afterSave();
+	    if(is_int($this->compiler_set))
+	    	$this->compiler_set=UCompilerLookup::values($this->compiler_set);
+	}	
 	/**
 	 * @return string the associated database table name
 	 */

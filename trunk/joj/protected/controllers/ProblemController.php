@@ -112,10 +112,22 @@ class ProblemController extends Controller
 		if(isset($_POST['Problem']))
 		{
 			
+			$old_time_limit=$model->time_limit;
+			$old_memory_limit=$model->memory_limit;
+			
 			$model->attributes=$_POST['Problem'];
 			
 			if($model->save())
+			{
+				if($old_time_limit!=$model->time_limit||$old_memory_limit!=$model->memory_limit)
+				{
+					$connection=Yii::app()->db;
+					$command=$connection->createCommand("update {{submitions}} set status=0 where problem_id=".$model->id);
+					$command->execute();
+				}
+				
 				$this->redirect(array('view','id'=>$model->id));
+			}
 			if(is_int($model->compiler_set))
 				$model->compiler_set=UCompilerLookup::values($model->compiler_set);
 		}
