@@ -66,7 +66,7 @@ class Problem extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('compiler_set','lookupComiplers'),
-			array('description, title,time_limit, memory_limit,input, output, input_sample, output_sample, hint,compiler_set', 'required'),
+			array('description, title,time_limit, memory_limit,    compiler_set', 'required'),
 			array('user_id, time_limit, memory_limit,compiler_set,  visibility', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>512),
 			array('source', 'length', 'max'=>128),
