@@ -167,13 +167,11 @@ class SubmitionController extends Controller
 		else $scopes[]='public';
 		$criteria=new CDbCriteria(array(
 	    ));
-	    /*
 	    $status=Yii::app()->request->getQuery('status',null);
 		if($status!==null && preg_match("/^\d$/",$status))
 		{
 	    	$criteria->compare('t.status',(int)($status));
 		}
-		*/
 	    
 	    $problem=null;
 		if(Yii::app()->request->getQuery('problem',null)!==null)
