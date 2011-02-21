@@ -1,5 +1,6 @@
 <?php
-	    $this->widget('application.components.widgets.XHeditor',array(
+$arr_attrs=
+array(
 	    	'model'=>$model,
 	    	'modelAttribute'=>$field,
 	    	'config'=>array(
@@ -11,4 +12,10 @@
 	    		'style'=>isset($style)?$style:'',
 		    	'cols'=>84,
 			),    	
-	    ));
+			
+	   );
+if(isset($id))
+{
+	$arr_attrs['config']['id']=$id;
+}	    
+	    $this->widget('application.components.widgets.XHeditor',$arr_attrs);

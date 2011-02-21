@@ -66,9 +66,10 @@ class Problem extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('compiler_set','lookupComiplers'),
-			array('description, title,time_limit, memory_limit,    compiler_set', 'required'),
+			array('description, title,time_limit, memory_limit, compiler_set', 'required'),
 			array('user_id, time_limit, memory_limit,compiler_set,  visibility', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>512),
+			array('input,input_sample,output,output_sample,hint', 'length', 'min'=>0),
 			array('source', 'length', 'max'=>128),
 			array('created, modified', 'safe'),
 			// The following rule is used by search().
