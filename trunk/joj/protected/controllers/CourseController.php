@@ -6,7 +6,8 @@ class CourseController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
+	public $layout='//layouts/course';
+	public $contentMenu=null;
 
 	/**
 	 * @return array action filters
@@ -27,7 +28,7 @@ class CourseController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','experiment'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -51,14 +52,25 @@ class CourseController extends Controller
 	public function actionView($id)
 	{
 		$course=$this->loadModel($id);
-		$experiment=Yii::app()->user->isGuest?null:$this->newExperiment($course);
 
 		$this->render('view',array(
+			'model'=>$course,
+		));
+	}
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionExperiment($id)
+	{
+		$course=$this->loadModel($id);
+		$experiment=Yii::app()->user->isGuest?null:$this->newExperiment($course);
+
+		$this->render('experiment',array(
 			'model'=>$course,
 			'experiment'=>$experiment,
 		));
 	}
-
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
@@ -131,6 +143,36 @@ class CourseController extends Controller
 	 */
 	public function actionIndex()
 	{
+		$scopes=array('recentlist');
+		
+		if(Yii::app()->request->getQuery('mine',null)!==null)
+			$scopes[]='mine';
+		else $scopes[]='public';
+		$criteria=new CDbCriteria(array(
+	    ));
+	    $status=Yii::app()->request->getQuery('status',null);
+		if($status!==null && preg_match("/^\d$/",$status))
+		{
+	    	$criteria->compare('t.status',(int)($status));
+		}
+	    
+	    $problem=null;
+		if(Yii::app()->request->getQuery('problem',null)!==null)
+		{
+			$problem=Problem::model()->findByPk((int)(Yii::app()->request->getQuery('problem')));
+			if($problem===null)
+				throw new CHttpException(404,'The requested page does not exist.');			
+	    	$criteria->compare('problem_id',(int)(Yii::app()->request->getQuery('problem')));
+		}
+		$dataProvider=new EActiveDataProvider('Submition',
+			array(
+				'criteria'=>$criteria,
+				'scopes'=>$scopes,
+				'pagination'=>array(
+			        	'pageSize'=>30,
+			    ),
+			)
+		);		
 		$dataProvider=new CActiveDataProvider('Course');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,

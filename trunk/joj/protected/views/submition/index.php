@@ -51,7 +51,7 @@ $(".mes").qtip({\'position\':{\'corner\':{\'target\':\'rightMiddle\',\'tooltip\'
 ');
 }
  ?>
-<h1><?php echo (Yii::app()->request->getQuery('mine',null)!==null)?'My ':'';?> Submitions <?php if($problem!==null) echo  ' for '.CHtml::link($problem->id.'.'.CHtml::encode($problem->title),array("problem/view","id"=>$problem->id));?></h1>
+<h1><?php echo ((!Yii::app()->user->isGuest) && Yii::app()->request->getQuery('mine',null)!==null)?'My ':'';?> Submitions <?php if($problem!==null) echo  ' for '.CHtml::link($problem->id.'.'.CHtml::encode($problem->title),array("problem/view","id"=>$problem->id));?></h1>
 <?php
 		if(Yii::app()->request->isAjaxRequest )
 		{
@@ -73,7 +73,7 @@ $(".mes").qtip({\'position\':{\'corner\':{\'target\':\'rightMiddle\',\'tooltip\'
 		array(
 			'name'=>'Author',
 			'type'=>'raw',
-			'visible'=>(Yii::app()->request->getQuery('mine',null)===null),
+			'visible'=>((Yii::app()->user->isGuest) || Yii::app()->request->getQuery('mine',null)===null),
 			'value'=>'CHtml::link(CHtml::encode($data->user->username),array("user/user/view","id"=>$data->user_id))',
 		),
 		array(

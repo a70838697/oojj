@@ -69,17 +69,14 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     ),
     'htmlOptions' => array('style' => 'clear: both;'),
 ));
-?>
-
-<script language="javascript">
+echo CHtml::script('
 function showDialogue()
 {
 	$("#submitiondialog").dialog("open");
 	//this.blur();
 	return false;	
 }
-</script>
-<?php
+');
 $tabs=array(
 		$attrs['description']=>'<div>'.($model->description).'</div>',
 );

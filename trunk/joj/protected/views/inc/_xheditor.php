@@ -8,6 +8,7 @@
 	    	),
 			'htmlOptions'=>array(
 				'rows'=>10,
+	    		'style'=>isset($style)?$style:'',
 		    	'cols'=>84,
 			),    	
 	    ));

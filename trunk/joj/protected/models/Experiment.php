@@ -44,11 +44,19 @@ class Experiment extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('course_id, name, sequence,due_time, description, user_id, begin, end, created, exercise_id', 'required'),
-			array('course_id, experiment_type_id,due_time, user_id, status, exercise_id', 'numerical', 'integerOnly'=>true),
+			array('course_id, name, sequence,due_time, description, begin, end,aim, exercise_id', 'required'),
+			array('course_id, experiment_type_id, status, exercise_id', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>40),
+			array('aim', 'length', 'max'=>512),
+			array('memo', 'length', 'max'=>256),
 			array('sequence', 'length', 'max'=>20),
-			// The following rule is used by search().
+	        array('created','default',
+	              'value'=>new CDbExpression('UNIX_TIMESTAMP()'),
+	              'setOnEmpty'=>false,'on'=>'insert'), 			
+	        array('user_id','default',
+	              'value'=>Yii::app()->user->id,
+	              'setOnEmpty'=>false,'on'=>'insert'), 			
+	        // The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, course_id, name, experiment_type_id, sequence, description, user_id, status, begin, end, created, exercise_id', 'safe', 'on'=>'search'),
 		);
@@ -89,13 +97,16 @@ class Experiment extends CActiveRecord
 			'id' => 'ID',
 			'course_id' => 'Course',
 			'name' => 'Name',
-			'experiment_type_id' => 'Experiment Type',
+			'experiment_type_id' => 'Type',
 			'sequence' => 'Sequence',
 			'description' => 'Description',
 			'user_id' => 'User',
 			'status' => 'Status',
+			'due_time' => 'Time',		
 			'begin' => 'Begin',
 			'end' => 'End',
+			'aim' => 'Aim',
+			'meo' => 'Memo',
 			'created' => 'Created',
 			'exercise_id' => 'Exercise',
 		);

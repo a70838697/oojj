@@ -13,48 +13,64 @@ $this->menu=array(
 );
 ?>
 
-<h1>View Course #<?php echo $model->id; ?></h1>
+<center><font size='6'><?php echo CHtml::encode($model->name);?></font></center>
+<table>
+	<tr>
+	<td><b><?php echo CHtml::encode($model->getAttributeLabel('user_id')); ?>:</b>
+	<?php echo CHtml::link(CHtml::encode($model->user->username),array('/user/user/view', 'id'=>$model->user->id)); ?></td>
+	<td><center><b><?php echo CHtml::encode($model->getAttributeLabel('due_time')); ?>:</b>
+	<?php echo CHtml::encode($model->due_time); ?></center></td>
+	<td align="right"><b><?php echo CHtml::encode($model->getAttributeLabel('location')); ?>:</b>
+	<?php echo CHtml::encode($model->location); ?></td>
+	</tr>
+</table>
+<?php
+$this->widget('ext.JuiButtonSet.JuiButtonSet', array(
+    'items' => array(
+        array(
+            'label'=>'Update this course',
+            'icon-position'=>'left',
+	        'visible'=>true,//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
+            'url'=>array('update', 'id'=>$model->id),
+        ), 
+        array(
+            'label'=>'View experiments',
+            'icon-position'=>'left',
+        	'visible'=>!Yii::app()->user->isGuest,
+            'icon'=>'document',
+        	'url'=>array('/course/experiment/'.$model->id),
+        ),        
+    ),
+    'htmlOptions' => array('style' => 'clear: both;'),
+));
+?>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		'id',
-		'name',
-		'description',
-		'location',
-		'environment',
+        //'name',
+		array(
+			'name'=>'user_id',
+            'type'=>'raw',
+            'value'=>CHtml::link(CHtml::encode($model->user->username),
+                                 array('user/user/view','id'=>$model->user_id)),
+        ),
+		array(
+			'label'=>'Begin ~ End',
+            'type'=>'raw',
+            'value'=>$model->begin . ' ~ ' .$model->end,
+        ),
 		'due_time',
-		'user_id',
-		'begin',
-		'end',
-		'status',
-		'created',
+        'location',
+        'environment',
+        array(
+			'name'=>'status',
+            'value'=>UCourseLookup::$COURSE_TYPE_MESSAGES[$model->status],
+        ),
+        array(
+			'name'=>'created',
+            'value'=>date('Y-m-d',$model->created),
+        ),        
+        'description',
 	),
 )); ?>
-
-<?php if(!(Yii::app()->user->isGuest)){?>
-<div id="experiments">
-	<?php if($model->experimentCount>=1): ?>
-		<h3>
-			<?php echo $model->experimentCount>1 ? $model->experimentCount . ' experiments' : 'One experiment'; ?>
-		</h3>
-
-		<?php $this->renderPartial('_experiments',array(
-			'course'=>$model,
-			'experiments'=>$model->experiments,
-		)); ?>
-	<?php endif; ?>
-	<h3>Create an experiment</h3>
-
-	<?php if(Yii::app()->user->hasFlash('experimentSubmitted')): ?>
-		<div class="flash-success">
-			<?php echo Yii::app()->user->getFlash('experimentSubmitted'); ?>
-		</div>
-	<?php else: ?>
-		<?php $this->renderPartial('/experiment/_inline_form',array(
-			'model'=>$experiment,
-		)); ?>
-	<?php endif; ?>
-
-</div><!-- experiment -->
-<?php } ?>

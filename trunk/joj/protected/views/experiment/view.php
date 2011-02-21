@@ -14,7 +14,26 @@ $this->menu=array(
 ?>
 
 <h1>View Experiment #<?php echo $model->id; ?></h1>
-
+<?php
+$this->widget('ext.JuiButtonSet.JuiButtonSet', array(
+    'items' => array(
+        array(
+            'label'=>'Update this experiment',
+            'icon-position'=>'left',
+	        'visible'=>true,//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
+            'url'=>array('update', 'id'=>$model->id),
+        ), 
+        array(
+            'label'=>'View course',
+            'icon-position'=>'left',
+        	'visible'=>!Yii::app()->user->isGuest,
+            'icon'=>'document',
+        	'url'=>array('/course/experiment/'.$model->id),
+        ),        
+    ),
+    'htmlOptions' => array('style' => 'clear: both;'),
+));
+?>
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(

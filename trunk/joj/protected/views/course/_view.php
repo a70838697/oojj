@@ -1,50 +1,29 @@
 <div class="view">
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
-	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</b>
-	<?php echo CHtml::encode($data->name); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('description')); ?>:</b>
-	<?php echo CHtml::encode($data->description); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('location')); ?>:</b>
-	<?php echo CHtml::encode($data->location); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('environment')); ?>:</b>
-	<?php echo CHtml::encode($data->environment); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('due_time')); ?>:</b>
-	<?php echo CHtml::encode($data->due_time); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('user_id')); ?>:</b>
-	<?php echo CHtml::encode($data->user_id); ?>
-	<br />
-
-	<?php /*
-	<b><?php echo CHtml::encode($data->getAttributeLabel('begin')); ?>:</b>
-	<?php echo CHtml::encode($data->begin); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('end')); ?>:</b>
-	<?php echo CHtml::encode($data->end); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('status')); ?>:</b>
-	<?php echo CHtml::encode($data->status); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('created')); ?>:</b>
-	<?php echo CHtml::encode($data->created); ?>
-	<br />
-
-	*/ ?>
+<table>
+	<tr>
+	<td style="width:40px;" align="right"><b><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</b></td>
+	<td><?php echo CHtml::link(CHtml::encode($data->name),array('view', 'id'=>$data->id)); ?></td>
+	<td style="width:108px"><b><?php echo CHtml::encode($data->getAttributeLabel('sequence')); ?>:</b></td>
+	<td><?php echo CHtml::encode($data->sequence); ?></td>
+	</tr>
+	<tr>
+	<td><b><?php echo CHtml::encode($data->getAttributeLabel('user_id')); ?>:</b></td>
+	<td><?php echo CHtml::link(CHtml::encode($data->user->username),array('/user/user/view', 'id'=>$data->user->id)); ?></td>
+	<td><b><?php echo CHtml::encode($data->getAttributeLabel('location')); ?>:</b></td>
+	<td><?php echo CHtml::encode($data->location); ?></td>
+	</tr>
+	<tr>
+	<td><b><?php echo CHtml::encode($data->getAttributeLabel('begin')); ?>~<?php echo CHtml::encode($data->getAttributeLabel('end')); ?>:</b></td>
+	<td><?php echo CHtml::encode($data->begin); ?>-<?php echo CHtml::encode($data->begin); ?></td>
+	<td><b><?php echo CHtml::encode($data->getAttributeLabel('due_time')); ?>:</b></td>
+	<td><?php echo CHtml::encode($data->due_time); ?></td>
+	</tr>
+	<tr>
+	<td colspan=4>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('description')); ?>:</b><br/>
+	<div><?php echo CHtml::encode($data->description); ?></div>
+	</td>
+	</tr>
+</table>
 
 </div>

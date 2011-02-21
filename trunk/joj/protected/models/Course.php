@@ -6,6 +6,7 @@
  * The followings are the available columns in table '{{courses}}':
  * @property integer $id
  * @property string $name
+ * @property string $sequence
  * @property string $description
  * @property string $location
  * @property string $environment
@@ -53,11 +54,19 @@ class Course extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, description, due_time, user_id, begin, end, created', 'required'),
-			array('user_id, begin, end, status, created', 'numerical', 'integerOnly'=>true),
-			array('name, environment', 'length', 'max'=>256),
-			array('location', 'length', 'max'=>32),
-			array('due_time', 'length', 'max'=>30),
+			array('name, user_id, begin, end', 'required'),
+			array('user_id, status', 'numerical', 'integerOnly'=>true),
+			array('begin', 'type', 'type'=>'date','dateFormat'=>'yyyy-MM-dd'),
+			array('end', 'type', 'type'=>'date','dateFormat'=>'yyyy-MM-dd'),
+			array('name', 'length', 'max'=>60),
+            array('sequence', 'length', 'max'=>20),
+            array('description', 'length', 'max'=>512),
+            array('location', 'length', 'max'=>32),
+            array('environment', 'length', 'max'=>256),
+            array('due_time', 'length', 'max'=>30),
+	        array('created','default',
+	              'value'=>new CDbExpression('UNIX_TIMESTAMP()'),
+	              'setOnEmpty'=>false,'on'=>'insert'),            
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name, description, location, environment, due_time, user_id, begin, end, status, created', 'safe', 'on'=>'search'),
@@ -72,7 +81,7 @@ class Course extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-       		'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+       		'user' => array(self::BELONGS_TO, 'UUser', 'user_id'),
 			'experiments' => array(self::HAS_MANY, 'Experiment', 'course_id'),
 			'experimentCount' => array(self::STAT, 'Experiment', 'course_id'),
 		);
@@ -86,18 +95,38 @@ class Course extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+			'sequence' => 'Course number',
 			'description' => 'Description',
-			'location' => 'Location',
+			'location' => 'Classroom',
 			'environment' => 'Environment',
-			'due_time' => 'Due Time',
-			'user_id' => 'User',
+			'due_time' => 'Weekly Time',
+			'user_id' => 'Teacher',
 			'begin' => 'Begin',
 			'end' => 'End',
 			'status' => 'Status',
 			'created' => 'Created',
 		);
 	}
-
+	public function scopes()
+    {
+		$alias = $this->getTableAlias(false,false);
+    	return array(
+            'recentlist'=>array(
+            	'order'=>"{$alias}.created DESC",
+		        'select'=>array("{$alias}.id","{$alias}.user_id","{$alias}.name","{$alias}.status","{$alias}.created","{$alias}.description","{$alias}.sequence","{$alias}.location","{$alias}.environment"),
+        		'with'=>array(
+        			'user:username',
+        		),
+        	),
+        	'mine'=>array(
+                'condition'=>UUserIdentity::isTeacher()?
+        			"{$alias}.status!=". UCourseLookup::COURSE_TYPE_DELETED ." AND {$alias}.user_id=".Yii::app()->user->id:"",
+        	),
+            'public'=>array(
+            	'condition'=>"{$alias}.status==".UCourseLookup::COURSE_TYPE_PUBLIC,
+            ),
+        );
+    }
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.

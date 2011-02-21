@@ -1,84 +1,115 @@
 <div class="form">
-
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'experiment-form',
 	'enableAjaxValidation'=>false,
 )); ?>
 
+<table>
+<tr><td colspan=4>
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
 	<?php echo $form->errorSummary($model); ?>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'course_id'); ?>
-		<?php echo $form->textField($model,'course_id'); ?>
-		<?php echo $form->error($model,'course_id'); ?>
-	</div>
-
-	<div class="row">
+</td></tr>
+<tr>
+<td colspan=4>
+		<table><tr>
+		<td>
 		<?php echo $form->labelEx($model,'name'); ?>
+		</td>
+		<td width='150px'>
 		<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>256)); ?>
 		<?php echo $form->error($model,'name'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'experiment_type_id'); ?>
-		<?php echo $form->textField($model,'experiment_type_id'); ?>
-		<?php echo $form->error($model,'experiment_type_id'); ?>
-	</div>
-
-	<div class="row">
+		</td><td><?php echo $form->labelEx($model,'experiment_type_id'); ?></td>
+		<td><?php echo $form->dropDownList($model,'experiment_type_id',UCourseLookup::$EXPERIMENT_TYPE_MESSAGES); ?>		
+		<?php echo $form->error($model,'experiment_type_id'); ?></td>
+		</tr>
+		</table>
+</td></tr>
+<tr><td>
+		<?php echo $form->labelEx($model,'due_time'); ?>
+		</td><td>
+		<?php
+		$this->widget('application.extensions.timepicker.EJuiDateTimePicker',array(
+		    'model'=>$model,
+		    'attribute'=>'due_time',
+		    'options'=>array(
+		        'hourGrid' => 6,
+		        'hourMin' => 0,
+		        'hourMax' => 23,
+                'dateFormat'=>'yy-mm-dd',
+                'timeFormat' => 'hh:mm:ss',
+		        'changeMonth' => true,
+		        'changeYear' => false,
+		        ),
+		    ));  
+?>
+		<?php echo $form->error($model,'due_time'); ?>
+</td><td>
 		<?php echo $form->labelEx($model,'sequence'); ?>
+		</td><td>
 		<?php echo $form->textField($model,'sequence',array('size'=>20,'maxlength'=>20)); ?>
 		<?php echo $form->error($model,'sequence'); ?>
+</td></tr>
+
+<tr><td>
+		<?php echo $form->labelEx($model,'begin'); ?>
+		</td><td>
+		<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+		    'attribute'=>'begin',
+		    'model'=>$model,
+			'language'=>'cn',
+			'value'=>date('Y-m-d'),
+		    'options'=>array(
+		        'showAnim'=>'fold',
+				'dateFormat'=>('yy-mm-dd'),
+			),
+		    'htmlOptions'=>array(
+		        'style'=>'height:20px;',
+		    ),
+		));
+		?>	
+		<?php echo $form->error($model,'begin'); ?>
+</td><td>
+
+		<?php echo $form->labelEx($model,'end'); ?>
+		</td><td>
+		<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+		    'attribute'=>'end',
+		    'model'=>$model,
+			'language'=>'cn',
+			'value'=>date('Y-m-d'),
+		    'options'=>array(
+		        'showAnim'=>'fold',
+				'dateFormat'=>('yy-mm-dd'),
+			),
+		    'htmlOptions'=>array(
+		        'style'=>'height:20px;',
+		    ),
+		));
+		?>
+		<?php echo $form->error($model,'end'); ?>
+</td></tr>
+<tr><td>
+		<?php echo $form->labelEx($model,'memo'); ?>
+		</td><td colspan=3>
+		<?php echo $form->textField($model,'memo',array('size'=>60,'maxlength'=>256)); ?>
+		<?php echo $form->error($model,'memo'); ?>
+</td></tr>
+<tr><td colspan=4>
+	<div class="row">
+		<?php echo $form->labelEx($model,'aim'); ?>
+		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'aim','style'=>'width:740px;height:100px'),true); ?>
+		<?php echo $form->error($model,'aim'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'description'); ?>
-		<?php echo $form->textArea($model,'description',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'description','style'=>'width:740px;height:120px'),true); ?>
 		<?php echo $form->error($model,'description'); ?>
 	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'user_id'); ?>
-		<?php echo $form->textField($model,'user_id'); ?>
-		<?php echo $form->error($model,'user_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'status'); ?>
-		<?php echo $form->textField($model,'status'); ?>
-		<?php echo $form->error($model,'status'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'begin'); ?>
-		<?php echo $form->textField($model,'begin'); ?>
-		<?php echo $form->error($model,'begin'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'end'); ?>
-		<?php echo $form->textField($model,'end'); ?>
-		<?php echo $form->error($model,'end'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'created'); ?>
-		<?php echo $form->textField($model,'created'); ?>
-		<?php echo $form->error($model,'created'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'exercise_id'); ?>
-		<?php echo $form->textField($model,'exercise_id'); ?>
-		<?php echo $form->error($model,'exercise_id'); ?>
-	</div>
-
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
-
+</td></tr>
+</table>
 <?php $this->endWidget(); ?>
-
 </div><!-- form -->
