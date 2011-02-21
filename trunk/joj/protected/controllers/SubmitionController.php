@@ -162,16 +162,18 @@ class SubmitionController extends Controller
 	{
 		$scopes=array('recentlist');
 		
-		if(Yii::app()->request->getQuery('mine',null)!==null)
+		if((!Yii::app()->user->isGuest) && Yii::app()->request->getQuery('mine',null)!==null)
 			$scopes[]='mine';
 		else $scopes[]='public';
 		$criteria=new CDbCriteria(array(
 	    ));
+	    /*
 	    $status=Yii::app()->request->getQuery('status',null);
 		if($status!==null && preg_match("/^\d$/",$status))
 		{
 	    	$criteria->compare('t.status',(int)($status));
 		}
+		*/
 	    
 	    $problem=null;
 		if(Yii::app()->request->getQuery('problem',null)!==null)
