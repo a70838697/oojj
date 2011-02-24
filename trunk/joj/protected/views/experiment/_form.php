@@ -13,11 +13,11 @@
 <td colspan=4>
 		<table><tr>
 		<td>
-		<?php echo $form->labelEx($model,'name'); ?>
+		<?php echo $form->labelEx($model,'title'); ?>
 		</td>
 		<td width='150px'>
-		<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>256)); ?>
-		<?php echo $form->error($model,'name'); ?>
+		<?php echo $form->textField($model,'title',array('size'=>60,'maxlength'=>256)); ?>
+		<?php echo $form->error($model,'title'); ?>
 		</td><td><?php echo $form->labelEx($model,'experiment_type_id'); ?></td>
 		<td><?php echo $form->dropDownList($model,'experiment_type_id',UCourseLookup::$EXPERIMENT_TYPE_MESSAGES); ?>		
 		<?php echo $form->error($model,'experiment_type_id'); ?></td>

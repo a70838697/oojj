@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
-	$model->course->name=>array('/course/view/'.$model->course->id),
-	$model->name,
+	$model->course->title=>array('/course/view/'.$model->course->id),
+	$model->title,
 );
 
 $this->menu=array(
@@ -21,22 +21,22 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
-	        'visible'=>!Yii::app()->user->isGuest,
+	        'visible'=>UUserIdentity::isTeacher(),
         	'linkOptions'=>array('onclick'=>'return showDialogue();',)
         ),
         array(
             'label'=>'Update this experiment',
             'icon-position'=>'left',
-	        'visible'=>true,//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
+	        'visible'=>UUserIdentity::isTeacher(),//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
             'url'=>array('update', 'id'=>$model->id),
         ), 
         array(
-            'label'=>'View course',
+            'label'=>'Submit a report',
             'icon-position'=>'left',
-        	'visible'=>!Yii::app()->user->isGuest,
-            'icon'=>'document',
-        	'url'=>array('/course/experiment/'.$model->id),
-        ),        
+	        'visible'=>UUserIdentity::isStudent(),//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
+            'url'=>array('/experimentReport/write', 'id'=>$model->id),
+        ),         
+      
     ),
     'htmlOptions' => array('style' => 'clear: both;'),
 ));
@@ -46,7 +46,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
 	'attributes'=>array(
 		'id',
 		'course_id',
-		'name',
+		'title',
 		'experiment_type_id',
 		'sequence',
 		'description',

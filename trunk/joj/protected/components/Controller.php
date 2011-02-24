@@ -10,6 +10,7 @@ class Controller extends CController
 	 * meaning using a single column layout. See 'protected/views/layouts/column1.php'.
 	 */
 	public $layout='//layouts/onlinejudge';
+	public $prefix='';
 	/**
 	 * @var array context menu items. This property will be assigned to {@link CMenu::items}.
 	 */
@@ -29,9 +30,9 @@ class Controller extends CController
 		if(is_null($action))$action=$this->getAction()->getId();
 		return Yii::app()->user->checkAccess($controller.":".$action,$params);
 	}
-	public function checkAccess($params=array())
+	public function checkAccess($params=array(),$action=null,$controller=null)
 	{
-		if(!$this->canAccess($params))
+		if(!$this->canAccess($params,$action,$controller))
 		{
 			if(Yii::app()->user->getIsGuest())
 				Yii::app()->user->loginRequired();

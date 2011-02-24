@@ -14,11 +14,16 @@
 		<?php echo $form->textField($model,'problem_id'); ?>
 		<?php echo $form->error($model,'problem_id'); ?>
 	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'sequence'); ?>
+		<?php echo $form->textField($model,'sequence',array('size'=>60,'maxlength'=>20)); ?>
+		<?php echo $form->error($model,'sequence'); ?>
+	</div>
 	
 	<div class="row">
-		<?php echo $form->labelEx($model,'name'); ?>
-		<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>100)); ?>
-		<?php echo $form->error($model,'name'); ?>
+		<?php echo $form->labelEx($model,'title'); ?>
+		<?php echo $form->textField($model,'title',array('size'=>60,'maxlength'=>100)); ?>
+		<?php echo $form->error($model,'title'); ?>
 	</div>
 
 	<div class="row">
@@ -51,7 +56,7 @@ function ()
 	if(id!="")
 	{
 		$("#'.CHtml::activeId($model,'problem_id').'").val(id)
-		$("#'.CHtml::activeId($model,'name').'").val($("#ap"+id).text());
+		$("#'.CHtml::activeId($model,'title').'").val($("#ap"+id).text());
 	}
 	return false;
 }

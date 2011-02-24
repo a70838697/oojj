@@ -1,14 +1,14 @@
 <?php
 
-class ExerciseProblemController extends Controller
+class SubmitionController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/course';
+	public $layout='//layouts/onlinejudge';
 	public $contentMenu=null;
-
+	public $prefix="";
 	/**
 	 * @return array action filters
 	 */
@@ -32,103 +32,70 @@ class ExerciseProblemController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array('create','update','delete'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+				'actions'=>array('admin'),
+				'roles'=>array('Admin'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
 		);
 	}
-	/**
-	 * Creates a new submition.
-	 * This method attempts to create a new submition based on the user input.
-	 * If the submition is successfully created, the browser will be redirected
-	 * to show the created submition.
-	 * @param Problem the problem that the new submition belongs to
-	 * @return Submition the submition instance
-	 */
-	protected function newSubmition($exerciseProblem)
-	{
-		$submition=new Submition;
-		if(isset($_GET['ajax']) && $_POST['ajax']==='submition-form')
-		{
-			echo CActiveForm::validate($submition);
-			Yii::app()->end();
-		}
-		if(isset($_POST['Submition']))
-		{
-			$submition->attributes=$_POST['Submition'];
-			$submition->user_id=Yii::app()->user->id;
-			$submition->exercise_id=$exerciseProblem->exercise_id;
-			$submition->problem_id=$exerciseProblem->problem->id;
-			if($submition->save())
-			{
-				//if($comment->status==Comment::STATUS_PENDING)
-				//Yii::app()->user->setFlash('submitionSubmitted','Thank you for your submition. Your submition will be judged.');
-				//$this->refresh();
-				$this->redirect(array('/exerciseSubmition/view','id'=>$submition->id));				
-			}
-		}
-		return $submition;
-	}	
+
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
 	public function actionView($id)
 	{
-		if($id!=0)
-			$model=$this->loadModel($id);
-		else
+		$model=$this->loadModel($id);
+		$this->checkAccess(array('model'=>$model));		
+		if(Yii::app()->request->isAjaxRequest )
 		{
-			$model=$this->loadModelByAttr(Yii::app()->request->getQuery('exercise',0),Yii::app()->request->getQuery('problem',0));
+			$result=array(
+				'ok'=>$model->status!=ULookup::JUDGE_RESULT_PENDING,//you can check time, if timeout, no result
+				'status'=>ULookup::$JUDGE_RESULT_MESSAGES[$model->status],
+				'result'=>$model->result,
+			);
+			echo json_encode($result);
+			die;
 		}
-		//$this->checkAccess(array('model'=>$model));
-		
-		//$submition=$this->canAccess(array('model'=>$model),'Create','Submition')?$this->newSubmition($model->problem):null;
-		$submition=$this->newSubmition($model);
-
-		$buttons=array(
-			'submit'=>!is_null($submition),
-			//'update'=>$this->canAccess(array('model'=>$model),'Update'),
-			//'delete'=>$this->canAccess(array('model'=>$model),'Delete'),
-		);
-		$this->render('view',array(
-			'model'=>$model,
-			'problem'=>$model->problem,
-			'buttons'=>$buttons,
-			'submition'=>$submition,
-		));		
-		//$this->render('view',array(
-		//	'model'=>$this->loadModel($id),
-		//));
+		else{
+			$this->render('/submition/view',array(
+				'model'=>$model,
+			));
+		}
 	}
 
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate($id)
 	{
-		$model=new ExerciseProblem;
-
+		$problem=Problem::model()->findByPk((int)$id);
+		if($problem===null)
+			throw new CHttpException(404,'The requested page does not exist.');		
+		
+		$this->checkAccess(array('model'=>$problem));
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['ExerciseProblem']))
+		$model=new Submition;
+		
+		if(isset($_POST['Submition']))
 		{
-			$model->attributes=$_POST['ExerciseProblem'];
+			$model->attributes=$_POST['Submition'];
+			$model->problem_id=$problem->id;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
-		$this->render('create',array(
+		$this->render('/submition/create',array(
 			'model'=>$model,
+			'problem'=>$problem,
 		));
 	}
 
@@ -141,17 +108,27 @@ class ExerciseProblemController extends Controller
 	{
 		$model=$this->loadModel($id);
 
+		
+		$this->checkAccess(array('model'=>$model));
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['ExerciseProblem']))
+		if(isset($_POST['Submition']))
 		{
-			$model->attributes=$_POST['ExerciseProblem'];
+			unset($_POST['Submition']['status']);
+			$status=null;
+			if(isset($_POST['Submition']['source'])&& $_POST['Submition']['source']!=$model->source )
+			{
+				$status=0;				
+			}
+			$model->attributes=$_POST['Submition'];
+			//reset the status to pending
+			if($status===0)$model->status=0;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
-		$this->render('update',array(
+		$this->render('/submition/update',array(
 			'model'=>$model,
 		));
 	}
@@ -166,8 +143,11 @@ class ExerciseProblemController extends Controller
 		if(Yii::app()->request->isPostRequest)
 		{
 			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
-
+			$model=$this->loadModel($id);
+			$this->checkAccess(array('model'=>$model));
+			$model->visibility=ULookup::RECORD_STATUS_DELETE;
+			$model->save();
+						
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
@@ -181,9 +161,40 @@ class ExerciseProblemController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('ExerciseProblem');
-		$this->render('index',array(
+		$scopes=array('list');
+		if(Yii::app()->request->getQuery('refresh',null)!==null)$scopes[]='recent';
+		
+		if((!Yii::app()->user->isGuest) && Yii::app()->request->getQuery('mine',null)!==null)
+			$scopes[]='mine';
+		else $scopes[]='public';
+		$criteria=new CDbCriteria(array(
+	    ));
+	    $status=Yii::app()->request->getQuery('status',null);
+		if($status!==null && preg_match("/^\d$/",$status))
+		{
+	    	$criteria->compare('t.status',(int)($status));
+		}
+	    
+	    $problem=null;
+		if(Yii::app()->request->getQuery('problem',null)!==null)
+		{
+			$problem=Problem::model()->findByPk((int)(Yii::app()->request->getQuery('problem')));
+			if($problem===null)
+				throw new CHttpException(404,'The requested page does not exist.');			
+	    	$criteria->compare('problem_id',(int)(Yii::app()->request->getQuery('problem')));
+		}
+		$dataProvider=new EActiveDataProvider('Submition',
+			array(
+				'criteria'=>$criteria,
+				'scopes'=>$scopes,
+				'pagination'=>array(
+			        	'pageSize'=>30,
+			    ),
+			)
+		);
+		$this->render('/submition/index',array(
 			'dataProvider'=>$dataProvider,
+			'problem'=>$problem,
 		));
 	}
 
@@ -192,12 +203,12 @@ class ExerciseProblemController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new ExerciseProblem('search');
+		$model=new Submition('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ExerciseProblem']))
-			$model->attributes=$_GET['ExerciseProblem'];
+		if(isset($_GET['Submition']))
+			$model->attributes=$_GET['Submition'];
 
-		$this->render('admin',array(
+		$this->render('/submition/admin',array(
 			'model'=>$model,
 		));
 	}
@@ -209,31 +220,19 @@ class ExerciseProblemController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=ExerciseProblem::model()->findByPk((int)$id);
+		$model=Submition::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
 	}
-	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer the ID of the model to be loaded
-	 */
-	public function loadModelByAttr($exercise_id,$problem_id)
-	{
-		$model=ExerciseProblem::model()->find('exercise_id='.(int)$exercise_id.' and problem_id='.(int)$problem_id);
-		if($model===null||(int)$exercise_id<=0)
-			throw new CHttpException(404,'The requested page does not exist.');
-		return $model;
-	}
-	
+
 	/**
 	 * Performs the AJAX validation.
 	 * @param CModel the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='exercise-problem-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='submition-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

@@ -41,10 +41,10 @@ class ExperimentReport extends CActiveRecord
 		return array(
 			array('experiment_id, report, conclusion', 'required'),
 			array('experiment_id', 'numerical', 'integerOnly'=>true),
-			array('modified','default',
+			array('updated','default',
 	              'value'=>new CDbExpression('UNIX_TIMESTAMP()'),
 	              'setOnEmpty'=>false,'on'=>'update'),	        
-	        array('created,modified','default',
+	        array('created,updated','default',
 	              'value'=>new CDbExpression('UNIX_TIMESTAMP()'),
 	              'setOnEmpty'=>false,'on'=>'insert'),				
 			// The following rule is used by search().

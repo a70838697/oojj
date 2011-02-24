@@ -8,20 +8,20 @@
 	<?php echo CHtml::encode($data->exercise_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</b>
-	<?php echo CHtml::encode($data->name); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('title')); ?>:</b>
+	<?php echo CHtml::encode($data->title); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('problem_id')); ?>:</b>
 	<?php echo CHtml::encode($data->problem_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('description')); ?>:</b>
-	<?php echo CHtml::encode($data->description); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('memo')); ?>:</b>
+	<?php echo CHtml::encode($data->memo); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('created')); ?>:</b>
-	<?php echo CHtml::encode($data->created); ?>
+	<?php echo date('Y-m-d',$data->created); ?>
 	<br />
 
 

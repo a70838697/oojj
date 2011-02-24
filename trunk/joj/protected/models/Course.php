@@ -42,7 +42,7 @@ class Course extends CActiveRecord
 	{
 		return Yii::app()->createUrl('course/view', array(
 			'id'=>$this->id,
-			'title'=>$this->name,
+			'title'=>$this->title,
 		));
 	}
 	
@@ -54,11 +54,11 @@ class Course extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, user_id, begin, end', 'required'),
+			array('title, user_id, begin, end', 'required'),
 			array('visibility', 'numerical', 'integerOnly'=>true),
 			array('begin', 'type', 'type'=>'date','dateFormat'=>'yyyy-MM-dd'),
 			array('end', 'type', 'type'=>'date','dateFormat'=>'yyyy-MM-dd'),
-			array('name', 'length', 'max'=>60),
+			array('title', 'length', 'max'=>60),
 			array('memo', 'length', 'max'=>100),			
             array('sequence', 'length', 'max'=>20),
             array('description', 'length', 'max'=>512),
@@ -70,7 +70,7 @@ class Course extends CActiveRecord
 	              'setOnEmpty'=>false,'on'=>'insert'),            
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, description, location, environment, due_time, user_id, begin, end, visibility, created', 'safe', 'on'=>'search'),
+			array('id, title, description, location, environment, due_time, user_id, begin, end, visibility, created', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -98,7 +98,7 @@ class Course extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
+			'title' => 'Title',
 			'sequence' => 'Course number',
 			'description' => 'Description',
 			'location' => 'Classroom',
@@ -118,7 +118,7 @@ class Course extends CActiveRecord
     	return array(
             'recentlist'=>array(
             	'order'=>"{$alias}.created DESC",
-		        'select'=>array("{$alias}.id","{$alias}.user_id","{$alias}.name","{$alias}.visibility","{$alias}.created","{$alias}.end","{$alias}.due_time","{$alias}.begin","{$alias}.memo","{$alias}.sequence","{$alias}.location","{$alias}.environment"),
+		        'select'=>array("{$alias}.id","{$alias}.user_id","{$alias}.title","{$alias}.visibility","{$alias}.created","{$alias}.end","{$alias}.due_time","{$alias}.begin","{$alias}.memo","{$alias}.sequence","{$alias}.location","{$alias}.environment"),
         		'with'=>UUserIdentity::isStudent()? array('user:username','myMemberShip','studentGroup.userCount'):array('user:username','studentGroup.userCount'))
     			,
         	'mine'=>array(
@@ -143,7 +143,7 @@ class Course extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('title',$this->title,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('location',$this->location,true);
 		$criteria->compare('environment',$this->environment,true);

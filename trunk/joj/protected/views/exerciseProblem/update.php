@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
 	'Exercise Problems'=>array('index'),
-	$model->name=>array('view','id'=>$model->id),
+	$model->title=>array('view','id'=>$model->id),
 	'Update',
 );
 

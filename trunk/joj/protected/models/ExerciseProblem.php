@@ -6,7 +6,7 @@
  * The followings are the available columns in table '{{exercise_problems}}':
  * @property integer $id
  * @property integer $exercise_id
- * @property string $name
+ * @property string $title
  * @property integer $problem_id
  * @property string $memo
  * @property string $created
@@ -37,7 +37,7 @@ class ExerciseProblem extends CActiveRecord
 	{
 		return Yii::app()->createUrl('exerciseproblem/view', array(
 			'id'=>$this->id,
-			'title'=>$this->name,
+			'title'=>$this->title,
 		));
 	}
 	
@@ -49,15 +49,16 @@ class ExerciseProblem extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('exercise_id, problem_id', 'required'),
+			array('exercise_id, problem_id,sequence', 'required'),
 			array('exercise_id, problem_id', 'numerical', 'integerOnly'=>true),
-			array('name,memo', 'length', 'max'=>100),
+			array('title,memo', 'length', 'max'=>100),
+			array('sequence', 'length', 'max'=>20),			
 	        array('created','default',
 	              'value'=>new CDbExpression('UNIX_TIMESTAMP()'),
 	              'setOnEmpty'=>false,'on'=>'insert'),	
 	        // The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, exercise_id, name, problem_id, memo, created', 'safe', 'on'=>'search'),
+			array('id, exercise_id, title,sequence, problem_id, memo, created', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,7 +83,9 @@ class ExerciseProblem extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'exercise_id' => 'Exercise',
-			'name' => 'Displayed Name',
+			'sequence' => 'Sequence',
+		
+			'title' => 'Displayed Title',
 			'problem_id' => 'Problem',
 			'memo' => 'Memo',
 			'created' => 'Created',
@@ -102,7 +105,7 @@ class ExerciseProblem extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('exercise_id',$this->exercise_id);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('title',$this->title,true);
 		$criteria->compare('problem_id',$this->problem_id);
 		$criteria->compare('memo',$this->memo,true);
 		$criteria->compare('created',$this->created,true);

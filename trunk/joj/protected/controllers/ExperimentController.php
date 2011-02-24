@@ -6,7 +6,8 @@ class ExperimentController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
+	public $layout='//layouts/course';
+	public $contentMenu=null;
 
 	/**
 	 * @return array action filters
@@ -89,6 +90,21 @@ class ExperimentController extends Controller
 				}
 			}
 			$exercise_problem->attributes=$_POST['ExerciseProblem'];
+			$problem = Problem::model()->findByPk((int)$exercise_problem->problem_id);
+			if($problem==null || !$this->canAccess(array('model'=>$problem),'view','problem'))
+			{
+				$exercise_problem->addError('problem_id','Not a validate problem id.');
+				return $exercise_problem;
+			}
+			if(ExerciseProblem::model()->find('exercise_id='.$experiment->exercise_id.' and problem_id ='.(int)$exercise_problem->problem_id)!=null)
+			{
+				$exercise_problem->addError('problem_id','This problem already exists.');
+				return $exercise_problem;
+			}			
+			if($exercise_problem->title==null||strlen(trim($exercise_problem->title))==0)
+			{
+				$exercise_problem->title=$problem->title;				
+			}
 			$exercise_problem->exercise_id=$experiment->exercise_id;
 			if($exercise_problem->save())
 			{

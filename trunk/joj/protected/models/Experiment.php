@@ -6,7 +6,7 @@
  * The followings are the available columns in table '{{experiments}}':
  * @property integer $id
  * @property integer $course_id
- * @property string $name
+ * @property string $title
  * @property integer $experiment_type_id
  * @property string $sequence
  * @property string $description
@@ -44,9 +44,9 @@ class Experiment extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('course_id, name, sequence,due_time, description, begin, end,aim, exercise_id', 'required'),
+			array('course_id, title, sequence,due_time, description, begin, end,aim, exercise_id', 'required'),
 			array('course_id, experiment_type_id, status, exercise_id', 'numerical', 'integerOnly'=>true),
-			array('name', 'length', 'max'=>40),
+			array('title', 'length', 'max'=>40),
 			array('aim', 'length', 'max'=>512),
 			array('memo', 'length', 'max'=>256),
 			array('sequence', 'length', 'max'=>20),
@@ -58,7 +58,7 @@ class Experiment extends CActiveRecord
 	              'setOnEmpty'=>false,'on'=>'insert'), 			
 	        // The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, course_id, name, experiment_type_id, sequence, description, user_id, status, begin, end, created, exercise_id', 'safe', 'on'=>'search'),
+			array('id, course_id, title, experiment_type_id, sequence, description, user_id, status, begin, end, created, exercise_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -83,7 +83,7 @@ class Experiment extends CActiveRecord
 	{
 		if($course===null) return Yii::app()->createUrl('experiment/view', array(
 			'id'=>$this->id,
-			'title'=>$this->name,
+			'title'=>$this->title,
 		));
 		//	$course=$this->course;
 		return $course->url.'#c'.$this->id;
@@ -96,7 +96,7 @@ class Experiment extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'course_id' => 'Course',
-			'name' => 'Name',
+			'title' => 'Title',
 			'experiment_type_id' => 'Type',
 			'sequence' => 'Sequence',
 			'description' => 'Description',
@@ -125,7 +125,7 @@ class Experiment extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('course_id',$this->course_id);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('title',$this->title,true);
 		$criteria->compare('experiment_type_id',$this->experiment_type_id);
 		$criteria->compare('sequence',$this->sequence,true);
 		$criteria->compare('description',$this->description,true);

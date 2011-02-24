@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
 	'Courses'=>array('index'),
-	$model->name,
+	$model->title,
 );
 
 $this->menu=array(
@@ -13,7 +13,7 @@ $this->menu=array(
 );
 ?>
 
-<center><font size='6'><?php echo CHtml::encode($model->name);?></font></center>
+<center><font size='6'><?php echo CHtml::encode($model->title);?></font></center>
 <table>
 	<tr>
 	<td><b><?php echo CHtml::encode($model->getAttributeLabel('user_id')); ?>:</b>

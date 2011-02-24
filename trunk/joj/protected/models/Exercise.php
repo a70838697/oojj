@@ -6,6 +6,8 @@
  * The followings are the available columns in table '{{exercises}}':
  * @property integer $id
  * @property integer $type_id
+ * @property integer $belong_to_id
+ * 
  */
 class Exercise extends CActiveRecord
 {
@@ -52,6 +54,7 @@ class Exercise extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'exercise_problems' => array(self::HAS_MANY, 'ExerciseProblem', 'exercise_id'),
+			'experiment' => array(self::BELONGS_TO, 'Experiment', 'belong_to_id'),
 		);
 		
 	}

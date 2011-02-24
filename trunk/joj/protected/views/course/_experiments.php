@@ -14,8 +14,8 @@
 </div>
 </td>
 <td>
-	<div class="name">
-		<?php echo CHtml::link(nl2br(CHtml::encode($experiment->name)),$experiment->getUrl(null)); ?>
+	<div class="title">
+		<?php echo CHtml::link(nl2br(CHtml::encode($experiment->title)),$experiment->getUrl(null)); ?>
 	</div>
 </td>
 <!-- 
