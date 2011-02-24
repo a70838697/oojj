@@ -12,7 +12,7 @@ $this->menu=array(
 	array('label'=>'Manage Submition', 'url'=>array('admin')),
 );
 ?>
-<h1>View Submition #<?php echo $model->id; ?> <?php echo  ' to '.CHtml::link($model->problem->id.'.'.CHtml::encode($model->problem->title),array("problem/view","id"=>$model->problem->id));?></h1>
+<h1>View Submition #<?php echo $model->id; ?> <?php echo  ' to '.CHtml::link($model->problem->id.'.'.CHtml::encode($model->problem->title),array($this->prefix."problem/view","id"=>$model->problem->id));?></h1>
 <?php
 if(!Yii::app()->user->isGuest)
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
@@ -34,13 +34,13 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'label'=>'My submitions to the problem',
             'icon-position'=>'left',
             'icon'=>'document',
-        	'url'=>array('/submition/index/problem/'.$model->problem_id.'/mine/1'),
+        	'url'=>array('/'.$this->prefix.'submition/index/problem/'.$model->problem_id.'/mine/1'),
         ),
         array(
             'label'=>'Accepted submitions to the problem',
             'icon-position'=>'left',
             'icon'=>'document',
-        	'url'=>array('/submition/index/problem/'.$model->problem_id.'/status/1'),
+        	'url'=>array('/'.$this->prefix.'submition/index/problem/'.$model->problem_id.'/status/1'),
         ),
          
     ),
@@ -112,23 +112,21 @@ $this->widget('zii.widgets.CDetailView', array(
 <?php Yii::app()->syntaxhighlighter->addHighlighter(); ?>
 
 <?php if($model->status==ULookup::JUDGE_RESULT_PENDING){
-?>
-<script language=javascript>
+echo CHtml::script('
 $("#loading").show();
 function refreshsubmition()
 {
-	$('#toRefresh1').html('');
-	$.getJSON('<?php echo $model->getUrl(); ?>',function(data){if(data.ok){
-			$('#toRefresh1').html(data.status);
-			$('#toRefresh2').html(data.result);
+	$(\'#toRefresh1\').html(\'\');
+	$.getJSON(\''.$model->getUrl().'\',function(data){if(data.ok){
+			$(\'#toRefresh1\').html(data.status);
+			$(\'#toRefresh2\').html(data.result);
 		   $("#loading").hide();
 		}
 		else setTimeout("refreshsubmition()",2000);
 	})
 }
 refreshsubmition();
-</script>
-
-<?php 
+}
+');
 }
 ?>

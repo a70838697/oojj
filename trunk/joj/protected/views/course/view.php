@@ -38,8 +38,15 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
         	'visible'=>!Yii::app()->user->isGuest,
             'icon'=>'document',
-        	'url'=>array('/course/experiment/'.$model->id),
-        ),        
+        	'url'=>array('/course/experiments/'.$model->id),
+        ),
+        array(
+            'label'=>'View students',
+            'icon-position'=>'left',
+        	'visible'=>(UUserIdentity::isTeacher()&& $model->user_id==Yii::app()->user->id) ||UUserIdentity::isAdmin(),
+            'icon'=>'document',
+        	'url'=>array('/course/students/'.$model->id),
+        ),            
     ),
     'htmlOptions' => array('style' => 'clear: both;'),
 ));
@@ -64,13 +71,18 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
         'location',
         'environment',
         array(
-			'name'=>'status',
-            'value'=>UCourseLookup::$COURSE_TYPE_MESSAGES[$model->status],
+			'name'=>'visibility',
+            'value'=>UCourseLookup::$COURSE_TYPE_MESSAGES[$model->visibility],
         ),
         array(
 			'name'=>'created',
             'value'=>date('Y-m-d',$model->created),
-        ),        
-        'description',
+        ),      
+        'memo',
+		array(
+			'name'=>'description',
+            'type'=>'raw',
+            'value'=>'<div>'.$model->description.'</div>',
+        ),
 	),
 )); ?>

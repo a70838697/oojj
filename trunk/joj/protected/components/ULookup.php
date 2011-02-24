@@ -2,14 +2,19 @@
 class ULookup
 {
 	const RECORD_STATUS_PUBLIC=0;
-	const RECORD_STATUS_DELETE=1;
-	const RECORD_STATUS_PRIVATE=2;
+	const RECORD_STATUS_PRIVATE=1;
+	const RECORD_STATUS_DELETE=8;
 	public static $RECORD_STATUS_MESSAGES=array(
-		self::JUDGE_RESULT_PENDING=>'Public',
+		self::RECORD_STATUS_PUBLIC=>'Public',
+		self::RECORD_STATUS_PRIVATE=>'Private',
 		self::JUDGE_RESULT_PENDING=>'Deleted',
-		self::JUDGE_RESULT_PENDING=>'Private',
+	);
+	public static $PROBLEM_NORMAL_VISIBILITY_MESSAGES=array(
+		self::RECORD_STATUS_PUBLIC=>'Public',
+		self::RECORD_STATUS_PRIVATE=>'Private',
 	);
 	
+
 	public static $PROBLEM_MEMORY_LIMITS=array(
 		2097152=>'2M',
 		4194304=>'4M',

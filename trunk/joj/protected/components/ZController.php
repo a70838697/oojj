@@ -3,7 +3,7 @@
  * Zcontroller extendx CController and provide a new renderPartial method,
  * wich renders the clientScript immediatly after the content of the view
  */
-class ZController extends CController
+class ZController extends Controller
 {
 	
 	public function renderPartialWithHisOwnClientScript($view,$data=null, $return=false)

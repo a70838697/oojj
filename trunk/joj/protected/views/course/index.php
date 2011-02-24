@@ -15,3 +15,30 @@ $this->menu=array(
 	'dataProvider'=>$dataProvider,
 	'itemView'=>'_view',
 )); ?>
+<?php
+echo CHtml::script('
+$(".apply").live("click", 
+function ()
+{
+	return apply_course($(this).attr("tag"),"/op/apply");
+}
+);
+function apply_course(id,op)
+{
+	if(id!="")
+	{
+		$.get("'.CHtml::normalizeUrl(array("/course/apply/")).'"+"/"+id+op, function(data) {
+				$.fn.yiiListView.update(\'yw0\');
+			});
+	}
+	return false;
+}
+$(".capply").live("click", 
+function ()
+{
+	return apply_course($(this).attr("tag"),"/op/cancel");
+}
+);
+
+');
+?>

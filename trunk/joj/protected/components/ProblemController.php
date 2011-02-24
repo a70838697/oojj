@@ -1,6 +1,6 @@
 <?php
 
-class ProblemController extends Controller
+class ProblemController extends ZController
 {
 	
 	/**
@@ -9,6 +9,7 @@ class ProblemController extends Controller
 	 */
 	public $layout='//layouts/onlinejudge';
 	public $contentMenu=null;
+	public $prefix="";
 
 	/**
 	 * @return array action filters
@@ -29,7 +30,7 @@ class ProblemController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','select'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -63,7 +64,7 @@ class ProblemController extends Controller
 			'update'=>$this->canAccess(array('model'=>$model),'Update'),
 			'delete'=>$this->canAccess(array('model'=>$model),'Delete'),
 		);
-		$this->render('view',array(
+		$this->render('/problem/view',array(
 			'model'=>$model,
 			'buttons'=>$buttons,
 			'submition'=>$submition,
@@ -91,7 +92,7 @@ class ProblemController extends Controller
 				$model->compiler_set=UCompilerLookup::values($model->compiler_set);
 		}
 		
-		$this->render('create',array(
+		$this->render('/problem/create',array(
 			'model'=>$model,
 		));
 	}
@@ -132,7 +133,7 @@ class ProblemController extends Controller
 				$model->compiler_set=UCompilerLookup::values($model->compiler_set);
 		}
 
-		$this->render('update',array(
+		$this->render('/problem/update',array(
 			'model'=>$model,
 		));
 	}
@@ -173,10 +174,46 @@ class ProblemController extends Controller
 			    ),
 			)
 		);		
-		$this->render('index',array(
+		$this->render('/problem/index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}
+
+	/**
+	 * Lists all models.
+	 */
+	public function actionSelect()
+	{
+		$scopes=array('titled');
+		if((!Yii::app()->user->isGuest) && Yii::app()->request->getQuery('mine',null)!==null)
+			$scopes[]='mine';
+		else $scopes[]='public';
+		$criteria=new CDbCriteria(array(
+	    ));
+	    $id=Yii::app()->request->getQuery('id',null);
+		if($id!==null && preg_match("/^\d$/",$id))
+		{
+	    	$criteria->compare('t.id',(int)($id));
+		}		
+	    $title=Yii::app()->request->getQuery('title',null);
+		if($title!==null)
+		{
+	    	$criteria->compare('t.title',$title,true);
+		}		
+		$dataProvider=new EActiveDataProvider('Problem',
+			array(
+				'criteria'=>$criteria,
+				'scopes'=>$scopes,
+				'pagination'=>array(
+			        	'pageSize'=>10,
+			    ),
+			)
+		);
+		$render=Yii::app()->request->isAjaxRequest ? 'renderPartial' : 'render';
+		$this->$render('/problem/select', array(
+		    'dataProvider'=>$dataProvider,
+		));
+	}	
 	/**
 	 * Lists all models.
 	 */
@@ -209,7 +246,7 @@ class ProblemController extends Controller
 			    ),
 			)
 		);		
-		$this->render('index',array(
+		$this->render('/problem/index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}	
@@ -227,7 +264,7 @@ class ProblemController extends Controller
 			    ),
 			)
 		);		
-		$this->render('index',array(
+		$this->render('/problem/index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}	
@@ -241,7 +278,7 @@ class ProblemController extends Controller
 		if(isset($_GET['Problem']))
 			$model->attributes=$_GET['Problem'];
 
-		$this->render('admin',array(
+		$this->render('/problem/admin',array(
 			'model'=>$model,
 		));
 	}
@@ -298,7 +335,7 @@ class ProblemController extends Controller
 				//if($comment->status==Comment::STATUS_PENDING)
 				//Yii::app()->user->setFlash('submitionSubmitted','Thank you for your submition. Your submition will be judged.');
 				//$this->refresh();
-				$this->redirect(array('/submition/view','id'=>$submition->id));				
+				$this->redirect(array('/'.$this->prefix.'submition/view','id'=>$submition->id));				
 			}
 		}
 		return $submition;

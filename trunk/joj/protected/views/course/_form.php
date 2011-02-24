@@ -72,9 +72,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'status'); ?>
-		<?php echo $form->dropDownList($model,'status',UCourseLookup::getCourseStatusMessages()); ?>		
-		<?php echo $form->error($model,'status'); ?>
+		<?php echo $form->labelEx($model,'visibility'); ?>
+		<?php echo $form->dropDownList($model,'visibility',UCourseLookup::getCourseStatusMessages()); ?>		
+		<?php echo $form->error($model,'visibility'); ?>
 	</div>
 
 	<div class="row">
@@ -82,10 +82,16 @@
 		<?php echo $form->textField($model,'environment',array('size'=>60,'maxlength'=>256)); ?>
 		<?php echo $form->error($model,'environment'); ?>
 	</div>
-
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'memo'); ?>
+		<?php echo $form->textField($model,'memo',array('size'=>60,'maxlength'=>100)); ?>
+		<?php echo $form->error($model,'memo'); ?>
+	</div>
+	
 	<div class="row">
 		<?php echo $form->labelEx($model,'description'); ?>
-		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'description',),true); ?>
+		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'description','rows'=>15),true); ?>
 		<?php echo $form->error($model,'description'); ?>
 	</div>
 

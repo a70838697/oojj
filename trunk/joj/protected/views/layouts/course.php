@@ -13,12 +13,19 @@
 					
 				),
 			),
+			array('label'=>'Problem', 'url'=>array('#'), 
+				'visible'=>UUserIdentity::isTeacher()||UUserIdentity::isAdmin(), 
+				'items'=>array(
+					array('label'=>'Create Problem', 'url'=>array('/courseproblem/create')),
+				),
+			),
 			array('label'=>'My', 'url'=>array('#'),
 				'visible'=>!Yii::app()->user->isGuest, 
 				'items'=>array(
 					array('label'=>'My courses', 'url'=>array('/course/index/mine/1')),
 				),
 			),
+
 	        array(
 	            'label'=>'<< Back',
 	            'icon-position'=>'left',

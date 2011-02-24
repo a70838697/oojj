@@ -51,7 +51,7 @@ $(".mes").qtip({\'position\':{\'corner\':{\'target\':\'rightMiddle\',\'tooltip\'
 ');
 }
  ?>
-<h1><?php echo ((!Yii::app()->user->isGuest) && Yii::app()->request->getQuery('mine',null)!==null)?'My ':'';?> Submitions <?php if($problem!==null) echo  ' for '.CHtml::link($problem->id.'.'.CHtml::encode($problem->title),array("problem/view","id"=>$problem->id));?></h1>
+<h1><?php echo ((!Yii::app()->user->isGuest) && Yii::app()->request->getQuery('mine',null)!==null)?'My ':'';?> Submitions <?php if($problem!==null) echo  ' for '.CHtml::link($problem->id.'.'.CHtml::encode($problem->title),array($this->prefix."problem/view","id"=>$problem->id));?></h1>
 <?php
 		if(Yii::app()->request->isAjaxRequest )
 		{
@@ -85,7 +85,7 @@ $(".mes").qtip({\'position\':{\'corner\':{\'target\':\'rightMiddle\',\'tooltip\'
 			'name'=>'problem',
 			'type'=>'raw',
 			'visible'=>($problem==null),
-			'value'=>'CHtml::link(CHtml::encode($data->problem->title),array("problem/view","id"=>$data->problem_id))',
+			'value'=>'CHtml::link(CHtml::encode($data->problem->title),array("'.$this->prefix.'problem/view","id"=>$data->problem_id))',
 		),
 		'created',
 		array(

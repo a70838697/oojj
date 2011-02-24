@@ -8,7 +8,7 @@
  * @property integer $exercise_id
  * @property string $name
  * @property integer $problem_id
- * @property string $description
+ * @property string $memo
  * @property string $created
  */
 class ExerciseProblem extends CActiveRecord
@@ -49,12 +49,15 @@ class ExerciseProblem extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('exercise_id, problem_id, description, created', 'required'),
+			array('exercise_id, problem_id', 'required'),
 			array('exercise_id, problem_id', 'numerical', 'integerOnly'=>true),
-			array('name', 'length', 'max'=>100),
-			// The following rule is used by search().
+			array('name,memo', 'length', 'max'=>100),
+	        array('created','default',
+	              'value'=>new CDbExpression('UNIX_TIMESTAMP()'),
+	              'setOnEmpty'=>false,'on'=>'insert'),	
+	        // The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, exercise_id, name, problem_id, description, created', 'safe', 'on'=>'search'),
+			array('id, exercise_id, name, problem_id, memo, created', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -79,9 +82,9 @@ class ExerciseProblem extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'exercise_id' => 'Exercise',
-			'name' => 'Name',
+			'name' => 'Displayed Name',
 			'problem_id' => 'Problem',
-			'description' => 'Description',
+			'memo' => 'Memo',
 			'created' => 'Created',
 		);
 	}
@@ -101,7 +104,7 @@ class ExerciseProblem extends CActiveRecord
 		$criteria->compare('exercise_id',$this->exercise_id);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('problem_id',$this->problem_id);
-		$criteria->compare('description',$this->description,true);
+		$criteria->compare('memo',$this->memo,true);
 		$criteria->compare('created',$this->created,true);
 
 		return new CActiveDataProvider(get_class($this), array(

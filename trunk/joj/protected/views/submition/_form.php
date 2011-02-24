@@ -15,7 +15,7 @@
 	<div class="row">
 		<?php echo $form->label($problem,'title'); ?>
 		<?php echo CHtml::link(CHtml::encode($problem->title),
-                                 array('problem/view','id'=>$model->id)); ?>
+                                 array(''.$this->prefix.'problem/view','id'=>$model->id)); ?>
 	</div>
 
 	<div class="row">

@@ -20,15 +20,18 @@ class Controller extends CController
 	 * for more details on how to specify this property.
 	 */
 	public $breadcrumbs=array();
+	public function denyAccess(){
+		throw new CHttpException(404,'The requested operation can not be done.');		
+	}
 	public function canAccess($params=array(),$action=null,$controller=null)
 	{
-		if(is_null($controller))$controller=Yii::app()->controller->id;
+		if(is_null($controller))$controller=(isset($this->actual_controller))?($this->actual_controller):Yii::app()->controller->id;
 		if(is_null($action))$action=$this->getAction()->getId();
 		return Yii::app()->user->checkAccess($controller.":".$action,$params);
 	}
 	public function checkAccess($params=array())
 	{
-		if(!$this->canAccess($params,$this->getAction()->getId(),Yii::app()->controller->id))
+		if(!$this->canAccess($params))
 		{
 			if(Yii::app()->user->getIsGuest())
 				Yii::app()->user->loginRequired();

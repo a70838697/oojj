@@ -8,7 +8,7 @@ array(
 	    		//see XHeditor::$_configurableAttributes for more
 	    	),
 			'htmlOptions'=>array(
-				'rows'=>10,
+				'rows'=>isset($rows)?(int)$rows:10,
 	    		'style'=>isset($style)?$style:'',
 		    	'cols'=>84,
 			),    	

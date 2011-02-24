@@ -70,7 +70,8 @@ class UUser extends User
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'submitedCount' => array(self::STAT, 'Problem', '','condition'=>'EXISTS(SELECT 1 FROM {{submition}} as sb WHERE sb.user_id=t.id )'),
+			//'submitedCount' => array(self::STAT, 'Problem', '','condition'=>'EXISTS(SELECT 1 FROM {{submition}} as sb WHERE sb.user_id=t.id )'),
+			'info' => array(self::HAS_ONE, 'Profile', 'user_id','select'=>'firstname,lastname,identitynumber'),
 		);
 	}
 

@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Experiments'=>array('index'),
+	$model->course->name=>array('/course/view/'.$model->course->id),
 	$model->name,
 );
 
@@ -12,11 +12,18 @@ $this->menu=array(
 	array('label'=>'Manage Experiment', 'url'=>array('admin')),
 );
 ?>
-
 <h1>View Experiment #<?php echo $model->id; ?></h1>
 <?php
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
+        array(
+            'label'=>'Add an problem',
+            'icon-position'=>'left',
+            'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
+            'url'=>'#',
+	        'visible'=>!Yii::app()->user->isGuest,
+        	'linkOptions'=>array('onclick'=>'return showDialogue();',)
+        ),
         array(
             'label'=>'Update this experiment',
             'icon-position'=>'left',
@@ -53,27 +60,55 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
 )); ?>
 <?php if(!(Yii::app()->user->isGuest)){?>
 <div id="exercise">
-	<?php if(count($model->exercise->exercise_problems)>=1): ?>
 		<h3>
+	<?php if($model->exercise!==null && count($model->exercise->exercise_problems)>=1){ ?>
 			<?php echo count($model->exercise->exercise_problems)>1 ? count($model->exercise->exercise_problems) . ' problems' : 'One problem'; ?>
+	<?php }else echo "0 problems"; ?>		
 		</h3>
-
+	<?php if($model->exercise!==null && count($model->exercise->exercise_problems)>=1): ?>
 		<?php $this->renderPartial('/exerciseProblem/_exercise_problems',array(
 			'exercise'=>$model->exercise,
 			'exerciseProblems'=>$model->exercise->exercise_problems,
 		)); ?>
 	<?php endif; ?>
-	<h3>Add a problem</h3>
 
+
+</div><!-- exercise_problem -->
+<?php } ?>
 	<?php if(Yii::app()->user->hasFlash('exercise_problemSubmitted')): ?>
 		<div class="flash-success">
 			<?php echo Yii::app()->user->getFlash('exercise_problemSubmitted'); ?>
 		</div>
-	<?php else: ?>
-		<?php $this->renderPartial('/exerciseProblem/_inline_form',array(
-			'model'=>$exercise_problem,
-		)); ?>
 	<?php endif; ?>
 
-</div><!-- exercise_problem -->
-<?php } ?>
+<?php 
+if ($exercise_problem!==null): 
+echo CHtml::script('
+function showDialogue()
+{
+	$("#submitiondialog").dialog("open");
+	//this.blur();
+	return false;	
+}
+');
+	
+$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+    'id'=>'submitiondialog',
+    'options'=>array(
+		'dialogClass'=>'rbam-dialog',
+        'title'=>'Add a problem',
+        'autoOpen'=>$exercise_problem->hasErrors(),
+		'minWidth'=>800,
+		'height'=>710,
+		'modal'=>true,
+    ),
+));
+?>
+		<?php $this->renderPartial('/exerciseProblem/_form',array(
+			'model'=>$exercise_problem,
+		)); ?>
+
+<?php 
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+endif;
+?>

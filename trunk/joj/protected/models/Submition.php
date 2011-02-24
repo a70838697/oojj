@@ -66,14 +66,17 @@ class Submition extends CActiveRecord
     {
 		$alias = $this->getTableAlias(false,false);
     	return array(
-            'recentlist'=>array(
-            	'order'=>"{$alias}.created DESC",
+            'list'=>array(
 		        'select'=>array("{$alias}.id","LENGTH({$alias}.source) AS code_length","{$alias}.user_id","{$alias}.problem_id","{$alias}.status","{$alias}.created","{$alias}.used_time","{$alias}.used_memory","{$alias}.compiler_id","{$alias}.result"),
         		'with'=>array(
         			'user:username',
         			'problem:titled',
         		),
-        	),     
+        	),
+            'recent'=>array(
+            	'order'=>"{$alias}.created DESC",
+        	),
+        	
         	'mine'=>array(
                 'condition'=>Yii::app()->user->isGuest?
         			"{$alias}.visibility=".ULookup::RECORD_STATUS_PUBLIC :

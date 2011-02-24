@@ -28,16 +28,21 @@ class CourseController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','experiment'),
+				'actions'=>array('index','view'),
 				'users'=>array('*'),
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
+			array('allow', // allow Student
+				'actions'=>array('apply','experiments'),
+				'roles'=>array('Student'),			
+			),
+					
+			array('allow', // allow Teacher
+				'actions'=>array('create','update','students','experiments'),
+				'roles'=>array('Teacher'),			
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+				'actions'=>array('admin','delete','create','update','students'),
+				'roles'=>array('Admin'),			
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -51,26 +56,92 @@ class CourseController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$course=$this->loadModel($id);
+		$model=$this->loadModel($id,'myMemberShip');
+		$this->checkAccess(array('model'=>$model));		
+		
 
 		$this->render('view',array(
-			'model'=>$course,
+			'model'=>$model,
+		));
+	}
+	/**
+	 * Apply for the course.
+	 * @param integer $id the ID of the model to be applyed
+	 */
+	public function actionApply($id)
+	{
+		$model=$this->loadModel($id,'myMemberShip');
+		$this->checkAccess(array('model'=>$model));				
+		$groupUser=$model->myMemberShip;
+		if($groupUser===null)
+		{
+			if($model->student_group_id==0)
+			{
+				$studentGroup= new Group;
+				$studentGroup->type_id= Group::GROUP_TYPE_COURSE;
+				$studentGroup->belong_to_id=$model->id;
+				if(!$studentGroup->save())
+					throw new CHttpException(404,'The requested operation can not be done.');
+				$model->student_group_id=$studentGroup->id;
+				if(!$model->save())
+					throw new CHttpException(404,'The requested operation can not be done.');
+			}
+			if(Yii::app()->request->getQuery('op',null)=='apply'){
+				$groupUser=new GroupUser();
+				$groupUser->group_id = $model->student_group_id;
+				$groupUser->user_id=Yii::app()->user->id;
+				$groupUser->status = GroupUser::USER_STATUS_APPLIED;
+				if(!$groupUser->save())
+					throw new CHttpException(404,'The requested operation can not be done.');
+			}
+		}else {
+			if(Yii::app()->request->getQuery('op',null)=='cancel')
+			{
+				$groupUser->delete();
+			}
+		}
+		if(Yii::app()->request->isAjaxRequest )
+		{
+			$result=array(
+				'ok'=>true,//you can check time, if timeout, no result
+				'status'=>$groupUser->status ,
+			);
+			echo json_encode($result);
+			die;
+		}		
+		
+		$this->redirect(array('course/index/mine'));
+	}	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionExperiments($id)
+	{
+		$model=$this->loadModel($id,'myMemberShip');
+		$this->checkAccess(array('model'=>$model));				
+		
+		$experiment=UUserIdentity::isTeacher()?$this->newExperiment($model):null;
+
+		$this->render('experiments',array(
+			'model'=>$model,
+			'experiment'=>$experiment,
 		));
 	}
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionExperiment($id)
+	public function actionStudents($id)
 	{
-		$course=$this->loadModel($id);
-		$experiment=Yii::app()->user->isGuest?null:$this->newExperiment($course);
-
-		$this->render('experiment',array(
-			'model'=>$course,
-			'experiment'=>$experiment,
+		
+		$model=$this->loadModel($id);
+		$this->checkAccess(array('model'=>$model));		
+		
+		$this->render('students',array(
+			'model'=>$model,
 		));
-	}
+	}	
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
@@ -85,6 +156,7 @@ class CourseController extends Controller
 		if(isset($_POST['Course']))
 		{
 			$model->attributes=$_POST['Course'];
+			$model->user_id= Yii::app()->user->id;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -102,7 +174,8 @@ class CourseController extends Controller
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
-
+		$this->checkAccess(array('model'=>$model));		
+		
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
@@ -156,15 +229,7 @@ class CourseController extends Controller
 	    	$criteria->compare('t.status',(int)($status));
 		}
 	    
-	    $problem=null;
-		if(Yii::app()->request->getQuery('problem',null)!==null)
-		{
-			$problem=Problem::model()->findByPk((int)(Yii::app()->request->getQuery('problem')));
-			if($problem===null)
-				throw new CHttpException(404,'The requested page does not exist.');			
-	    	$criteria->compare('problem_id',(int)(Yii::app()->request->getQuery('problem')));
-		}
-		$dataProvider=new EActiveDataProvider('Submition',
+		$dataProvider=new EActiveDataProvider('Course',
 			array(
 				'criteria'=>$criteria,
 				'scopes'=>$scopes,
@@ -172,8 +237,7 @@ class CourseController extends Controller
 			        	'pageSize'=>30,
 			    ),
 			)
-		);		
-		$dataProvider=new CActiveDataProvider('Course');
+		);
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -215,6 +279,7 @@ class CourseController extends Controller
 			$experiment->attributes=$_POST['Experiment'];
 			$experiment->user_id=Yii::app()->user->id;
 			$experiment->course_id=$course->id;
+			$experiment->exercise_id=0;
 			if($experiment->save())
 			{
 				//if($comment->status==Comment::STATUS_PENDING)
@@ -229,9 +294,12 @@ class CourseController extends Controller
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer the ID of the model to be loaded
 	 */
-	public function loadModel($id)
+	public function loadModel($id,$with=null)
 	{
-		$model=Course::model()->findByPk((int)$id);
+		if($with!==null)
+			$model=Course::model()->with($with)->findByPk((int)$id);
+		else
+			$model=Course::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;

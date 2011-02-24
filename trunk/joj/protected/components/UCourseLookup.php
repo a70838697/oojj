@@ -3,21 +3,21 @@ class UCourseLookup
 {
 	const COURSE_TYPE_PUBLIC=0;
 	const COURSE_TYPE_PRIVATE=1;
-	const COURSE_TYPE_ARCHIVED=2;
-	const COURSE_TYPE_DELETED=3;
+	const COURSE_TYPE_DELETED=2;
+	const COURSE_TYPE_ARCHIVED=3;
 	
 	public static $COURSE_TYPE_MESSAGES=array(
 		self::COURSE_TYPE_PUBLIC=>'Public',
 		self::COURSE_TYPE_PRIVATE=>'Private',
-		self::COURSE_TYPE_ARCHIVED=>'Archived',
 	);
 	public  static function getCourseStatusMessages()
 	{
-		if(UUserIdentity::isAdmin()){
+		if(!UUserIdentity::isAdmin()){
 			return self::$COURSE_TYPE_MESSAGES;
 		}
-		return array_merge(self::$COURSE_TYPE_MESSAGE,
+		return array_merge(self::$COURSE_TYPE_MESSAGES,
 		array(
+		self::COURSE_TYPE_ARCHIVED=>'Archived',
 		self::COURSE_TYPE_DELETED=>'Deleted',
 		)
 		);

@@ -14,18 +14,29 @@
 		<?php echo $form->textField($model,'title',array('size'=>60,'maxlength'=>512)); ?>
 		<?php echo $form->error($model,'title'); ?>
 	</div>
-
+<table>
+<tr><td>
 	<div class="row">
 		<?php echo $form->labelEx($model,'time_limit'); ?>
 		<?php echo $form->textField($model,'time_limit'); ?>
 		<?php echo $form->error($model,'time_limit'); ?>
 	</div>
+</td><td>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'memory_limit'); ?>
 		<?php echo $form->dropDownList($model,'memory_limit',ULookup::$PROBLEM_MEMORY_LIMITS); ?>
 		<?php echo $form->error($model,'memory_limit'); ?>
 	</div>
+</td><td>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'visibility'); ?>
+		<?php echo $form->dropDownList($model,'visibility',ULookup::$PROBLEM_NORMAL_VISIBILITY_MESSAGES); ?>
+		<?php echo $form->error($model,'visibility'); ?>
+	</div>
+</td></tr>
+</table>
  	
 	<div class="row">
 		<?php echo $form->labelEx($model,'source'); ?>

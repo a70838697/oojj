@@ -32,7 +32,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
-	        'visible'=>!Yii::app()->user->isGuest,
+	        'visible'=>$experiment!==null,
         	'linkOptions'=>array('onclick'=>'return showDialogue();',)
         ),
         array(
@@ -48,11 +48,11 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
 
 <?php if(!(Yii::app()->user->isGuest)){?>
 <div id="experiments">
-	<?php if(count($model->experiments)>=1): ?>
 		<h3>
-			<?php echo count($model->experiments)>1 ? count($model->experiments) . ' experiments' : 'One experiment'; ?>
+			<?php echo count($model->experiments)!=1 ? count($model->experiments) . ' experiments' : 'One experiment'; ?>
 		</h3>
 
+	<?php if(count($model->experiments)>=1): ?>
 		<?php $this->renderPartial('_experiments',array(
 			'course'=>$model,
 			'experiments'=>$model->experiments,
@@ -60,7 +60,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
 	<?php endif; ?>
 </div><!-- experiment -->
 <?php 
-
+if($experiment!=null){
 echo CHtml::script('
 function showDialogue()
 {
@@ -69,30 +69,31 @@ function showDialogue()
 	return false;	
 }
 ');
-	
+
+if(Yii::app()->user->hasFlash('experimentSubmitted')): ?>
+		<div class="flash-success">
+			<?php echo Yii::app()->user->getFlash('experimentSubmitted'); ?>
+		</div>
+<?php endif;	
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id'=>'submitiondialog',
     'options'=>array(
 		'dialogClass'=>'rbam-dialog',
         'title'=>'Create an experiment',
-        'autoOpen'=>false,
+        'autoOpen'=>$experiment->hasErrors(),
 		'minWidth'=>800,
 		'height'=>700,
 		'modal'=>true,
     ),
 ));
 ?>
-	<?php if(Yii::app()->user->hasFlash('experimentSubmitted')): ?>
-		<div class="flash-success">
-			<?php echo Yii::app()->user->getFlash('experimentSubmitted'); ?>
-		</div>
-	<?php else: ?>
 		<?php $this->renderPartial('/experiment/_form',array(
 			'model'=>$experiment,
 		)); ?>
-	<?php endif; ?>
 
 <?php 
-$this->endWidget('zii.widgets.jui.CJuiDialog');
+	$this->endWidget('zii.widgets.jui.CJuiDialog');
+}
 ?>
 <?php } ?>
+

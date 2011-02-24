@@ -14,7 +14,7 @@
  * @property integer $user_id
  * @property integer $begin
  * @property integer $end
- * @property integer $status
+ * @property integer $visibility
  * @property integer $created
  */
 class Course extends CActiveRecord
@@ -55,10 +55,11 @@ class Course extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name, user_id, begin, end', 'required'),
-			array('user_id, status', 'numerical', 'integerOnly'=>true),
+			array('visibility', 'numerical', 'integerOnly'=>true),
 			array('begin', 'type', 'type'=>'date','dateFormat'=>'yyyy-MM-dd'),
 			array('end', 'type', 'type'=>'date','dateFormat'=>'yyyy-MM-dd'),
 			array('name', 'length', 'max'=>60),
+			array('memo', 'length', 'max'=>100),			
             array('sequence', 'length', 'max'=>20),
             array('description', 'length', 'max'=>512),
             array('location', 'length', 'max'=>32),
@@ -69,7 +70,7 @@ class Course extends CActiveRecord
 	              'setOnEmpty'=>false,'on'=>'insert'),            
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, description, location, environment, due_time, user_id, begin, end, status, created', 'safe', 'on'=>'search'),
+			array('id, name, description, location, environment, due_time, user_id, begin, end, visibility, created', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,6 +83,9 @@ class Course extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
        		'user' => array(self::BELONGS_TO, 'UUser', 'user_id'),
+       		'myMemberShip' => array(self::HAS_ONE, 'GroupUser', '','select'=>'myMemberShip.status','on'=>' myMemberShip.group_id = t.student_group_id and myMemberShip.user_id=' . Yii::app()->user->id),
+			'studentGroup' => array(self::HAS_ONE, 'Group', 'belong_to_id','on'=>'studentGroup.type_id='. (Group::GROUP_TYPE_COURSE)),
+			//'studentCount' => array(self::STAT, 'GroupUser', '','select'=>'count(GroupUser.*)','condition'=>' GroupUser.user_id=t.student_group_id'),
 			'experiments' => array(self::HAS_MANY, 'Experiment', 'course_id'),
 			'experimentCount' => array(self::STAT, 'Experiment', 'course_id'),
 		);
@@ -103,7 +107,8 @@ class Course extends CActiveRecord
 			'user_id' => 'Teacher',
 			'begin' => 'Begin',
 			'end' => 'End',
-			'status' => 'Status',
+			'memo' => 'Memo',
+			'visibility' => 'Visibile',
 			'created' => 'Created',
 		);
 	}
@@ -113,17 +118,16 @@ class Course extends CActiveRecord
     	return array(
             'recentlist'=>array(
             	'order'=>"{$alias}.created DESC",
-		        'select'=>array("{$alias}.id","{$alias}.user_id","{$alias}.name","{$alias}.status","{$alias}.created","{$alias}.description","{$alias}.sequence","{$alias}.location","{$alias}.environment"),
-        		'with'=>array(
-        			'user:username',
-        		),
-        	),
+		        'select'=>array("{$alias}.id","{$alias}.user_id","{$alias}.name","{$alias}.visibility","{$alias}.created","{$alias}.end","{$alias}.due_time","{$alias}.begin","{$alias}.memo","{$alias}.sequence","{$alias}.location","{$alias}.environment"),
+        		'with'=>UUserIdentity::isStudent()? array('user:username','myMemberShip','studentGroup.userCount'):array('user:username','studentGroup.userCount'))
+    			,
         	'mine'=>array(
                 'condition'=>UUserIdentity::isTeacher()?
-        			"{$alias}.status!=". UCourseLookup::COURSE_TYPE_DELETED ." AND {$alias}.user_id=".Yii::app()->user->id:"",
-        	),
+        			"{$alias}.visibility!=". UCourseLookup::COURSE_TYPE_DELETED ." AND {$alias}.user_id=".Yii::app()->user->id:
+        			"{$alias}.visibility!=". UCourseLookup::COURSE_TYPE_DELETED ." AND EXISTS(select 1 from {{group_users}} as gu where gu.group_id={$alias}.student_group_id and gu.user_id= ".Yii::app()->user->id .")",
+        	        	),
             'public'=>array(
-            	'condition'=>"{$alias}.status==".UCourseLookup::COURSE_TYPE_PUBLIC,
+            	'condition'=>"{$alias}.visibility=".UCourseLookup::COURSE_TYPE_PUBLIC,
             ),
         );
     }
@@ -147,7 +151,7 @@ class Course extends CActiveRecord
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('begin',$this->begin);
 		$criteria->compare('end',$this->end);
-		$criteria->compare('status',$this->status);
+		$criteria->compare('visibility',$this->visibility);
 		$criteria->compare('created',$this->created);
 
 		return new CActiveDataProvider(get_class($this), array(

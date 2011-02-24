@@ -30,7 +30,7 @@
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('url'=>array('/course/index'), 'label'=>("Course"), 'visible'=>(!Yii::app()->user->isGuest)&&(Yii::app()->user->id==1)),
+				array('url'=>array('/course/index'), 'label'=>("Course"), 'visible'=>UUserIdentity::canHaveCourses()),
 				array('url'=>array('/problem/index'), 'label'=>("ACM Train")),
 				array('url'=>Yii::app()->getModule('user')->loginUrl, 'label'=>Yii::app()->getModule('user')->t("Login"), 'visible'=>Yii::app()->user->isGuest),
 				array('url'=>Yii::app()->getModule('user')->registrationUrl, 'label'=>Yii::app()->getModule('user')->t("Register"), 'visible'=>Yii::app()->user->isGuest),

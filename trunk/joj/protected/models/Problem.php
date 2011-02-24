@@ -112,11 +112,14 @@ class Problem extends CActiveRecord
 		$alias = $this->getTableAlias(false,false);
         return array(
             'titled'=>array(
-		        'select'=>array("{$alias}.title"),
+		        'select'=>array("{$alias}.title","{$alias}.id"),
         	),     
             'public'=>array(
             	'condition'=>"{$alias}.visibility=".ULookup::RECORD_STATUS_PUBLIC,
             ),
+            'mine'=>array(
+            	'condition'=>(Yii::app()->user->isGuest?"":"{$alias}.user_id=". Yii::app()->user->id ." and " ). "{$alias}.visibility!=".ULookup::RECORD_STATUS_DELETE,
+            ),            
             'allCount'=>array(
 			        'with'=>Yii::app()->user->isGuest?array('acceptedCount','submitedCount'):array('acceptedCount','submitedCount','myAcceptedCount','mySubmitedCount'),
             ),
