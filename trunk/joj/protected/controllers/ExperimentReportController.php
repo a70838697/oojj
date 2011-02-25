@@ -28,7 +28,7 @@ class ExperimentReportController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','report'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -55,7 +55,16 @@ class ExperimentReportController extends Controller
 			'model'=>$this->loadModel($id),
 		));
 	}
-
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionReport($id)
+	{
+		$this->renderPartial('report',array(
+			'model'=>$this->loadModel($id),
+		));
+	}
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
@@ -108,8 +117,15 @@ class ExperimentReportController extends Controller
 		if(isset($_POST['ExperimentReport']))
 		{
 			$model->attributes=$_POST['ExperimentReport'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if(Yii::app()->request->getQuery('preview',null)!==null)
+			{
+				$this->renderPartial('report',array(
+					'model'=>$model));
+				die;
+			}else{
+				if($model->save())
+					$this->redirect(array('view','id'=>$model->id));
+			}
 		}
 
 		$this->render('update',array(

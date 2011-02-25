@@ -1,8 +1,11 @@
 <?php
-$this->breadcrumbs=array(
-	'Experiment Reports'=>array('index'),
-	$model->id,
-);
+	$this->breadcrumbs=array(
+		'My Courses'=>array('/course/index/mine/1'),
+		$model->experiment->course->title=>array('/course/'.$model->experiment->course->id),
+		'Experiments'=>array('/course/experiments','id'=>$model->experiment->course->id),	
+		$model->experiment->title=>array('/experiment/'.$model->experiment->id),
+		"Experiment Report",
+	);
 
 $this->menu=array(
 	array('label'=>'List ExperimentReport', 'url'=>array('index')),
@@ -15,7 +18,7 @@ $this->menu=array(
 
 <h1>View ExperimentReport #<?php echo $model->id; ?></h1>
 
-<?php $this->widget('zii.widgets.CDetailView', array(
+<?php /*$this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
 		'id',
@@ -26,4 +29,5 @@ $this->menu=array(
 		'created',
 		'updated',
 	),
-)); ?>
+));*/ ?>
+<?php $this->renderPartial('_report',array('model'=>$model));?>

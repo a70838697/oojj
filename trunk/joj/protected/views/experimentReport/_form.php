@@ -11,13 +11,13 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'report'); ?>
-		<?php echo $form->textArea($model,'report',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'report','rows'=>20),true); ?>
 		<?php echo $form->error($model,'report'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'conclusion'); ?>
-		<?php echo $form->textArea($model,'conclusion',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'conclusion','rows'=>6),true); ?>
 		<?php echo $form->error($model,'conclusion'); ?>
 	</div>
 

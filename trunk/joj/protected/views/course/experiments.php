@@ -1,7 +1,8 @@
 <?php
 $this->breadcrumbs=array(
-	'Courses'=>array('index'),
-	$model->title,
+	'My Courses'=>array('/course/index/mine/1'),
+	$model->title=>array('view','id'=>$model->id),
+	'Experiments'
 );
 
 $this->menu=array(
