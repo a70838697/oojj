@@ -1,21 +1,28 @@
 <?php
 
 /**
- * This is the model class for table "{{profiles}}".
+ * This is the model class for table "{{jnuers}}".
  *
- * The followings are the available columns in table '{{profiles}}':
+ * The followings are the available columns in table '{{jnuers}}':
  * @property integer $user_id
- * @property string $lastname
- * @property string $firstname
- * @property string $birthday
- * @property string $nickname
+ * @property integer $firt_year
+ * @property integer $status
+ * @property integer $unit_id
  * @property string $identitynumber
  */
-class Profile extends CActiveRecord
+class Jnuer extends CActiveRecord
 {
+	const JNUER_STATUS_APPLIED=0;
+	const JNUER_STATUS_ACCEPTED=1;
+	const JNUER_STATUS_REJECTED=2;
+	public static $USER_STATUS_MESSAGES=array(
+		self::JNUER_STATUS_APPLIED=>'Applied',
+		self::JNUER_STATUS_ACCEPTED=>'Accepted',
+		self::JNUER_STATUS_REJECTED=>'Rejected',
+	);	
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Profile the static model class
+	 * @return Jnuer the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -27,7 +34,7 @@ class Profile extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '{{profiles}}';
+		return '{{jnuers}}';
 	}
 
 	/**
@@ -38,16 +45,24 @@ class Profile extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id', 'required'),
-			array('user_id', 'numerical', 'integerOnly'=>true),
-			array('lastname, firstname, nickname', 'length', 'max'=>50),
+			array('user_id, first_year,identitynumber,unit_id', 'required'),
+			array('user_id, first_year, status, unit_id', 'numerical', 'integerOnly'=>true),
 			array('identitynumber', 'length', 'max'=>40),
-			array('birthday', 'safe'),
+			array('identitynumber', 'length', 'min'=>7),
+			array('first_year','validateYear'),
+						
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('user_id, lastname, firstname, birthday, nickname, identitynumber', 'safe', 'on'=>'search'),
+			array('user_id, first_year, status, unit_id, identitynumber', 'safe', 'on'=>'search'),
 		);
 	}
+    public function validateYear($attribute,$params)
+    {
+    	if($this->first_year<1990||$this->first_year>(int)date("Y")){
+            $this->addError('first_year','The year you entered is not validate.');
+            return;
+    	}
+    }	
 
 	/**
 	 * @return array relational rules.
@@ -57,6 +72,9 @@ class Profile extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'unit' => array(self::BELONGS_TO, 'Organization', 'unit_id'),		
+			'user' => array(self::BELONGS_TO, 'UUser', 'user_id'),		
+			'profile' => array(self::BELONGS_TO, 'UProfile', 'user_id'),		
 		);
 	}
 
@@ -67,11 +85,10 @@ class Profile extends CActiveRecord
 	{
 		return array(
 			'user_id' => 'User',
-			'lastname' => 'Lastname',
-			'firstname' => 'Firstname',
-			'birthday' => 'Birthday',
-			'nickname' => 'Nickname',
-			'identitynumber' => 'Identitynumber',
+			'first_year' => 'The Firt Year in JNU',
+			'status' => 'Status',
+			'unit_id' => 'Major/Unit',
+			'identitynumber' => 'Student / Teacher number',
 		);
 	}
 
@@ -87,10 +104,9 @@ class Profile extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('lastname',$this->lastname,true);
-		$criteria->compare('firstname',$this->firstname,true);
-		$criteria->compare('birthday',$this->birthday,true);
-		$criteria->compare('nickname',$this->nickname,true);
+		$criteria->compare('first_year',$this->firt_year);
+		$criteria->compare('status',$this->status);
+		$criteria->compare('unit_id',$this->unit_id);
 		$criteria->compare('identitynumber',$this->identitynumber,true);
 
 		return new CActiveDataProvider(get_class($this), array(
