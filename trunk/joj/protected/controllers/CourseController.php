@@ -57,7 +57,6 @@ class CourseController extends Controller
 	public function actionView($id)
 	{
 		$model=$this->loadModel($id,'myMemberShip');
-		echo 'xx';
 		$this->checkAccess(array('model'=>$model));		
 		
 

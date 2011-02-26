@@ -3,6 +3,7 @@ if($model->type_id==Group::GROUP_TYPE_COURSE)echo'Students';
 if($model->type_id==Group::GROUP_TYPE_TEAM)echo'Members';
 ?></h1>
 <?php
+
 echo UCHtml::cssFile('pager.css');
 	$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'groupUser-grid',

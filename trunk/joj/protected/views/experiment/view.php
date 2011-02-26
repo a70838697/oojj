@@ -1,8 +1,8 @@
 <?php
 $this->breadcrumbs=array(
 	'My Courses'=>array('/course/index/mine/1'),
-	$model->course->title=>array('/course/view','id'=>$model->id),
-	'Experiments'=>array('/course/experiments','id'=>$model->id),
+	$model->course->title=>array('/course/view','id'=>$model->course_id),
+	'Experiments'=>array('/course/experiments','id'=>$model->course_id),
 	$model->title,
 );
 
@@ -14,7 +14,7 @@ $this->menu=array(
 	array('label'=>'Manage Experiment', 'url'=>array('admin')),
 );
 ?>
-<h1>View Experiment #<?php echo $model->id; ?></h1>
+<h1>View Experiment <?php echo CHtml::encode($model->title); ?></h1>
 <?php
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
@@ -46,18 +46,39 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		'id',
-		'course_id',
-		'title',
-		'experiment_type_id',
 		'sequence',
-		'description',
-		'user_id',
-		'status',
-		'begin',
-		'end',
-		'created',
-		'exercise_id',
+		'title',
+		array(
+			'name'=>'course_id',
+			'type'=>'raw',
+            'value'=>CHtml::link(CHtml::encode($model->course->title),
+                                 array('course/view','id'=>$model->course_id)),		
+		),
+		array(
+			'name'=>'experiment_type_id',
+			'type'=>'raw',
+            'value'=>UCourseLookup::$EXPERIMENT_TYPE_MESSAGES[$model->experiment_type_id],		
+		),
+		array(
+			'name'=>'due_time',
+			'type'=>'raw',
+            'value'=>date_format(date_create($model->due_time),'Y年m月d日  H:i'),		
+		),
+		array(
+			'label'=>'Begin~End',
+			'type'=>'raw',
+            'value'=>$model->begin.'~'.$model->end,		
+		),
+		array(
+			'name'=>'aim',
+			'type'=>'raw',
+            'value'=>"<div>".$model->aim."</div>",		
+		),
+		array(
+			'name'=>'description',
+			'type'=>'raw',
+            'value'=>"<div>".$model->description."</div>",		
+		),
 	),
 )); ?>
 <?php if(!(Yii::app()->user->isGuest)){?>

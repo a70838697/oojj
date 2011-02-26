@@ -20,6 +20,14 @@ $this->menu=array(
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
         array(
+            'label'=>'Save',
+            'icon-position'=>'left',
+            'icon'=>'plus', // This a CSS class starting with ".ui-icon-"
+            'url'=>'#',
+	        'visible'=>UUserIdentity::isStudent(),
+        	'linkOptions'=>array('onclick'=>'return saver();',)
+        ),
+        array(
             'label'=>'Preview',
             'icon-position'=>'left',
             'icon'=>'document', // This a CSS class starting with ".ui-icon-"
@@ -57,8 +65,15 @@ function submitr()
 		var action=$("#experiment-report-form").attr("action");
 		$("#experiment-report-form").attr("action",action+"/submited/1");
 		$("#experiment-report-form").submit();
+		$("#experiment-report-form").attr("action",action);
 	}
 	return false;	
+}
+function saver()
+{
+	$("#experiment-report-form").submit();
+	return true;	
+	
 }
 ');
 ?>

@@ -20,6 +20,10 @@ class UUserIdentity extends UserIdentity
 	{
 		return (!Yii::app()->user->isGuest) && (Yii::app()->user->group>=20);
 	}
+	public static function isCommonUser()
+	{
+		return Yii::app()->user->group==self::GROUP_USER;
+	}
 	public static function isStudent()
 	{
 		return Yii::app()->user->group==self::GROUP_STUDENT;

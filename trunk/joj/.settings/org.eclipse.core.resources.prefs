@@ -1,7 +1,9 @@
-#Fri Feb 25 14:27:58 CST 2011
+#Fri Feb 25 22:13:16 CST 2011
 eclipse.preferences.version=1
 encoding//protected/components/UCourseLookup.php=UTF-8
 encoding//protected/modules/rbam/RbamModule.php=UTF-8
+encoding//protected/views/course/_experiments.php=UTF-8
+encoding//protected/views/experiment/view.php=UTF-8
 encoding//protected/views/experimentReport/_report.php=UTF-8
 encoding//protected/views/experimentReport/report.php=UTF-8
 encoding//protected/views/experimentReport/view.php=UTF-8

@@ -1,35 +1,29 @@
 <table>
-<tr><th></th><th>Name</th></tr>
+<tr><th>Sequence</th><th>Name</th><th>Due time</th><th>Deadline</th></tr>
 <?php
- $index=1;
  foreach($experiments as $experiment): 
  ?>
 <tr>
 <td>
-<div class="experiment" id="c<?php echo $experiment->id; ?>">
-	<?php echo CHtml::link("{$index}", $experiment->getUrl($course), array(
-		'class'=>'cid',
-		'title'=>'Permalink to this experiment',
-	)); ?>
-</div>
+<?php echo CHtml::encode($experiment->sequence);?>
 </td>
 <td>
 	<div class="title">
 		<?php echo CHtml::link(nl2br(CHtml::encode($experiment->title)),$experiment->getUrl(null)); ?>
 	</div>
 </td>
-<!-- 
-	<div class="author">
-		<?php //echo $experiment->authorLink; ?> says:
+<td>
+	<div class="due_time">
+		<?php echo date_format(date_create($experiment->due_time),'Y年m月d日  H:i'); ?>
 	</div>
-
-	<div class="time">
-		<?php //echo date('F j, Y \a\t h:i a',$experiment->create_time); ?>
+</td>
+<td>
+	<div class="deadline">
+		<?php echo $experiment->begin."~".$experiment->end; ?>
 	</div>
- -->
+</td>
 <!-- experiment -->
 </tr>
 <?php
-$index++;
 endforeach; ?>
 </table>

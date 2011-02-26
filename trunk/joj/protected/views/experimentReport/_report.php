@@ -29,17 +29,51 @@
 	<td style="font-size: 14pt; width:80px; font-family: 楷体_GB2312;">学生姓名</td>
 	<td style="width:320px;border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;"><?php echo $model->user->info->lastname.$model->user->info->firstname ?> </td>
 	<td style="font-size: 14pt; width:40px; font-family: 楷体_GB2312;">学号</td>
-	<td style="border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;"><?php echo $model->user->info->identitynumber;?></td>
+	<td style="border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;"><?php echo $model->user->jnuer==null?"&nbsp;":$model->user->jnuer->identitynumber;?></td>
 </tr>
 </table>
 <table style="height:21pt;margin:0px""  width="100%">
 <tr >
 	<td style="font-size: 14pt; width:40px; font-family: 楷体_GB2312;">学院</td>
-	<td style="border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;">&nbsp;</td>
+	<td style="border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;">
+	<?php 
+	$xueyuan="&nbsp;";
+	if($model->user->jnuer!=null)
+	{
+		$node=$model->user->jnuer->unit;
+		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_SCHOOLE)$node=$node->getParemt();
+		if($node!=null)$xueyuan=$node->title;
+	}
+	echo $xueyuan;
+	?>
+	</td>
 	<td style="font-size: 14pt; width:20px; font-family: 楷体_GB2312;">系</td>
-	<td style="border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;">&nbsp;</td>
+	<td style="border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;">
+	<?php 
+	$xi="&nbsp;";
+	if($model->user->jnuer!=null)
+	{
+		$node=$model->user->jnuer->unit;
+		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_DEPARTMENT)$node=$node->getParemt();
+		if($node!=null)$xi=$node->title;
+	}
+	echo $xi;
+	?>
+	
+	</td>
 	<td style="font-size: 14pt; width:40px; font-family: 楷体_GB2312;">专业</td>
-	<td style="border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;">&nbsp;</td>
+	<td style="border-bottom: solid 2px black; text-align:center; font-size: 14pt; font-family: 楷体_GB2312;">
+	<?php 
+	$xi="&nbsp;";
+	if($model->user->jnuer!=null)
+	{
+		$node=$model->user->jnuer->unit;
+		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_MAJOR)$node=$node->getParemt();
+		if($node!=null)$xi=$node->title;
+	}
+	echo $xi;
+	?>	
+	</td>
 </tr>
 </table>
 <table style="height:21pt;margin:0px""  width="100%">

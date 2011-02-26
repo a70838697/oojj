@@ -8,7 +8,7 @@
 	</tr>
 	<tr>
 	<td><b><?php echo CHtml::encode($data->getAttributeLabel('user_id')); ?>:</b></td>
-	<td><?php echo CHtml::link(CHtml::encode($data->user->username),array('/user/user/view', 'id'=>$data->user->id)); ?></td>
+	<td><?php echo CHtml::link(CHtml::encode($data->userinfo->lastname.$data->userinfo->firstname),array('/user/user/view', 'id'=>$data->userinfo->user_id)); ?></td>
 	<td><b><?php echo CHtml::encode($data->getAttributeLabel('location')); ?>:</b></td>
 	<td><?php echo CHtml::encode($data->location); ?></td>
 	</tr>

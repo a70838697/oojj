@@ -1,7 +1,8 @@
 <?php
 $this->breadcrumbs=array(
-	'Courses'=>array('index'),
-	$model->title,
+	'My Courses'=>array('/course/index/mine/1'),
+	$model->title=>array('view','id'=>$model->id),
+	'Students'
 );
 
 $this->menu=array(
@@ -17,7 +18,7 @@ $this->menu=array(
 <table>
 	<tr>
 	<td><b><?php echo CHtml::encode($model->getAttributeLabel('user_id')); ?>:</b>
-	<?php echo CHtml::link(CHtml::encode($model->user->username),array('/user/user/view', 'id'=>$model->user->id)); ?></td>
+	<?php echo CHtml::link(CHtml::encode($model->userinfo->lastname.$model->userinfo->firstname),array('/user/user/view', 'id'=>$model->userinfo->user_id)); ?></td>
 	<td><center><b><?php echo CHtml::encode($model->getAttributeLabel('due_time')); ?>:</b>
 	<?php echo CHtml::encode($model->due_time); ?></center></td>
 	<td align="right"><b><?php echo CHtml::encode($model->getAttributeLabel('location')); ?>:</b>
@@ -27,8 +28,9 @@ $this->menu=array(
 <?php
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
-        /*array(
-            'label'=>'Add an experiment',
+		/*
+        array(
+            'label'=>'Add a student',
             'icon-position'=>'left',
             'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
@@ -36,17 +38,23 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
         	'linkOptions'=>array('onclick'=>'return showDialogue();',)
         ),*/
         array(
-            'label'=>'View Course',
+            'label'=>'View Experiments',
+            'icon-position'=>'left',
+            'icon'=>'document',
+        	'url'=>array('/course/experiments/'.$model->id.''),
+        ), 
+        array(
+            'label'=>'View this course',
             'icon-position'=>'left',
             'icon'=>'document',
         	'url'=>array('/course/view/'.$model->id.''),
         ),
         array(
-            'label'=>'View Experiments',
+            'label'=>'Update this course',
             'icon-position'=>'left',
-            'icon'=>'document',
-        	'url'=>array('/course/experiment/'.$model->id.''),
-        ),        
+	        'visible'=>(UUserIdentity::isTeacher()&& $model->user_id==Yii::app()->user->id) ||UUserIdentity::isAdmin(),
+            'url'=>array('update', 'id'=>$model->id),
+        ),               
     ),
     'htmlOptions' => array('style' => 'clear: both;'),
 ));

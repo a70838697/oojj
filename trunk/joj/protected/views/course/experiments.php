@@ -18,7 +18,7 @@ $this->menu=array(
 <table>
 	<tr>
 	<td><b><?php echo CHtml::encode($model->getAttributeLabel('user_id')); ?>:</b>
-	<?php echo CHtml::link(CHtml::encode($model->user->username),array('/user/user/view', 'id'=>$model->user->id)); ?></td>
+	<?php echo CHtml::link(CHtml::encode($model->userinfo->lastname.$model->userinfo->firstname),array('/user/user/view', 'id'=>$model->userinfo->user_id)); ?>
 	<td><center><b><?php echo CHtml::encode($model->getAttributeLabel('due_time')); ?>:</b>
 	<?php echo CHtml::encode($model->due_time); ?></center></td>
 	<td align="right"><b><?php echo CHtml::encode($model->getAttributeLabel('location')); ?>:</b>
@@ -37,11 +37,26 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
         	'linkOptions'=>array('onclick'=>'return showDialogue();',)
         ),
         array(
-            'label'=>'View',
+            'label'=>'View students',
+            'icon-position'=>'left',
+        	'visible'=>(UUserIdentity::isTeacher()&& $model->user_id==Yii::app()->user->id) ||UUserIdentity::isAdmin(),
+            'icon'=>'document',
+        	'url'=>array('/course/students/'.$model->id),
+        ),            
+        array(
+            'label'=>'View this course',
             'icon-position'=>'left',
             'icon'=>'document',
         	'url'=>array('/course/view/'.$model->id.''),
         ),
+        array(
+            'label'=>'Update this course',
+            'icon-position'=>'left',
+	        'visible'=>(UUserIdentity::isTeacher()&& $model->user_id==Yii::app()->user->id) ||UUserIdentity::isAdmin(),
+            'url'=>array('update', 'id'=>$model->id),
+        ), 
+        
+
     ),
     'htmlOptions' => array('style' => 'clear: both;'),
 ));

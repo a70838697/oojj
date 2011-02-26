@@ -35,7 +35,12 @@ $this->breadcrumbs=array(
 		} elseif ($field->field_type=="TEXT") {
 			echo CHtml::activeTextArea($profile,$field->varname,array('rows'=>6, 'cols'=>50));
 		} else {
-			echo CHtml::activeTextField($profile,$field->varname,array('size'=>60,'maxlength'=>(($field->field_size)?$field->field_size:255)));
+			$fieldname=$field->varname;
+			if(UUserIdentity::isCommonUser() ||(($fieldname!='firstname')&&($fieldname!='lastname'))) {
+				echo CHtml::activeTextField($profile,$field->varname,array('size'=>60,'maxlength'=>(($field->field_size)?$field->field_size:255)));
+			}else{
+				echo CHtml::encode($profile->$fieldname);
+			}
 		}
 		echo CHtml::error($profile,$field->varname); ?>
 	</div>	

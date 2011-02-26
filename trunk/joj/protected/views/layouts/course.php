@@ -6,7 +6,14 @@
 	$this->contentMenu=array(
 		'htmlOptions' => array( 'style' => 'position: relative; z-index: 1' ),
 		'items'=>array(
-			array('label'=>'Course', 'url'=>array('#'), 
+			array('label'=>'My', 'url'=>array('/course/index/mine/1'),
+				'visible'=>!Yii::app()->user->isGuest, 
+				'items'=>array(
+					array('label'=>'My courses', 'url'=>array('/course/index/mine/1')),
+					array('label'=>'My Problems', 'url'=>array('/courseproblem/index/mine/1')),
+				),
+			),
+			array('label'=>'Course', 'url'=>array('/course/index'), 
 				'items'=>array(
 					array('label'=>'All Courses', 'url'=>array('/course/index')),
 					array('label'=>'Create Course', 'url'=>array('/course/create'),'visible'=>UUserIdentity::isTeacher()||UUserIdentity::isAdmin()),
@@ -19,13 +26,6 @@
 					array('label'=>'Create Problem', 'url'=>array('/courseproblem/create')),
 				),
 			),
-			array('label'=>'My', 'url'=>array('#'),
-				'visible'=>!Yii::app()->user->isGuest, 
-				'items'=>array(
-					array('label'=>'My courses', 'url'=>array('/course/index/mine/1')),
-				),
-			),
-
 	        array(
 	            'label'=>'<< Back',
 	            'icon-position'=>'left',

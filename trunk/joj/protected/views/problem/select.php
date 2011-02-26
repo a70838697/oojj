@@ -2,13 +2,13 @@
 Search by:   <b>Category:</b> <select id='pro_type' onchange='research();'><option value='public'>Public</option><option value='mine'>Mine</option></select>
 &nbsp;&nbsp;<b>ID:</b> <input id='prob_id'  size ='5' onchange='research();' />
 &nbsp;&nbsp; <b>Problem Title:</b> <input  id='prob_title' maxLength='40'  size ='15'  onchange='research();' /> &nbsp;&nbsp;<input type=button onclick='research();' value="Search" />
-<br/><font size="3">Click the green ID to select a problem Or <?php echo CHtml::link("Create a problem", array('/problem/create'))?> </font>
+<br/><font size="3">Click the green ID to select a problem Or <?php echo CHtml::link("Create a problem", array('/'.$this->prefix.'problem/create'))?> </font>
 <?php
 echo CHtml::script(
 '
 function research()
 {
-	var urlh=\''.CHtml::normalizeUrl(array("/problem/select")).'\';
+	var urlh=\''.CHtml::normalizeUrl(array($this->prefix."/problem/select")).'\';
 	if($(\'#pro_type\').val()=="mine")urlh+="/mine/1";
 	if($.trim($(\'#prob_id\').val())!=""){
 		var id=parseInt($.trim($(\'#prob_id\').val()));
@@ -38,7 +38,7 @@ function research()
 		array(
 			'name'=>'title',
 			'type'=>'raw',
-			'value'=>'CHtml::link(CHtml::encode($data->title),array("problem/view","id"=>$data->id),  array("id"=>"ap".$data->id,"target"=>"_blank"))',
+			'value'=>'CHtml::link(CHtml::encode($data->title),array("'.$this->prefix.'problem/view","id"=>$data->id),  array("id"=>"ap".$data->id,"target"=>"_blank"))',
 		),
 	),
 ));
