@@ -9,7 +9,6 @@
  * @property string $firstname
  * @property string $birthday
  * @property string $nickname
- * @property string $identitynumber
  */
 class UProfile extends CActiveRecord
 {
@@ -42,7 +41,7 @@ class UProfile extends CActiveRecord
 			array('group', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('user_id, lastname, firstname, birthday, nickname, identitynumber', 'safe', 'on'=>'search'),
+			array('user_id, lastname, firstname, birthday, nickname', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -68,7 +67,6 @@ class UProfile extends CActiveRecord
 			'firstname' => 'Firstname',
 			'birthday' => 'Birthday',
 			'nickname' => 'Nickname',
-			'identitynumber' => 'Identitynumber',
 		);
 	}
 
@@ -88,7 +86,6 @@ class UProfile extends CActiveRecord
 		$criteria->compare('firstname',$this->firstname,true);
 		$criteria->compare('birthday',$this->birthday,true);
 		$criteria->compare('nickname',$this->nickname,true);
-		$criteria->compare('identitynumber',$this->identitynumber,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
