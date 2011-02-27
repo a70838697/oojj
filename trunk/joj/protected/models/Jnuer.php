@@ -48,6 +48,7 @@ class Jnuer extends CActiveRecord
 			array('user_id, first_year,identitynumber,unit_id', 'required'),
 			array('user_id, first_year, status, unit_id', 'numerical', 'integerOnly'=>true),
 			array('identitynumber', 'length', 'max'=>40),
+			array('identitynumber', 'unique', 'message' => ("This user's identitynumber already exists.")),
 			array('identitynumber', 'length', 'min'=>7),
 			array('first_year','validateYear'),
 						

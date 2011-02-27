@@ -39,6 +39,14 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'filter'=>$model,
 	'columns'=>array(
 		'user_id',
+		array(
+			'header'=>'login',
+			'value'=>'$data->user->username'
+		),
+		array(
+			'header'=>'name',
+			'value'=>'$data->profile->lastname.$data->profile->firstname'
+		),
 		'identitynumber',
 		'first_year',
 		array(

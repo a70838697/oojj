@@ -39,6 +39,7 @@ class UProfile extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('lastname, firstname, nickname', 'length', 'max'=>50),
+			array('group', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('user_id, lastname, firstname, birthday, nickname, identitynumber', 'safe', 'on'=>'search'),
