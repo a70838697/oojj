@@ -19,8 +19,11 @@ class ActivationController extends Controller
 				$find->activkey = UserModule::encrypting(microtime());
 				$find->status = 1;
 				$find->save();
-				$find->profile->group=10;
-				$find->profile->save();
+				$connection=Yii::app()->db;
+				$command=$connection->createCommand("update {{profiles}} set `group`=10 where user_id=".$find->id);
+				$command->execute();				
+				//$find->profile->group=10;
+				//$find->profile->save();
 				
 			    $this->render('/user/message',array('title'=>UserModule::t("User activation"),'content'=>UserModule::t("You account is activated.")));
 			} else {
