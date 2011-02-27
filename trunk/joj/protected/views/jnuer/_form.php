@@ -44,6 +44,11 @@
 		<?php echo $form->dropDownList($model,'status',Jnuer::$USER_STATUS_MESSAGES); ?>
 		<?php echo $form->error($model,'status'); ?>
 	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model->profile,'group'); ?>
+		<?php echo $form->dropDownList($model->profile,'group',UUserIdentity::$GROUP_MESSAGES); ?>
+		<?php echo $form->error($model->profile,'group'); ?>
+	</div>	
 <?php endif?>
 	
 	<div class="row buttons">

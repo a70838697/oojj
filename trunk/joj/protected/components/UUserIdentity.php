@@ -12,6 +12,13 @@ class UUserIdentity extends UserIdentity
 	const GROUP_STUDENT=20;
 	const GROUP_TEACHER=80;
 	const GROUP_ADMINISTRATOR=99;
+	public static $GROUP_MESSAGES=array(
+		self::GROUP_REGISTERED=>'Registered',
+		self::GROUP_USER=>'User',
+		self::GROUP_STUDENT=>'Student',
+		self::GROUP_TEACHER=>'Teacher',
+		self::GROUP_ADMINISTRATOR=>'Administrator',
+	);
 	public static function isGuest()
 	{
 		return Yii::app()->user->isGuest;

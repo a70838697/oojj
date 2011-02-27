@@ -5,7 +5,7 @@
  *
  * The followings are the available columns in table '{{jnuers}}':
  * @property integer $user_id
- * @property integer $firt_year
+ * @property integer $first_year
  * @property integer $status
  * @property integer $unit_id
  * @property string $identitynumber
@@ -85,7 +85,7 @@ class Jnuer extends CActiveRecord
 	{
 		return array(
 			'user_id' => 'User',
-			'first_year' => 'The Firt Year in JNU',
+			'first_year' => 'The First Year in JNU',
 			'status' => 'Status',
 			'unit_id' => 'Major/Unit',
 			'identitynumber' => 'Student / Teacher number',
@@ -104,7 +104,7 @@ class Jnuer extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('first_year',$this->firt_year);
+		$criteria->compare('first_year',$this->first_year);
 		$criteria->compare('status',$this->status);
 		$criteria->compare('unit_id',$this->unit_id);
 		$criteria->compare('identitynumber',$this->identitynumber,true);

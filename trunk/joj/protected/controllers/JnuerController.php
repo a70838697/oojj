@@ -101,16 +101,14 @@ class JnuerController extends Controller
 			// Uncomment the following line if AJAX validation is needed
 			// $this->performAjaxValidation($model);
 	
-			$bsaved=false;
+			$bsaved=true;
 			if(isset($_POST['Jnuer']))
 			{
-				if(isset($_POST['UProfile'])){
+				if($bsaved&&isset($_POST['UProfile'])){
+					if(!UUserIdentity::isAdmin())unset($_POST['UProfile']['group']);
 					$model->profile->attributes=$_POST['UProfile'];
 					//if($model->profile->birthday==null)$model->profile->birthday= new DateTime('0000-00-00');
-					if($model->profile->save())
-					{
-						$bsaved=true;
-					}
+					$bsaved=$model->profile->save();
 				}
 				$model->attributes=$_POST['Jnuer'];
 				if($bsaved)
