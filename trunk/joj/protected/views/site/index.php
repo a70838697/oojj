@@ -1,8 +1,8 @@
 <?php $this->pageTitle=Yii::app()->name; ?>
 
 <h1>Welcome to <i><?php echo CHtml::encode(Yii::app()->name); ?></i></h1>
-<font color=red>请暨大注册的同学注意，注册时候请填写自己的真实姓名和邮箱。<br/>
-学号和你的真实姓名（可用中文）一定要准确，这个我审核了以后就不能再修改了，以后出现在你的实验报告上。<br/>
+<font color=red>请暨大注册的同学注意，注册时候请填写自己的真实姓名lastname+firstname和邮箱。<br/>
+学号和你的真实姓名lastname+firstname（可用中文）一定要准确，这个我审核了以后就不能再修改了，以后出现在你的实验报告上。<br/>
 实验报告采取网上提交，请大家提前做题熟悉系统。注册的过程：</font><br/>
 1.填写注册资料。<br/>
 2.从邮箱中查找激活链接，有时候在你的垃圾文件夹里。<br/>

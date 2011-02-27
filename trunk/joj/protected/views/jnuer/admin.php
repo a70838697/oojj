@@ -39,12 +39,23 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'filter'=>$model,
 	'columns'=>array(
 		'user_id',
-		'first_year',
-		'status',
-		'unit_id',
 		'identitynumber',
+		'first_year',
+		array(
+			'name'=>'status',
+			'value'=>'Jnuer::$USER_STATUS_MESSAGES[$data->status]'
+		),
+		array(
+			'header'=>'group',
+			'value'=>'UUserIdentity::$GROUP_MESSAGES[$data->profile->group]'
+		),
+		array(
+			'name'=>'unit_id',
+			'value'=>'$data->unit->title'
+		),
 		array(
 			'class'=>'CButtonColumn',
+			'updateButtonOptions'=>array('target'=>'_blank'),
 		),
 	),
 )); ?>
