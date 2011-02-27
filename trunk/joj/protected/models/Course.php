@@ -61,7 +61,7 @@ class Course extends CActiveRecord
 			array('title', 'length', 'max'=>60),
 			array('memo', 'length', 'max'=>100),			
             array('sequence', 'length', 'max'=>20),
-            array('description', 'length', 'max'=>512),
+            array('description', 'length', 'min'=>0),
             array('location', 'length', 'max'=>32),
             array('environment', 'length', 'max'=>256),
             array('due_time', 'length', 'max'=>30),
