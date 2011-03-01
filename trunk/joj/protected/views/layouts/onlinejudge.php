@@ -20,6 +20,16 @@ function view_problem_by_id()
 	$this->contentMenu=array(
 		'htmlOptions' => array( 'style' => 'position: relative; z-index: 1' ),
 		'items'=>array(
+			array('label'=>'My', 'url'=>array('#'),
+				'visible'=>!Yii::app()->user->isGuest, 
+				'items'=>array(
+					array('label'=>'Status', 'url'=>array('/uuser/view/'.Yii::app()->user->id)),
+					array('label'=>'Recent Submitions', 'url'=>array('/submition/index/mine/1/refresh')),
+					array('label'=>'Submited Problems', 'url'=>array('/problem/submited')),
+					array('label'=>'Accepted Problems', 'url'=>array('/problem/accepted')),
+					array('label'=>'Un-accepted Problems', 'url'=>array('/problem/notAccepted')),
+				),
+			),	
 			array('label'=>'Problem', 'url'=>array('#'), 
 				'items'=>array(
 					array('label'=>'List Problem', 'url'=>array('/problem/index')),
@@ -33,16 +43,12 @@ function view_problem_by_id()
 					array('label'=>'Recent Submitions', 'url'=>array('/submition/index/refresh')),
 				),
 			),
-			array('label'=>'My', 'url'=>array('#'),
-				'visible'=>!Yii::app()->user->isGuest, 
-				'items'=>array(
-					array('label'=>'Recent Submitions', 'url'=>array('/submition/index/mine/1/refresh')),
-					array('label'=>'Submited Problems', 'url'=>array('/problem/submited')),
-					array('label'=>'Accepted Problems', 'url'=>array('/problem/accepted')),
-					array('label'=>'Un-accepted Problems', 'url'=>array('/problem/notAccepted')),
-				),
-			),
 	        array(
+	            'label'=>'Rank list',
+	            'icon-position'=>'left',
+	        	'url'=>array('/uuser/index'),
+	        ),		
+			array(
 	            'label'=>'<< Back',
 	            'icon-position'=>'left',
 	            'icon'=>'back',

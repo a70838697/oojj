@@ -16,6 +16,8 @@
  */
 class UUser extends User
 {
+	public $acceptedProblemCount;
+	public $submissionCount;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return User the static model class
@@ -70,7 +72,10 @@ class UUser extends User
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			//'submitedCount' => array(self::STAT, 'Problem', '','condition'=>'EXISTS(SELECT 1 FROM {{submition}} as sb WHERE sb.user_id=t.id )'),
+			'submitedCount' => array(self::STAT, 'Submition', 'user_id'),
+			'acceptedCount' => array(self::STAT, 'Submition', 'user_id','condition'=>'t.status='.ULookup::JUDGE_RESULT_ACCEPTED),
+			'submitedProbCount' => array(self::STAT, 'Submition', 'user_id','select'=>'count(DISTINCT(t.problem_id))'),
+			'acceptedProbCount' => array(self::STAT, 'Submition', 'user_id','select'=>'count(DISTINCT(t.problem_id))', 'condition'=>'t.status='.ULookup::JUDGE_RESULT_ACCEPTED),
 			'info' => array(self::HAS_ONE, 'UProfile', 'user_id','select'=>'firstname,lastname'),
 			'jnuer' => array(self::HAS_ONE, 'Jnuer', 'user_id','select'=>'identitynumber'),
 		);
@@ -87,10 +92,14 @@ class UUser extends User
 			'password' => 'Password',
 			'email' => 'Email',
 			'activkey' => 'Activkey',
-			'createtime' => 'Createtime',
-			'lastvisit' => 'Lastvisit',
+			'createtime' => 'Registered on',
+			'lastvisit' => 'Last visitation on',
 			'superuser' => 'Superuser',
 			'status' => 'Status',
+			'submitedCount' => 'Submition Count',
+			'acceptedCount' => 'Accepted Count',
+			'submitedProbCount' => 'Submited Problem Count',
+			'acceptedProbCount' => 'Accepted Problem Count',
 		);
 	}
 	public function defaultScope()

@@ -22,6 +22,9 @@
  */
 class Problem extends CActiveRecord
 {
+
+	public $hisSubmitedCount;
+	public $hisAcceptedCount;	
 	
 	/**
 	 * Returns the static model of the specified AR class.

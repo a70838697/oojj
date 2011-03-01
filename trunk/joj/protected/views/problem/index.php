@@ -39,7 +39,7 @@ echo UCHtml::cssFile('pager.css');
 			'header'=>'Ratio(Accepted/Total)',
 			'type'=>'raw',
 			'value'=>'($data->submitedCount==0)?"0%(0/0)":"".round($data->acceptedCount*100.0/$data->submitedCount,1)."%(".
-			($data->acceptedCount==0?"0":CHtml::link($data->acceptedCount,array("'.$this->prefix.'submition/index/problem/".$data->id)))
+			($data->acceptedCount==0?"0":CHtml::link($data->acceptedCount,array("'.$this->prefix.'submition/index/status/1/problem/".$data->id)))
 			."/".CHtml::link($data->submitedCount,array("'.$this->prefix.'submition/index/problem/".$data->id))
 			.")"',
 		),
