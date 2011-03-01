@@ -50,7 +50,7 @@
 		<?php
 		echo $form->labelEx($model,'compiler_set');
 		echo '<table width="40px" style="overflow:hidden">';
-		echo $form->checkboxList($model,'compiler_set',UCompilerLookup::items($model->compiler_set),
+		echo $form->checkboxList($model,'compiler_set',UCompilerLookup::items(UCompilerLookup::values(-1)),
 			array('template'=>'<tr><td width="10px">{input}</td><td>{label}</td></tr>',
 			'checkAll'=>'All languages',
 			'separator'=>'')
