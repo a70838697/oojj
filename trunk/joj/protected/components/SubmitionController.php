@@ -121,6 +121,11 @@ class SubmitionController extends Controller
 			{
 				$status=0;				
 			}
+			if(isset($_POST['ExerciseSubmition']['compiler_id'])&& $_POST['ExerciseSubmition']['compiler_id']!=$model->compiler_id )
+			{
+				$status=0;				
+			}			
+			
 			$model->attributes=$_POST['Submition'];
 			//reset the status to pending
 			if($status===0)$model->status=0;
