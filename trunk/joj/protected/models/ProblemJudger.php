@@ -38,8 +38,11 @@ class ProblemJudger extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('problem_id, source, user_id, compiler_id, created', 'required'),
+			array('problem_id, source, user_id, compiler_id', 'required'),
 			array('problem_id, user_id, compiler_id', 'numerical', 'integerOnly'=>true),
+	        array('created','default',
+	              'value'=>new CDbExpression('NOW()'),
+	              'setOnEmpty'=>false,'on'=>'insert'),				
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, problem_id, source, user_id, compiler_id, created', 'safe', 'on'=>'search'),
@@ -54,6 +57,8 @@ class ProblemJudger extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+       		'user' => array(self::BELONGS_TO, 'UUser', 'user_id','select'=>array('username')),
+       		'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id','select'=>array('title','id')),
 		);
 	}
 

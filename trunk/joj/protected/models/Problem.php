@@ -158,7 +158,7 @@ class Problem extends CActiveRecord
 			),
        		'user' => array(self::BELONGS_TO, 'UUser', 'user_id','select'=>array('username')),
 			'submitions' => array(self::HAS_MANY, 'Submition', 'problem_id'),
-	        'specialjudger' => array(self::HAS_ONE, 'ProblemJudger', 'problem_id'),
+	        'judger' => array(self::HAS_ONE, 'ProblemJudger', 'problem_id'),
 			'submitedCount' => array(self::STAT, 'Submition', 'problem_id'),
 			'acceptedCount' => array(self::STAT, 'Submition', 'problem_id','condition'=>'status='.ULookup::JUDGE_RESULT_ACCEPTED,),
 		);

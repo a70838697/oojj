@@ -42,13 +42,26 @@ class Test extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('problem_id, input, output, description, created, modified', 'required'),
+			array('output_length','setlength'),		
+			array('problem_id, input, output', 'required'),
 			array('problem_id, input_size, output_size, user_id', 'numerical', 'integerOnly'=>true),
+			array('description', 'length', 'min'=>0),
+			array('modified','default',
+	              'value'=>new CDbExpression('NOW()'),
+	              'setOnEmpty'=>false,'on'=>'update'),
+	        array('created,modified','default',
+	              'value'=>new CDbExpression('NOW()'),
+	              'setOnEmpty'=>false,'on'=>'insert'),						
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, problem_id, input, input_size, output, output_size, user_id, description, created, modified', 'safe', 'on'=>'search'),
 		);
 	}
+    public function setlength($attribute,$params)
+    {
+    	$this->output_size=strlen($this->output);
+    	$this->input_size=strlen($this->input);
+    }	
 
 	/**
 	 * @return array relational rules.
@@ -58,6 +71,8 @@ class Test extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'user' => array(self::BELONGS_TO, 'UUser', 'user_id','select'=>array('username')),
+			'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id','select'=>array('title','compiler_set'),'joinType'=>'INNER JOIN'),
 		);
 	}
 

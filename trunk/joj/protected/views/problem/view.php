@@ -15,6 +15,7 @@ $this->menu=array(
 
 $attrs=$model->attributeLabels();
 
+$canUpdate=!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update');
 ?>
 
 
@@ -34,7 +35,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
         ),
 */
         array(
-            'label'=>'Submit a solution',
+            'label'=>'Submit',
             'icon-position'=>'left',
             'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
@@ -42,30 +43,30 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
         	'linkOptions'=>array('onclick'=>'return showDialogue();',)
         ),
         array(
-            'label'=>'Update this problem',
+            'label'=>'Update',
             'icon-position'=>'left',
-	        'visible'=>!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
+	        'visible'=>$canUpdate,
             'url'=>array('update', 'id'=>$model->id),
         ), 
         array(
-            'label'=>'My submitions to this problem',
+            'label'=>'Test data',
+            'icon-position'=>'left',
+	        'visible'=>$canUpdate,
+            'url'=>array('/test/problem', 'id'=>$model->id),
+        ),         
+        array(
+            'label'=>'My submitions',
             'icon-position'=>'left',
         	'visible'=>!Yii::app()->user->isGuest,
             'icon'=>'circle-plus',
         	'url'=>array('/'.$this->prefix.'submition/index/problem/'.$model->id.'/mine/1'),
         ),        
         array(
-            'label'=>'Submitions statistics',
+            'label'=>'Statistics',
             'icon-position'=>'left',
             'icon'=>'document',
         	'url'=>array('/'.$this->prefix.'submition/index/problem/'.$model->id.''),
         ),
-        array(
-            'label'=>'Accepted Submitions',
-            'icon-position'=>'left',
-            'icon'=>'document',
-        	'url'=>array('/'.$this->prefix.'submition/index/problem/'.$model->id.'/status/1'),
-        ),                 
     ),
     'htmlOptions' => array('style' => 'clear: both;'),
 ));

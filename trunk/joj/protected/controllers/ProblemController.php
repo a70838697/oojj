@@ -34,7 +34,7 @@ class ProblemController extends ZController
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','delete','update','submited','accepted','notAccepted'),
+				'actions'=>array('create','delete','update','submited','manage','accepted','notAccepted'),
 			//	'roles'=>array('Teacher',"Admin"),
 				'users'=>array('@'),
 			),
@@ -96,7 +96,29 @@ class ProblemController extends ZController
 			'model'=>$model,
 		));
 	}
-
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionManage($id)
+	{
+		$model=$this->loadModel($id);
+		$this->checkAccess(array('model'=>$model),'update');
+		
+		$problemJudger=$this->newProblemJudger($model);
+		if(Yii::app()->request->getQuery('deleteProblemJudger',null)!==null){
+			if($model->judger!=null)$model->judger->delete();
+			$this->redirect(array('manage','id'=>$model->id));
+		}
+		
+	
+		$this->render('/problem/manage',array(
+			'model'=>$model,
+			'problemJudger'=>$problemJudger,
+			'testDataProvider'=>$testDataProvider,
+		));
+	}
+	
 	/**
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
@@ -343,5 +365,5 @@ class ProblemController extends ZController
 			}
 		}
 		return $submition;
-	}	
+	}
 }
