@@ -17,9 +17,13 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
             'url'=>array('/test/create/'.$problem->id),
-        	'linkOptions'=>array('onclick'=>'return showTestFileDialogue();',)
         ),
-        
+         array(
+            'label'=>'Add test from files',
+            'icon-position'=>'left',
+            'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
+            'url'=>array('/test/createByFile/'.$problem->id),
+        ),       
         array(
             'label'=>'view problem',
             'icon-position'=>'left',

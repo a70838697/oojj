@@ -33,6 +33,12 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'url'=>array('update', 'id'=>$model->id),
         ), 
         array(
+            'label'=>'List reports',
+            'icon-position'=>'left',
+	        'visible'=>UUserIdentity::isTeacher(),//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
+            'url'=>array('reports', 'id'=>$model->id),
+        ),         
+        array(
             'label'=>'Submit a report',
             'icon-position'=>'left',
 	        'visible'=>UUserIdentity::isStudent(),//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),

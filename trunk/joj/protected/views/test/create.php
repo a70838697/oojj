@@ -3,8 +3,7 @@ $this->breadcrumbs=array(
 	'Problems'=>array('index'),
 	$problem->title=>array('/problem/'.$problem->id),
 	'Test data'=>array('/test/problem/'.$problem->id),
-	$model->id=>array($model->id),
-	'Update'
+	'Create'
 );
 ?>
 <center><font size='6'><?php echo $problem->id.'. '.CHtml::encode($problem->title);?></font>

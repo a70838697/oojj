@@ -56,7 +56,7 @@ class ProblemController extends ZController
 	{
 		$model=$this->loadModel($id);
 		$this->checkAccess(array('model'=>$model));
-		
+
 		$submition=$this->canAccess(array('model'=>$model),'Create','Submition')?$this->newSubmition($model):null;
 
 		$buttons=array(

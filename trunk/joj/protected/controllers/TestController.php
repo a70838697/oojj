@@ -31,7 +31,7 @@ class TestController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','problem'),
+				'actions'=>array('create','update','problem','createByFile'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -59,6 +59,38 @@ class TestController extends Controller
 		));
 	}
 
+	/**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
+	public function actionCreateByFile($id)
+	{
+		$problem=Problem::model()->findByPk((int)$id);
+		if($problem===null)
+			throw new CHttpException(404,'The requested page does not exist.');		
+		$this->checkAccess(array('model'=>$problem),'update','problem');
+
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+        $model=new TestFiles;
+        if(isset($_POST['TestFiles']))
+        {
+            $model->attributes=$_POST['TestFiles'];
+            $model->input_file=CUploadedFile::getInstance($model,'input_file');
+            $model->output_file=CUploadedFile::getInstance($model,'output_file');
+			$model->problem_id=(int)$id;
+			$model->user_id=Yii::app()->user->id;
+            if($model->save())
+            {
+				$this->redirect(array('view','id'=>$model->id));
+            }
+        }
+  
+		$this->render('createByFile',array(
+			'model'=>$model,
+			'problem'=>$problem,		
+		));
+	}	
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
@@ -157,7 +189,7 @@ class TestController extends Controller
 			    'criteria'=>array(
 			        'condition'=>'problem_id='.(int)$id,
 			        //'order'=>'created DESC',
-			        'select'=>array('id,input_size,output_size'),
+			        'select'=>array('id,LEFT(input,32) as input,input_size,LEFT(output,32) as output,output_size'),
 			    ),
 				'pagination'=>false,
 			)
