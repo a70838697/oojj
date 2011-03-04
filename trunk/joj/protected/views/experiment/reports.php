@@ -19,11 +19,6 @@ echo UCHtml::cssFile('pager.css');
 	'template'=>'{summary}{pager}{items}{pager}',
 	'columns'=>array(
 		array(
-			'name'=>'User',
-			'type'=>'raw',
-			'value'=>'CHtml::link(CHtml::encode($data->user->username),array("user/user/view","id"=>$data->user->id))',
-		),
-		array(
 			'name'=>'Name',
 			'type'=>'raw',
 			'value'=>'CHtml::encode($data->user->info->lastname.$data->user->info->firstname)',
