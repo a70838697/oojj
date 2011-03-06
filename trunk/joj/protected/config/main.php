@@ -81,6 +81,10 @@ return array(
 			'urlFormat'=>'path',
 			'showScriptName' => false, 
 			'rules'=>array(
+				'entry/index'=>'entry/index',
+				'entry/view/<id:.+>'=>'entry/view',
+				'entry/update/<id:.+>'=>'entry/update',
+				'entry/<id:.+>'=>'entry/view',		
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>/<id:\d+>/*'=>'<controller>/<action>',
