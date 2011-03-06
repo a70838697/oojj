@@ -51,7 +51,7 @@ function view_problem_by_id()
 	        array(
 	            'label'=>'ACM algorithm',
 	            'icon-position'=>'left',
-	        	'url'=>array('/entry/ACM Alogrithm'),
+	        	'url'=>array('/entry/ACM Algorithm'),
 	        ),		
 	        array(
 	            'label'=>'<< Back',
