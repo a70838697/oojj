@@ -1,12 +1,12 @@
 <?php
-/* SVN FILE: $Id: index.php 9 2010-12-17 13:21:39Z Chris $*/
+/* SVN FILE: $Id: index.php 19 2011-02-17 15:12:45Z Chris $*/
 /**
 * Users view.
-* 
+*
 * @copyright	Copyright &copy; 2010 PBM Web Development - All Rights Reserved
 * @package		RBAM
 * @since			V1.0.0
-* @version		$Revision: 9 $
+* @version		$Revision: 19 $
 * @license		BSD License (see documentation)
 */
 $baseUrl = $this->getModule()->baseScriptUrl;
@@ -41,7 +41,7 @@ $this->widget('rbam.extensions.alphapager.ApGridView', array(
 			'viewButtonImageUrl'=>"$baseUrl/images/userView.png",
 			'buttons' => array(
 				'assign' => array(
-					'url' => 'array("assign", "uid"=>$data->id)',
+					'url' => 'array("assign", "uid"=>$data->'.$this->getModule()->userIdAttribute.')',
 					'options' => array('class'=>'assign', 'title'=>Yii::t('RbamModule.rbam','Assign role(s) to this user')),
 					'imageUrl' => "$baseUrl/images/assignmentAdd.png",
 				),

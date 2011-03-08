@@ -1,12 +1,12 @@
 <?php
-/* SVN FILE: $Id: userRoles.php 17 2010-12-21 19:09:15Z Chris $*/
+/* SVN FILE: $Id: userRoles.php 19 2011-02-17 15:12:45Z Chris $*/
 /**
 * Roles assigned to a user view.
 *
 * @copyright	Copyright &copy; 2010 PBM Web Development - All Rights Reserved
 * @package		RBAM
 * @since			V1.0.0
-* @version		$Revision: 17 $
+* @version		$Revision: 19 $
 * @license		BSD License (see documentation)
 */
 $module = $this->getModule();
@@ -87,7 +87,7 @@ $this->widget('rbam.extensions.alphapager.ApGridView', array(
 			'template'=>'{update}{revoke}',
 			'header'=>Yii::t('RbamModule.rbam','Assignment Actions'),
 			'headerHtmlOptions'=>array('scope'=>'col'),
-			'footer'=>CHtml::link(CHtml::image("{$module->baseScriptUrl}/images/assignmentAdd.png",Yii::t('RbamModule.rbam','Assign Role(s)')), array('assign','uid'=>$user->id), array('class'=>'add', 'title'=>Yii::t('RbamModule.rbam','Assign role(s) to this user'))),
+			'footer'=>CHtml::link(CHtml::image("{$module->baseScriptUrl}/images/assignmentAdd.png",Yii::t('RbamModule.rbam','Assign Role(s)')), array('assign','uid'=>$user->{$module->userIdAttribute}), array('class'=>'add', 'title'=>Yii::t('RbamModule.rbam','Assign role(s) to this user'))),
 			'updateButtonUrl'=>'array("update", "role"=>$data->itemName, "uid"=>$data->userId)',
 			'updateButtonOptions'=>array('class'=>'update','title'=>Yii::t('RbamModule.rbam','Update this assignment')),
 			'updateButtonImageUrl'=>"{$module->baseScriptUrl}/images/assignmentUpdate.png",

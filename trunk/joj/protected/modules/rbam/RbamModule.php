@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: RbamModule.php 17 2010-12-21 19:09:15Z Chris $*/
+/* SVN FILE: $Id: RbamModule.php 20 2011-02-17 15:13:42Z Chris $*/
 /**
 * Role Based Access Manager Module class file.
 * Provides management of RBAC authorisation data.
@@ -7,7 +7,7 @@
 * @copyright	Copyright &copy; 2010 PBM Web Development - All Rights Reserved
 * @package		RBAM
 * @since			V1.0.0
-* @version		$Revision: 17 $
+* @version		$Revision: 20 $
 * @license		BSD License (see documentation)
 */
 /**
@@ -57,14 +57,30 @@ class RbamModule extends CWebModule {
 	*/
 	public $userIdAttribute = 'id';
 	/**
-	* @property mixed Attribute(s) in the user model used for the user name;
-	* RBAM supports compound attributes, e.g. given_name & family_name.
-	* string: if a single attribute, the name of the attribute
+	* @property mixed Attribute(s) in the user or related models used to display
+	* the user's name; compound attributes are supported, e.g. the user's given
+	* and family names, e.g. "Angela Other".
+	* string: if a single attribute, the name of the attribute.
 	* If multiple attributes, a comma delimited list of the join string followed
-	* by attribute names. If a comma is used in the join string delimit it with a
-	*  backslash, e.g. '\, ,family_name,given_name'
+	* by attribute names. If a comma is used in the join string escape it with a
+	* backslash, e.g. '\, ,given_name,family_name'
 	* array: the first element is the join string, subsequent elements are
-	* attribute names, e.g. array(', ',' family_name',' given_name')
+	* attribute names, e.g. array(', ','profile.given_name','profile.family_name')
+	*
+	* If using compound elements you can specify which, if any, are to be rendered
+	* as initials only by adding a comma delimited string or array as the final
+	* element. This has a similar format as above; the first element is rendered
+	* after an initial and the following elements are the attributes to be rendered
+	* as initials, e.g. array(', ','profile.family_name','profile.given_name', array('.','profile.given_name'))
+	* will render as "Other, A."
+	* NOTE: if using a comma delimited string within a comma delimited string, the
+	* delimiting commas in the internal string must be escaped. If you wish to use
+	* a comma as the character after initials it must be escaped with a backslash,
+	* not forgetting to escape the backslash if using a string in a string,
+	* i.e. '\\\,'. The following are valid and equivalent:
+	* + array(', ','family_name','given_name', array('.','given_name'))
+	* + array(', ','family_name','given_name', '.,given_name')
+	* + '\, ,given_name,family_name,.\,given_name'
 	*/
 	public $userNameAttribute = 'username';
 	/**
@@ -290,7 +306,7 @@ class RbamModule extends CWebModule {
 			$m = $this;
 			do {
 				$this->baseUrl = '/'.$m->getId().$this->baseUrl;
-				$m = $this->getParentModule();
+				$m = $m->getParentModule();
 			} while (!is_null($m));
 		}
 		if (substr($this->baseUrl, -1)==='/') $this->baseUrl = substr($this->baseUrl, 0, -1);
@@ -380,7 +396,7 @@ class RbamModule extends CWebModule {
 	* @return string the version of this module.
 	*/
 	public function getVersion() {
-		return '1.3';
+		return '1.5';
 	}
 
 	/**

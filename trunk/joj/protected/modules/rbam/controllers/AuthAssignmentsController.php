@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: AuthAssignmentsController.php 18 2010-12-24 08:25:35Z Chris $*/
+/* SVN FILE: $Id: AuthAssignmentsController.php 19 2011-02-17 15:12:45Z Chris $*/
 /**
 * AuthAssignments Controller class file.
 * Manages Auth Assignments.
@@ -7,7 +7,7 @@
 * @copyright	Copyright &copy; 2010 PBM Web Development - All Rights Reserved
 * @package		RBAM
 * @since			V1.0.0
-* @version		$Revision: 18 $
+* @version		$Revision: 19 $
 * @license		BSD License (see documentation)
 */
 /**
@@ -52,42 +52,38 @@ class AuthAssignmentsController extends RbamController {
 	public function actionIndex() {
 		Yii::import('rbam.extensions.alphapager.ApPagination');
 		Yii::import('rbam.extensions.alphapager.ApActiveDataProvider');
-		$module = $this->getModule();
-		$userClass = $module->userClass;
-		$userNameAttribute = $module->userNameAttribute;
-		$criteria = new CDbCriteria($module->userCriteria);
 
-		if (is_string($userNameAttribute)) {
-			if (!strpos($userNameAttribute, ','))
-				$userNameAttribute = array($userNameAttribute);
-			else {
-				$userNameAttribute = explode(',', str_replace('\,','__##comma##__',$userNameAttribute));
-				array_shift($userNameAttribute);
-			}
+		$module = $this->getModule();
+		$userModel = CActiveRecord::model($module->userClass);
+		$userNameAttribute = $module->userNameAttribute;
+
+		if (is_string($userNameAttribute) && strpos($userNameAttribute, ',')!==false)
+			$userNameAttribute = explode(',', str_replace('\,','__##comma##__',$userNameAttribute));
+
+		if (is_array($userNameAttribute)) {
+			array_shift($userNameAttribute);
+			$end = end($userNameAttribute);
+			if (is_array($end) || strpos($end, '__##comma##__')!==false || strpos($end, ',')!==false)
+				array_pop($userNameAttribute);
 		}
 		else
-			array_shift($userNameAttribute);
+			$userNameAttribute = array($userNameAttribute);
 
 		$asc = join(',',$userNameAttribute);
 		$desc = str_replace(',',' DESC,',$asc).' DESC';
+
 		$attribute = array_shift($userNameAttribute);
 		$alphaPagination = new ApPagination($attribute);
+		$alphaPagination->forceCaseInsensitive  = true;
+		$alphaPagination->activeCharSet = $this->activeChars($userModel, $attribute);
 
-		// Select only the first letter of the attribute used for alphapager
-		$activeCharCriteria=new CDbCriteria(array(
-			'select'=>"DISTINCT(SUBSTR(`$attribute`,1,1)) AS `$attribute`"
-		));
-		$activeCharCriteria->mergeWith($criteria);
+		$relation = ((($pos = strpos($attribute, '.'))===false)?null:substr($attribute, 0, $pos));
+		$_criteria = $module->userCriteria;
+		if (!empty($relation))
+			$_criteria['with'][] = $relation;
+		$criteria = new CDbCriteria($_criteria);
 
- 		$chars = CActiveRecord::model($userClass)->resetScope()->findAll($activeCharCriteria);
-
-		// Add those characters to an array and assign them to activeCharSet
-		$activeChars=array();
-		foreach($chars as $char)
-			$activeChars[]=strtoupper($char->$attribute);
-		$alphaPagination->activeCharSet=$activeChars;
-
-		$dataProvider = new ApActiveDataProvider(CActiveRecord::model($userClass), array(
+		$dataProvider = new ApActiveDataProvider($userModel, array(
 			'criteria'=>$criteria,
 			'alphapagination'=>$alphaPagination,
 			'pagination'=>array(
