@@ -20,6 +20,63 @@
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
 
-<?php $this->endWidget(); ?>
+<?php echo 
+CHtml::script(
+'
+jQuery.fn.extend({
+insertAtCaret: function(myValue){
+  return this.each(function(i) {
+    if (document.selection) {
+      this.focus();
+      sel = document.selection.createRange();
+      sel.text = myValue;
+      this.focus();
+    }
+    else if (this.selectionStart || this.selectionStart == \'0\') {
+      var startPos = this.selectionStart;
+      var endPos = this.selectionEnd;
+      var scrollTop = this.scrollTop;
+      this.value = this.value.substring(0, startPos)+myValue+this.value.substring(endPos,this.value.length);
+      this.focus();
+      this.selectionStart = startPos + myValue.length;
+      this.selectionEnd = startPos + myValue.length;
+      this.scrollTop = scrollTop;
+    } else {
+      this.value += myValue;
+      this.focus();
+    }
+  })
+}
+});
 
+function insertFile(fileName,responseJSON)
+{
+	if(responseJSON.ext=="jpg"||responseJSON.ext=="jpeg")
+		$("#Entry_content").insertAtCaret(\'\{\{'.UCHtml::url("upload/download/").'\'+responseJSON.fileid+\'|\'+fileName+\'}}\');
+	else
+		$("#Entry_content").insertAtCaret(\'[['.UCHtml::url("upload/download/").'\'+responseJSON.fileid+\'|\'+fileName+\']]\');
+}
+'
+);
+?>
+<?php $this->endWidget(); ?>
+<? $this->widget('ext.EAjaxUpload.EAjaxUpload',
+array(
+        'id'=>'uploadFile',
+        'config'=>array(
+               'action'=>UCHtml::url('upload/create/type/wiki'),
+               'allowedExtensions'=>array("jpg","jpeg","txt","rar","zip","7z"),//array("jpg","jpeg","gif","exe","mov" and etc...
+               'sizeLimit'=>10*1024*1024,// maximum file size in bytes
+               'minSizeLimit'=>10,// minimum file size in bytes
+               'onComplete'=>'js:function(id, fileName, responseJSON){ if (typeof(responseJSON.success)!="undefined" && responseJSON.success){insertFile(fileName,responseJSON);}}',
+               //'messages'=>array(
+               //                  'typeError'=>"{file} has invalid extension. Only {extensions} are allowed.",
+               //                  'sizeError'=>"{file} is too large, maximum file size is {sizeLimit}.",
+               //                  'minSizeError'=>"{file} is too small, minimum file size is {minSizeLimit}.",
+               //                  'emptyError'=>"{file} is empty, please select files again without it.",
+               //                  'onLeave'=>"The files are being uploaded, if you leave now the upload will be cancelled."
+               //                 ),
+               //'showMessage'=>"js:function(message){ alert(message); }"
+              )
+)); ?>
 </div><!-- form -->
