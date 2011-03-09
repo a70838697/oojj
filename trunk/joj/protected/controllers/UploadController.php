@@ -76,13 +76,25 @@ class UploadController extends Controller
  
         $folder='upload/';// folder for uploaded files
         $type=Yii::app()->request->getQuery('type',null);
+        $allowedExtensions = array("jpg","jpeg","png","gif","txt","rar","zip","7z");//array("jpg","jpeg","gif","exe","mov" and etc...
+        $filefieldname="qqfile";
         if($type!==null)
         {
-        	if($type=="wiki")$folder.="wiki/";
+        	if($type=="wiki")
+        	{
+		       	$folder.="wiki/";
+        		$filefieldname="qqfile";
+        	}
+        	if($type=="report"){
+				$folder.="report/".Yii::app()->request->getQuery('course','')."/";
+        		$filefieldname="filedata";
+        	}
+			if (!is_dir($folder) ){
+			   @mkdir($folder);
+			}
         }
-        $allowedExtensions = array("jpg","jpeg","txt","rar","zip","7z");//array("jpg","jpeg","gif","exe","mov" and etc...
         $sizeLimit = 20 * 1024 * 1024;// maximum file size in bytes
-        $uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
+        $uploader = new qqFileUploader($allowedExtensions, $sizeLimit,$filefieldname);
         $result = $uploader->handleUpload($folder);
         if(isset($result['success'])&& $result['success'])
         {
@@ -94,7 +106,6 @@ class UploadController extends Controller
 	      	$model->filesize=$result['size'];
 	      	$model->user_id=Yii::app()->user->id;
 			$model->ip=ip2long(Yii::app()->request->userHostAddress);
-			
         
 			if($model->save())
 			{
@@ -105,6 +116,18 @@ class UploadController extends Controller
 				$result['success']=false;
 				$result['error']='Can not save to database!';
 			}
+        }
+        if($type=="report"){
+        	$result['msg']="";
+	        if(isset($result['error'])){
+	        	$result['err']=$result['error'];
+	        }
+	        else if($result['success'])
+	        {
+	        	$result['err']="";
+	        	$result['msg']="!".UCHtml::url("upload/download/").$result['fileid'];
+	        }
+	        else $result['err']="error in uploading";
         }
         $result=htmlspecialchars(json_encode($result), ENT_NOQUOTES);
         echo $result;// it's array

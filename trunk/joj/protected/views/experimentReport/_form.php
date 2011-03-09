@@ -137,7 +137,8 @@
 </tr>
 <tr >
 	<td style="font-size: 12pt;  font-family: 宋体;">
-		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'report','rows'=>20),true); ?>
+		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'report','rows'=>20,
+		'config'=>array('upImgUrl'=>UCHtml::url('upload/create/type/report/course/'.$model->experiment->course_id),'upImgExt'=>"jpg,jpeg,gif,png",)),true); ?>
 		<?php echo $form->error($model,'report'); ?>
 	</td>
 </tr>
@@ -151,7 +152,8 @@
 </tr>
 <tr >
 	<td style="font-size: 12pt;  font-family: 宋体;">
-		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'conclusion','rows'=>6),true); ?>
+		<?php echo $this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'conclusion','rows'=>6,
+			'config'=>array('upImgUrl'=>UCHtml::url('upload/create/type/report/course/'.$model->experiment->course_id),'upImgExt'=>"jpg,jpeg,gif,png",)),true); ?>
 		<?php echo $form->error($model,'conclusion'); ?>
 	</td>
 </tr>

@@ -1,6 +1,8 @@
-#Wed Mar 02 17:42:13 CST 2011
+#Wed Mar 09 22:54:42 CST 2011
 eclipse.preferences.version=1
 encoding//protected/components/UCourseLookup.php=UTF-8
+encoding//protected/components/widgets/xheditor/demos/upload.php=UTF-8
+encoding//protected/extensions/EAjaxUpload/qqFileUploader.php=UTF-8
 encoding//protected/modules/rbam/RbamModule.php=UTF-8
 encoding//protected/views/course/_experiments.php=UTF-8
 encoding//protected/views/experiment/view.php=UTF-8

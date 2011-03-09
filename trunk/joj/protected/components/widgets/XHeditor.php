@@ -83,7 +83,7 @@ class XHeditor extends CWidget
 	 * Comma separated list of attributes that can be 
 	 * passed to $this->config as array keys
 	 */
-	private $_configurableAttributes = 'id,name,tools,skin,showBlocktag,internalScript,internalStyle,width,height,loadCSS,fullscreen,beforeSetSource,beforeGetSource,focus,blur,forcePtag';
+	private $_configurableAttributes = 'html5Upload,upImgExt,upImgUrl,id,name,tools,skin,showBlocktag,internalScript,internalStyle,width,height,loadCSS,fullscreen,beforeSetSource,beforeGetSource,focus,blur,forcePtag';
 	
 	/*
 	 * Comma separated list of attributes that can be
@@ -112,8 +112,7 @@ class XHeditor extends CWidget
 	private $_defaults = array(
 		'language'=>'en',
 		'config'=>array(
-			'width'=>350,
-			'height'=>150,
+			'html5Upload'=>false
 		),
 		'htmlOptions'=>array(
 			'rows'=>1,
@@ -177,9 +176,9 @@ class XHeditor extends CWidget
 		$this->_baseUrl = Yii::app()->getAssetManager()->publish($assets);
 		
 		// register css and js to be rendered
-		Yii::app()->clientScript->registerCss($config['id'],'#'.$config['id'].' {width:'.$config['width'].';height:'.$config['height'].';}');
+		//Yii::app()->clientScript->registerCss($config['id'],'#'.$config['id'].' {width:'.$config['width'].';height:'.$config['height'].';}');
 		Yii::app()->clientScript->registerScriptFile($this->_baseUrl . '/xheditor-'. $this->language .'.min.js');
-		Yii::app()->clientScript->registerScript($config['id'],'$("#'.$config['id'].'").xheditor(true,'.CJavaScript::encode($config).');');
+		Yii::app()->clientScript->registerScript($config['id'],'$("#'.$config['id'].'").xheditor('.CJavaScript::encode($config).');');
 	}
 	
 	/*

@@ -3,29 +3,33 @@
  * Handle file uploads via XMLHttpRequest
  */
 class qqUploadedFileXhr {
+	private $filefieldname;
+	function __construct($filefieldname='qqfile'){
+	 	$this->filefieldname=$filefieldname;
+	}	
     /**
      * Save the file to the specified path
      * @return boolean TRUE on success
      */
     function save($path) {
-        $input = fopen("php://input", "r");
-        $temp = tmpfile();
-        $realSize = stream_copy_to_stream($input, $temp);
-        fclose($input);
+        $input = @fopen("php://input", "r");
+        $temp = @tmpfile();
+        $realSize = @stream_copy_to_stream($input, $temp);
+        @fclose($input);
 
         if ($realSize != $this->getSize()){
             return false;
         }
 
-        $target = fopen($path, "w");
-        fseek($temp, 0, SEEK_SET);
-        stream_copy_to_stream($temp, $target);
-        fclose($target);
+        $target = @fopen($path, "w");
+        @fseek($temp, 0, SEEK_SET);
+        @stream_copy_to_stream($temp, $target);
+        @fclose($target);
 
         return true;
     }
     function getName() {
-        return $_GET['qqfile'];
+        return $_GET[$this->filefieldname];
     }
     function getSize() {
         if (isset($_SERVER["CONTENT_LENGTH"])){
@@ -40,21 +44,25 @@ class qqUploadedFileXhr {
  * Handle file uploads via regular form post (uses the $_FILES array)
  */
 class qqUploadedFileForm {
+	private $filefieldname;
+	function __construct($filefieldname='qqfile'){
+	 	$this->filefieldname=$filefieldname;
+	}
     /**
      * Save the file to the specified path
      * @return boolean TRUE on success
      */
     function save($path) {
-        if(!move_uploaded_file($_FILES['qqfile']['tmp_name'], $path)){
+        if(!move_uploaded_file($_FILES[$this->filefieldname]['tmp_name'], $path)){
             return false;
         }
         return true;
     }
     function getName() {
-        return $_FILES['qqfile']['name'];
+        return $_FILES[$this->filefieldname]['name'];
     }
     function getSize() {
-        return $_FILES['qqfile']['size'];
+        return $_FILES[$this->filefieldname]['size'];
     }
 }
 
@@ -63,7 +71,7 @@ class qqFileUploader {
     private $sizeLimit = 10485760;
     private $file;
 
-    function __construct(array $allowedExtensions = array(), $sizeLimit = 10485760){
+    function __construct(array $allowedExtensions = array(), $sizeLimit = 10485760,$filefieldname='qqfile'){
         $allowedExtensions = array_map("strtolower", $allowedExtensions);
 
         $this->allowedExtensions = $allowedExtensions;
@@ -71,10 +79,10 @@ class qqFileUploader {
 
         $this->checkServerSettings();
 
-        if (isset($_GET['qqfile'])) {
-            $this->file = new qqUploadedFileXhr();
-        } elseif (isset($_FILES['qqfile'])) {
-            $this->file = new qqUploadedFileForm();
+        if (isset($_GET[$filefieldname])) {
+            $this->file = new qqUploadedFileXhr($filefieldname);
+        } elseif (isset($_FILES[$filefieldname])) {
+            $this->file = new qqUploadedFileForm($filefieldname);
         } else {
             $this->file = false;
         }
