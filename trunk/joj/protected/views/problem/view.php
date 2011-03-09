@@ -24,6 +24,10 @@ $canUpdate=!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model)
 <?php echo ($model->submitedCount==0)?"0%(0/0)":"".round($model->acceptedCount*100.0/$model->submitedCount,1)."%(".$model->acceptedCount."/".$model->submitedCount.")";?>
 <font color='red'><?php echo $model->time_limit.'ms,'.($model->memory_limit>>20).'M'?></font>
 </center>
+<?php if(count($model->tagLinks)>0){ ?>
+		<b>Tags:</b>
+		<?php echo implode(', ', $model->tagLinks); ?>
+<?php } ?>
 <?php
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(

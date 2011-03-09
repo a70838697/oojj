@@ -86,8 +86,9 @@ class ProblemController extends ZController
 		{
 			$model->attributes=$_POST['Problem'];
 			$model->user_id=Yii::app()->user->id;
-			if($model->save())
+			if($model->setTags(isset($_POST['Tags'])?implode(',', $_POST['Tags']):'')->save()){
 				$this->redirect(array('view','id'=>$model->id));
+			}
 			if(is_int($model->compiler_set))
 				$model->compiler_set=UCompilerLookup::values($model->compiler_set);
 		}
@@ -139,9 +140,9 @@ class ProblemController extends ZController
 			$old_memory_limit=$model->memory_limit;
 			
 			$model->attributes=$_POST['Problem'];
-			
-			if($model->save())
+			if($model->setTags(isset($_POST['Tags'])?implode(',', $_POST['Tags']):'')->save())
 			{
+				
 				if($old_time_limit!=$model->time_limit||$old_memory_limit!=$model->memory_limit)
 				{
 					$connection=Yii::app()->db;
@@ -188,16 +189,29 @@ class ProblemController extends ZController
 	 */
 	public function actionIndex()
 	{
+		$criteria=new CDbCriteria(array());
+		$tag=Yii::app()->request->getQuery('tag',null);
+		if($tag!==null){
+			$tag=Tag::model()->findByAttributes(array('name'=>$tag));
+			if($tag!=null)
+				$criteria=new CDbCriteria(array(
+					'condition'=>'Exists( select 1 from {{problem_tags}} as tg where tg.problem_id=t.id and tg.tag_id='.$tag->id.")",
+				));
+		}
+
+					
 		$scopes=array('titled','allCount');
 		if((!Yii::app()->user->isGuest) && Yii::app()->request->getQuery('mine',null)!==null)
 			$scopes[]='mine';
 		else $scopes[]='public';
+		
 		$dataProvider=new EActiveDataProvider('Problem',
 			array(
 				'scopes'=>$scopes,
 				'pagination'=>array(
 			        	'pageSize'=>50,
 			    ),
+				'criteria'=>$criteria,
 			)
 		);		
 		$this->render('/problem/index',array(

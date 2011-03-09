@@ -26,6 +26,48 @@ class Problem extends CActiveRecord
 	public $hisSubmitedCount;
 	public $hisAcceptedCount;	
 	
+	function behaviors() {
+	    return array(
+	        'tags' => array(
+	            'class' => 'ext.yiiext.behaviors.model.taggable.ETaggableBehavior',
+	            // Table where tags are stored
+	            'tagTable' => '{{tags}}',
+	            // Cross-table that stores tag-model connections.
+	            // By default it's your_model_tableTag
+	            'tagBindingTable' => '{{problem_tags}}',
+	            // Foreign key in cross-table.
+	            // By default it's your_model_tableId
+	            'modelTableFk' => 'problem_id',
+	            // Tag table PK field
+	            'tagTablePk' => 'id',
+	            // Tag name field
+	            'tagTableName' => 'name',
+	            // Tag counter field
+	            // if null (default) does not write tag counts to DB
+	            'tagTableCount' => 'count',
+	            // Tag binding table tag ID
+	            'tagBindingTableTagId' => 'tag_id',
+	            // Caching component ID. If false don't use cache.
+	            // Defaults to false.
+	            //'cacheID' => 'cache',
+	 
+	            // Save nonexisting tags.
+	            // When false, throws exception when saving nonexisting tag.
+	            'createTagsAutomatically' => true,
+	 
+	            // Default tag selection criteria
+	            'scope' => array(
+	                //'condition' => ' t.user_id = :user_id ',
+	                //'params' => array( ':user_id' => Yii::app()->user->id ),
+	            ),
+	 
+	            // Values to insert to tag table on adding tag
+	            'insertValues' => array(
+	                'user_id' => Yii::app()->user->id,
+	            ),
+	        )
+	    );
+	}	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Problem the static model class
@@ -41,6 +83,16 @@ class Problem extends CActiveRecord
 	    parent::afterConstruct();
 	    $this->compiler_set=UCompilerLookup::values(-1);
 	}
+	/**
+	 * @return array a list of links that point to the post list filtered by every tag of this post
+	 */
+	public function getTagLinks()
+	{
+		$links=array();
+		foreach($this->getTags() as $tag)
+			$links[]=CHtml::link(CHtml::encode($tag), array('problem/index', 'tag'=>$tag));
+		return $links;
+	}	
 	protected function afterFind()
 	{
 	    parent::afterFind();

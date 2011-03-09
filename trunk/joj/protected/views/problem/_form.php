@@ -74,6 +74,17 @@
 
 </td>
 </tr>
+<tr>
+<td colspan=2>
+<div class="row">
+        <?php $this->widget('application.components.widgets.tag.TagWidget', array(
+            'url'=> Yii::app()->request->baseUrl.'/tag/json/',
+            'tags' => implode(',', $model->getTags())
+        ));
+        ?>
+    </div>
+</td>
+</tr>
 </table>
 
 	<div class="row">

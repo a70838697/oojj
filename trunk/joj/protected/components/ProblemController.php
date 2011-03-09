@@ -34,7 +34,7 @@ class ProblemController extends ZController
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','delete','update','submited','accepted','notAccepted'),
+				'actions'=>array('create','delete','update','submited','manage','accepted','notAccepted'),
 			//	'roles'=>array('Teacher',"Admin"),
 				'users'=>array('@'),
 			),
@@ -56,7 +56,7 @@ class ProblemController extends ZController
 	{
 		$model=$this->loadModel($id);
 		$this->checkAccess(array('model'=>$model));
-		
+
 		$submition=$this->canAccess(array('model'=>$model),'Create','Submition')?$this->newSubmition($model):null;
 
 		$buttons=array(
@@ -86,8 +86,9 @@ class ProblemController extends ZController
 		{
 			$model->attributes=$_POST['Problem'];
 			$model->user_id=Yii::app()->user->id;
-			if($model->save())
+			if($model->setTags(isset($_POST['Tags'])?implode(',', $_POST['Tags']):'')->save()){
 				$this->redirect(array('view','id'=>$model->id));
+			}
 			if(is_int($model->compiler_set))
 				$model->compiler_set=UCompilerLookup::values($model->compiler_set);
 		}
@@ -96,7 +97,29 @@ class ProblemController extends ZController
 			'model'=>$model,
 		));
 	}
-
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionManage($id)
+	{
+		$model=$this->loadModel($id);
+		$this->checkAccess(array('model'=>$model),'update');
+		
+		$problemJudger=$this->newProblemJudger($model);
+		if(Yii::app()->request->getQuery('deleteProblemJudger',null)!==null){
+			if($model->judger!=null)$model->judger->delete();
+			$this->redirect(array('manage','id'=>$model->id));
+		}
+		
+	
+		$this->render('/problem/manage',array(
+			'model'=>$model,
+			'problemJudger'=>$problemJudger,
+			'testDataProvider'=>$testDataProvider,
+		));
+	}
+	
 	/**
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
@@ -117,9 +140,9 @@ class ProblemController extends ZController
 			$old_memory_limit=$model->memory_limit;
 			
 			$model->attributes=$_POST['Problem'];
-			
-			if($model->save())
+			if($model->setTags(isset($_POST['Tags'])?implode(',', $_POST['Tags']):'')->save())
 			{
+				
 				if($old_time_limit!=$model->time_limit||$old_memory_limit!=$model->memory_limit)
 				{
 					$connection=Yii::app()->db;
@@ -166,16 +189,29 @@ class ProblemController extends ZController
 	 */
 	public function actionIndex()
 	{
+		$criteria=new CDbCriteria(array());
+		$tag=Yii::app()->request->getQuery('tag',null);
+		if($tag!==null){
+			$tag=Tag::model()->findByAttributes(array('name'=>$tag));
+			if($tag!=null)
+				$criteria=new CDbCriteria(array(
+					'condition'=>'Exists( select 1 from {{problem_tags}} as tg where tg.problem_id=t.id and tg.tag_id='.$tag->id.")",
+				));
+		}
+
+					
 		$scopes=array('titled','allCount');
 		if((!Yii::app()->user->isGuest) && Yii::app()->request->getQuery('mine',null)!==null)
 			$scopes[]='mine';
 		else $scopes[]='public';
+		
 		$dataProvider=new EActiveDataProvider('Problem',
 			array(
 				'scopes'=>$scopes,
 				'pagination'=>array(
 			        	'pageSize'=>50,
 			    ),
+				'criteria'=>$criteria,
 			)
 		);		
 		$this->render('/problem/index',array(
@@ -343,5 +379,5 @@ class ProblemController extends ZController
 			}
 		}
 		return $submition;
-	}	
+	}
 }
