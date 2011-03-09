@@ -41,7 +41,7 @@
 	if($model->user->jnuer!=null)
 	{
 		$node=$model->user->jnuer->unit;
-		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_SCHOOLE)$node=$node->getParemt();
+		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_SCHOOLE)$node=$node->getParent();
 		if($node!=null)$xueyuan=$node->title;
 	}
 	echo $xueyuan;
@@ -54,7 +54,7 @@
 	if($model->user->jnuer!=null)
 	{
 		$node=$model->user->jnuer->unit;
-		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_DEPARTMENT)$node=$node->getParemt();
+		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_DEPARTMENT)$node=$node->getParent();
 		if($node!=null)$xi=$node->title;
 	}
 	echo $xi;
@@ -68,7 +68,7 @@
 	if($model->user->jnuer!=null)
 	{
 		$node=$model->user->jnuer->unit;
-		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_MAJOR)$node=$node->getParemt();
+		while($node!=null && $node->type_id!=Organization::ORGANIZATION_TYPE_MAJOR)$node=$node->getParent();
 		if($node!=null)$xi=$node->title;
 	}
 	echo $xi;
