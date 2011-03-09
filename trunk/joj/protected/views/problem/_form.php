@@ -91,12 +91,20 @@
 	<?php 
 		$this->widget('zii.widgets.jui.CJuiTabs', array(
 	    'tabs'=>array(
-			$form->labelEx($model,'description')=>$this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'description',),true).$form->error($model,'description'),
-			$form->labelEx($model,'input')=>$this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'input',),true).$form->error($model,'input'),
-			$form->labelEx($model,'output')=>$this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'output',),true).$form->error($model,'output'),
+			$form->labelEx($model,'description')=>$this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'description',
+				'config'=>array('upImgUrl'=>UCHtml::url('upload/create/type/problem'),'upImgExt'=>"jpg,jpeg,gif,png",)
+			),true).$form->error($model,'description'),
+			$form->labelEx($model,'input')=>$this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'input',
+				'config'=>array('upImgUrl'=>UCHtml::url('upload/create/type/problem'),'upImgExt'=>"jpg,jpeg,gif,png",)
+			),true).$form->error($model,'input'),
+			$form->labelEx($model,'output')=>$this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'output',
+				'config'=>array('upImgUrl'=>UCHtml::url('upload/create/type/problem'),'upImgExt'=>"jpg,jpeg,gif,png",)
+			),true).$form->error($model,'output'),
 			$form->labelEx($model,'input_sample')=>$form->textArea($model,'input_sample',array('rows'=>10, 'cols'=>100)).$form->error($model,'input_sample'),
 			$form->labelEx($model,'output_sample')=>$form->textArea($model,'output_sample',array('rows'=>10, 'cols'=>100)).$form->error($model,'output_sample'),
-			$form->labelEx($model,'hint')=>$this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'hint',),true).$form->error($model,'hint'),
+			$form->labelEx($model,'hint')=>$this->renderPartial('/inc/_xheditor',array('model'=>$model,'field'=>'hint',
+				'config'=>array('upImgUrl'=>UCHtml::url('upload/create/type/problem'),'upImgExt'=>"jpg,jpeg,gif,png",)
+			),true).$form->error($model,'hint'),
 			),
 	    // additional javascript options for the tabs plugin
 	    'options'=>array(

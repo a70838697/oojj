@@ -89,6 +89,10 @@ class UploadController extends Controller
 				$folder.="report/".Yii::app()->request->getQuery('course','')."/";
         		$filefieldname="filedata";
         	}
+            if($type=="problem"){
+				$folder.="problem/";
+        		$filefieldname="filedata";
+        	}        	
 			if (!is_dir($folder) ){
 			   @mkdir($folder);
 			}
@@ -117,7 +121,7 @@ class UploadController extends Controller
 				$result['error']='Can not save to database!';
 			}
         }
-        if($type=="report"){
+        if($type=="report"||$type=="problem"){
         	$result['msg']="";
 	        if(isset($result['error'])){
 	        	$result['err']=$result['error'];
