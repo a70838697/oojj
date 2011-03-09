@@ -11,7 +11,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'content'); ?>
-		The content uses an extended wiki format, please refer to <a href=http://www.simplewiki.org/>http://www.simplewiki.org/</a>
+		The content uses an extended wiki format, please refer to <a href="http://www.simplewiki.org/" target="_blank">http://www.simplewiki.org/</a>
 		<?php echo $form->textArea($model,'content',array('rows'=>12, 'cols'=>80)); ?>
 		<?php echo $form->error($model,'content'); ?>
 	</div>
@@ -65,7 +65,7 @@ array(
         'id'=>'uploadFile',
         'config'=>array(
                'action'=>UCHtml::url('upload/create/type/wiki'),
-               'allowedExtensions'=>array("jpg","jpeg","txt","rar","zip","7z"),//array("jpg","jpeg","gif","exe","mov" and etc...
+               'allowedExtensions'=>array("jpg","jpeg","png","gif","txt","rar","zip","ppt","pdf","doc","7z"),//array("jpg","jpeg","gif","exe","mov" and etc...
                'sizeLimit'=>10*1024*1024,// maximum file size in bytes
                'minSizeLimit'=>10,// minimum file size in bytes
                'onComplete'=>'js:function(id, fileName, responseJSON){ if (typeof(responseJSON.success)!="undefined" && responseJSON.success){insertFile(fileName,responseJSON);}}',

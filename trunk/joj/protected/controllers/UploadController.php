@@ -76,7 +76,7 @@ class UploadController extends Controller
  
         $folder='upload/';// folder for uploaded files
         $type=Yii::app()->request->getQuery('type',null);
-        $allowedExtensions = array("jpg","jpeg","png","gif","txt","rar","zip","7z");//array("jpg","jpeg","gif","exe","mov" and etc...
+        $allowedExtensions = array("jpg","jpeg","png","gif","txt","rar","zip","ppt","pdf","doc","7z");//array("jpg","jpeg","gif","exe","mov" and etc...
         $filefieldname="qqfile";
         if($type!==null)
         {
