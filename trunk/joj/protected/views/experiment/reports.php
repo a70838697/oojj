@@ -29,10 +29,10 @@ echo UCHtml::cssFile('pager.css');
 			'value'=>'CHtml::encode($data->user->jnuer->identitynumber)',
 		),
 		array(
-			'name'=>'Student number',
+			'header'=>'Login name',
 			'type'=>'raw',
-			'value'=>'CHtml::encode($data->user->jnuer->identitynumber)',
-		),
+			'value'=>'CHtml::link(CHtml::encode($data->user->username),array("user/user/view","id"=>$data->user_id),  array("target"=>"_blank"))',
+		),	
        array(
             'class'=>'CButtonColumn',
             'template' => '{view} ',
