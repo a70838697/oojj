@@ -64,6 +64,25 @@ class CourseController extends Controller
 			'model'=>$model,
 		));
 	}
+	private function addStudentMember($model,$student_id,$status)
+	{
+		if($model->student_group_id==0)
+		{
+			$studentGroup= new Group;
+			$studentGroup->type_id= Group::GROUP_TYPE_COURSE;
+			$studentGroup->belong_to_id=$model->id;
+			if(!$studentGroup->save())
+				return false;
+			$model->student_group_id=$studentGroup->id;
+			if(!$model->save())return false;
+		}
+		$groupUser=new GroupUser();
+		$groupUser->group_id = $model->student_group_id;
+		$groupUser->user_id=$student_id;
+		$groupUser->status = $status;
+		if(!$groupUser->save())
+			return false;
+	}
 	/**
 	 * Apply for the course.
 	 * @param integer $id the ID of the model to be applyed
@@ -75,23 +94,8 @@ class CourseController extends Controller
 		$groupUser=$model->myMemberShip;
 		if($groupUser===null)
 		{
-			if($model->student_group_id==0)
-			{
-				$studentGroup= new Group;
-				$studentGroup->type_id= Group::GROUP_TYPE_COURSE;
-				$studentGroup->belong_to_id=$model->id;
-				if(!$studentGroup->save())
-					throw new CHttpException(404,'The requested operation can not be done.');
-				$model->student_group_id=$studentGroup->id;
-				if(!$model->save())
-					throw new CHttpException(404,'The requested operation can not be done.');
-			}
 			if(Yii::app()->request->getQuery('op',null)=='apply'){
-				$groupUser=new GroupUser();
-				$groupUser->group_id = $model->student_group_id;
-				$groupUser->user_id=Yii::app()->user->id;
-				$groupUser->status = GroupUser::USER_STATUS_APPLIED;
-				if(!$groupUser->save())
+				if(!$this->addStudentMember($model,Yii::app()->user->id,GroupUser::USER_STATUS_APPLIED))
 					throw new CHttpException(404,'The requested operation can not be done.');
 			}
 		}else {
@@ -134,8 +138,14 @@ class CourseController extends Controller
 	 */
 	public function actionStudents($id)
 	{
-		
 		$model=$this->loadModel($id);
+		if(isset($_POST['students_ids']))
+		{
+			foreach(preg_split("/,/",$_POST['students_ids']) as $student_id)
+			{
+				if((int)$student_id>0)$this->addStudentMember($model,(int)$student_id,GroupUser::USER_STATUS_ACCEPTED);
+			}
+		}
 		$this->checkAccess(array('model'=>$model));		
 		
 		$this->render('students',array(

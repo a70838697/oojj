@@ -27,7 +27,7 @@ class GroupController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('view','apply'),
+				'actions'=>array('view','apply','selectStudent'),
 				'users'=>array('*'),
 			),
 			array('deny',  // deny all users
@@ -36,6 +36,39 @@ class GroupController extends Controller
 		);
 	}
 
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionSelectStudent($id)
+	{
+		$model=$this->loadModel($id);
+		$criteria=new CDbCriteria(array(
+	    ));
+	    $identitynumber=Yii::app()->request->getQuery('identitynumber',null);
+	    if($identitynumber!=null)
+	    {
+		    $criteria->compare('t.identitynumber',$identitynumber);
+	    }
+	    $criteria->with=array('profile','unit');
+	    $criteria->condition='profile.group='.UUserIdentity::GROUP_STUDENT ." and not exists(select 1 from {{group_users}} as gu where gu.group_id=".(int)$id." and gu.user_id=t.user_id )";
+	    
+		$dataProvider=new EActiveDataProvider('Jnuer',
+			array(
+				'criteria'=>$criteria,
+				'pagination'=>array(
+			        	'pageSize'=>10,
+			    ),
+			)
+		);
+		$render=Yii::app()->request->isAjaxRequest ? 'renderPartial' : 'render';
+	
+		$this->$render('selectStudent',array(
+			'model'=>$model,
+			'dataProvider'=>$dataProvider,
+		));
+	}	
+	
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed

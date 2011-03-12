@@ -17,6 +17,10 @@ $this->menu=array(
 
 <h2>Write Experiment Report for <?php echo CHtml::encode($model->experiment->title); ?></h2>
 <?php
+$canEdit=UUserIdentity::isAdmin()
+	||Yii::app()->user->id==$model->user_id
+	||(UUserIdentity::isTeacher()&&Yii::app()->user->id==$model->experiment->course->user_id);
+
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
         array(
@@ -24,7 +28,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
-	        'visible'=>UUserIdentity::isStudent(),
+	        'visible'=>$canEdit,
         	'linkOptions'=>array('onclick'=>'return saver();',)
         ),
         array(
@@ -32,7 +36,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'document', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
-	        'visible'=>UUserIdentity::isStudent(),
+	        'visible'=>$canEdit,
         	'linkOptions'=>array('onclick'=>'return preview();',)
         ),
         array(
@@ -40,7 +44,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
-	        'visible'=>UUserIdentity::isStudent(),
+	        'visible'=>$canEdit,
         	'linkOptions'=>array('onclick'=>'return submitr();',)
         ),
         

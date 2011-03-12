@@ -17,7 +17,20 @@ $this->menu=array(
 ?>
 
 <h1>View ExperimentReport #<?php echo $model->id; ?></h1>
-
+<?php
+if(UUserIdentity::isAdmin()||Yii::app()->user->id==$model->user_id||(UUserIdentity::isTeacher()&&Yii::app()->user->id==$model->experiment->course->user_id))
+$this->widget('ext.JuiButtonSet.JuiButtonSet', array(
+    'items' => array(
+        array(
+            'label'=>'Edit',
+            'icon-position'=>'left',
+            'icon'=>'plus', // This a CSS class starting with ".ui-icon-"
+            'url'=>array('update', 'id'=>$model->id),
+        ),
+    ),
+    'htmlOptions' => array('style' => 'clear: both;'),
+));
+?>
 <?php /*$this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(

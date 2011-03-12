@@ -28,15 +28,14 @@ $this->menu=array(
 <?php
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
-		/*
         array(
             'label'=>'Add a student',
             'icon-position'=>'left',
             'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
-	        'visible'=>!Yii::app()->user->isGuest,
+	        'visible'=>(UUserIdentity::isTeacher()&& $model->user_id==Yii::app()->user->id) ||UUserIdentity::isAdmin(),
         	'linkOptions'=>array('onclick'=>'return showDialogue();',)
-        ),*/
+        ),
         array(
             'label'=>'View Experiments',
             'icon-position'=>'left',
@@ -113,12 +112,31 @@ function ()
 <?php 
 
 echo CHtml::script('
+var isfirstload=true;
 function showDialogue()
 {
+		$("#selectstudent").load("'.CHtml::normalizeUrl(array('group/selectStudent/'.$model->student_group_id)) .'",{},function(){'.
+			"
+			jQuery('#group-grid').yiiGridView({'ajaxUpdate':['1','group-grid'],'ajaxVar':'ajax','pagerClass':'pager','loadingClass':'grid-view-loading','filterClass':'filters','tableClass':'items','selectableRows':2,'pageVar':'Jnuer_page'});
+			".
+		'});
 	$("#submitiondialog").dialog("open");
 	//this.blur();
 	return false;	
 }
+$("#dowithselected").live("click",function()
+{
+	var selectedids=$.fn.yiiGridView.getSelection("group-grid");
+	if(selectedids==""){
+		alert("Please select at least one member");
+	}
+	else
+	{
+		$("#students_ids").val(selectedids);
+		$("#addStudent").submit();
+	}
+});
+
 ');
 	
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
@@ -127,14 +145,17 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 		'dialogClass'=>'rbam-dialog',
         'title'=>'Create an experiment',
         'autoOpen'=>false,
-		'minWidth'=>800,
-		'height'=>700,
+		'minWidth'=>400,
+		'height'=>500,
 		'modal'=>true,
     ),
 ));
 ?>
-
-
+<form id="addStudent" action="" method="post">
+<input id="students_ids" name="students_ids" type=hidden value="" />
+</form>
+<div id='selectstudent'>
+</div>
 <?php 
 $this->endWidget('zii.widgets.jui.CJuiDialog');
 ?>
