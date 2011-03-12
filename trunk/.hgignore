@@ -1,1 +1,4 @@
 \.svn/
+^joj/assets/.+
+^joj/protected/runtime/.+
+^joj/upload/.*/.+
