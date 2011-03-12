@@ -45,13 +45,13 @@ class GroupController extends Controller
 		$model=$this->loadModel($id);
 		$criteria=new CDbCriteria(array(
 	    ));
+	    $criteria->with=array('profile','unit');
+	    $criteria->condition='profile.group='.UUserIdentity::GROUP_STUDENT ." and not exists(select 1 from {{group_users}} as gu where gu.group_id=".(int)$id." and gu.user_id=t.user_id )";
 	    $identitynumber=Yii::app()->request->getQuery('identitynumber',null);
 	    if($identitynumber!=null)
 	    {
-		    $criteria->compare('t.identitynumber',$identitynumber);
+		    $criteria->compare('t.identitynumber',$identitynumber,true);
 	    }
-	    $criteria->with=array('profile','unit');
-	    $criteria->condition='profile.group='.UUserIdentity::GROUP_STUDENT ." and not exists(select 1 from {{group_users}} as gu where gu.group_id=".(int)$id." and gu.user_id=t.user_id )";
 	    
 		$dataProvider=new EActiveDataProvider('Jnuer',
 			array(

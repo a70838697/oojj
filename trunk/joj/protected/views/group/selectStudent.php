@@ -1,12 +1,11 @@
-Search by:   <b>Student number:</b><input id='identitynumber'  size ='5' onchange='research();' />
+Search by:   <b>Student number:</b><input id='identitynumber' value="<?php echo Yii::app()->request->getQuery('identitynumber',"");?>"  size ='5' onchange='research();' />
 <?php
 echo CHtml::script(
 '
 function research()
 {
-	var urlh=\''.CHtml::normalizeUrl(array("group/selectStudent")).'\';
+	var urlh=\''.CHtml::normalizeUrl(array("group/selectStudent/".$model->id)).'\';
 	if($.trim($(\'#identitynumber\').val())!="")urlh+="/identitynumber/"+escape($.trim($(\'#identitynumber\').val()));
-	//alert(urlh);
 	$(\'#group-grid > div.keys\').attr(\'title\',urlh);
 	$.fn.yiiGridView.update(\'group-grid\');
 }
