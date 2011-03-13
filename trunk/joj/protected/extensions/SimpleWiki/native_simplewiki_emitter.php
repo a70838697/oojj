@@ -580,6 +580,8 @@ class Native_SimpleWiki_Emitter
 		$node->infix = $this->emit_children($node);
 		$node->postfix = "</span>";
 		$node = $this->prepare_node($node);
+		//$node->postfix = "</span>";
+		$node->prefixtail = ">";
 		return $node->prefix . implode(' ',$node->attributes) . $node->prefixtail 
 			. $node->infix . $node->postfix;
 	}
