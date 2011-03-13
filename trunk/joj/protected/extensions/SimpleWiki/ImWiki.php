@@ -23,6 +23,8 @@ class ImWiki extends SimpleWiki
 		{
 			$this->_objController = $objController;
 		}
+		//$this->register_symlinks(array("Wiki"=>UCHtml::url("entry/view/")));
+		parent::register_symlink_handler(array($this,'my_symlink_handler'));
 		
 		// for security reasons
 		parent::allow_html(false);
@@ -34,6 +36,26 @@ class ImWiki extends SimpleWiki
 			)
 		);
 */
+	}
+	public function my_symlink_handler($node)
+	{
+		if($node->symlink=="Wiki")
+		{
+			$node->path =UCHtml::url("entry/view/");
+			if( strpos($node->infix, $node->symlink)==0)$node->infix = $node->internalselector;
+		}
+		if($node->symlink=="Problem")
+		{
+			$node->path =UCHtml::url("problem/view/");
+			$problem=Problem::model()->findByPk((int)$node->internalselector);
+			if($problem!=null)$node->infix=((int)$node->internalselector).".".CHtml::encode($problem->title);
+			//if( strpos($node->infix, $node->symlink)==0)$node->infix = $node->internalselector;
+		}
+		if($node->symlink=="Attachment")
+		{
+			$node->path =UCHtml::url("upload/download/");
+		}
+		return $node;
 	}
 	
 	/**

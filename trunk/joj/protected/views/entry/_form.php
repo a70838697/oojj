@@ -51,10 +51,10 @@ insertAtCaret: function(myValue){
 
 function insertFile(fileName,responseJSON)
 {
-	if(responseJSON.ext=="jpg"||responseJSON.ext=="jpeg")
-		$("#Entry_content").insertAtCaret(\'\{\{'.UCHtml::url("upload/download/").'\'+responseJSON.fileid+\'|\'+fileName+\'}}\');
+	if(responseJSON.ext=="jpg"||responseJSON.ext=="jpeg"||responseJSON.ext=="png"||responseJSON.ext=="gif")
+		$("#Entry_content").insertAtCaret(\'\{\{Attachment:\'+responseJSON.fileid+\'|\'+fileName+\'}}\');
 	else
-		$("#Entry_content").insertAtCaret(\'[['.UCHtml::url("upload/download/").'\'+responseJSON.fileid+\'|\'+fileName+\']]\');
+		$("#Entry_content").insertAtCaret(\'[[Attachment:\'+responseJSON.fileid+\'|\'+fileName+\']]\');
 }
 '
 );

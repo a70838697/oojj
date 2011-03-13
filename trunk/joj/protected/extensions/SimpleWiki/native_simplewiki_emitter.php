@@ -202,15 +202,12 @@ class Native_SimpleWiki_Emitter
 		$rules->anchor = '
 			(?P<anchor>\\#[a-zA-Z][\\w-]*)
 		';
-		$rules->intern = '
-			(?P<intern>.*)
-		';		
 		$this->_rules = $rules;
 	}
 	protected function set_re($rules)
 	{
-		$this->link_re = '/' . implode('|',array($rules->extern,$rules->symlink,$rules->anchor,$rules->intern)) . '/x';
-		$this->addr_re =  '/' . implode('|',array($rules->extern,$rules->symlink,$rules->intern)) . '/x';
+		$this->link_re = '/' . implode('|',array($rules->extern,$rules->symlink,$rules->anchor)) . '/x';
+		$this->addr_re =  '/' . implode('|',array($rules->extern,$rules->symlink)) . '/x';
 	}
 	#--------------------------------[ utilities ]---------------------------------------#
 	protected function get_value($value,$default)
@@ -261,12 +258,6 @@ class Native_SimpleWiki_Emitter
 			$node->decorator->attributes['src'] = 
 				$node->path . $node->internalselector;
 		}
-		elseif (@$node->intern)
-		{
-			$node = $this->expand_symlink($node);
-			$node->decorator->attributes['src'] = 
-				@$node->intern;
-		}		
 		else
 		{
 			$node->decorator->attributes['src'] = 
@@ -306,12 +297,6 @@ class Native_SimpleWiki_Emitter
 			$node = $this->expand_symlink($node);
 			$node->decorator->attributes[$attributename] = 
 				$node->path . @$node->internalselector;
-		}
-		elseif (@$node->intern)
-		{
-			$node = $this->expand_symlink($node);
-			$node->decorator->attributes[$attributename] = 
-				$node->intern;
 		}
 		else
 		{
@@ -462,7 +447,6 @@ class Native_SimpleWiki_Emitter
 		if (preg_match($this->link_re,$address,$matches))
 		{
 			@$node->anchor = $matches['anchor'];
-			@$node->intern = $matches['intern'];
 			
 			@$node->internaladdress = $matches['internal_address'];
 			@$node->symlink = $matches['symlink'];
@@ -493,7 +477,6 @@ class Native_SimpleWiki_Emitter
 		{
 			@$node->internaladdress = $matches['internal_address'];
 			@$node->symlink = $matches['symlink'];
-			@$node->intern = $matches['intern'];
 			@$node->internalselector = $matches['internal_selector'];
 			
 			@$node->externaladdress = $matches['external_address'];
