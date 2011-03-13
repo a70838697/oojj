@@ -49,7 +49,7 @@ function view_problem_by_id()
 	        	'url'=>array('/uuser/index'),
 	        ),		
 	        array(
-	            'label'=>'ACM algorithm',
+	            'label'=>'Wiki',
 	            'icon-position'=>'left',
 	        	'url'=>array('/entry/ACM Algorithm'),
 	        ),		

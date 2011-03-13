@@ -13,7 +13,7 @@ $this->menu=array(
 );
 ?>
 
-<h1>View Entry <?php echo CHtml::encode($model->title); ?><?php echo  CHtml::encode($model->title); echo "  ".CHtml::link("Edit",array("update",'id'=>$model->title)); ?></h1>
+<h1>Entry <?php echo  CHtml::encode($model->title); echo "  ".CHtml::link("Edit",array("update",'id'=>$model->title)); ?></h1>
 <div class="view">
 	<div>
 	<?php
