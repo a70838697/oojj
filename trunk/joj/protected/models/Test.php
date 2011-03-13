@@ -33,6 +33,15 @@ class Test extends CActiveRecord
 	{
 		return '{{tests}}';
 	}
+	
+	public function afterSave()
+	{
+		parent::afterSave();
+		$connection=Yii::app()->db;
+		$command=$connection->createCommand("update {{submitions}} set status=0 where problem_id=".$this->problem_id);
+		$command->execute();
+		return true;
+	}
 
 	/**
 	 * @return array validation rules for model attributes.
