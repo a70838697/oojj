@@ -44,7 +44,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
         array(
             'label'=>'Update this course',
             'icon-position'=>'left',
-	        'visible'=>UUserIdentity::isTeacher(),
+	        'visible'=>UUserIdentity::isTeacher()||UUserIdentity::isAdmin(),
             'url'=>array('update', 'id'=>$model->id),
         ), 
     ),

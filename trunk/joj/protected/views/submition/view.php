@@ -103,7 +103,7 @@ $this->widget('zii.widgets.CDetailView', array(
             'type'=>'raw',
         	'template'=>'<tr class="even"><td colspan=2><b>Source</b></br>{value}</td></tr>',
             'value'=>'<pre class="brush :'.UCompilerLookup::ext($model->compiler_id).'">'.CHtml::encode($model->source).'</pre>',
-        	'visible'=>(Yii::app()->user->id==$model->user_id),
+        	'visible'=>(Yii::app()->user->id==$model->user_id)||(UUserIdentity::isAdmin()),
         ),
     ),
 )); ?>

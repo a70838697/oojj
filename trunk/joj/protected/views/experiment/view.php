@@ -23,19 +23,19 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'circle-plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
-	        'visible'=>UUserIdentity::isTeacher(),
+	        'visible'=>UUserIdentity::isTeacher()||UUserIdentity::isAdmin(),
         	'linkOptions'=>array('onclick'=>'return showDialogue();',)
         ),
         array(
             'label'=>'Update this experiment',
             'icon-position'=>'left',
-	        'visible'=>UUserIdentity::isTeacher(),//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
+	        'visible'=>UUserIdentity::isTeacher()||UUserIdentity::isAdmin(),//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
             'url'=>array('update', 'id'=>$model->id),
         ), 
         array(
             'label'=>'List reports',
             'icon-position'=>'left',
-	        'visible'=>UUserIdentity::isTeacher(),//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
+	        'visible'=>UUserIdentity::isTeacher()||UUserIdentity::isAdmin(),//!Yii::app()->user->isGuest && $this->canAccess(array('model'=>$model),'update'),
             'url'=>array('reports', 'id'=>$model->id),
         ),         
         array(

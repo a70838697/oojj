@@ -81,7 +81,7 @@ class Test extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'user' => array(self::BELONGS_TO, 'UUser', 'user_id','select'=>array('username')),
-			'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id','select'=>array('title','compiler_set'),'joinType'=>'INNER JOIN'),
+			'problem' => array(self::BELONGS_TO, 'Problem', 'problem_id','select'=>array('title','compiler_set','visibility','user_id'),'joinType'=>'INNER JOIN'),
 		);
 	}
 

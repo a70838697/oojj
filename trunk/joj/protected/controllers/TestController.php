@@ -51,9 +51,9 @@ class TestController extends Controller
 	public function actionView($id)
 	{
 		$model=$this->loadModel($id);
-		$this->checkAccess(array('model'=>$model->problem),'update','problem');		
+		$this->checkAccess(array('model'=>($model->problem)),'update','problem');		
 		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+			'model'=>$model,
 			'problem'=>$model->problem,		
 		
 		));
