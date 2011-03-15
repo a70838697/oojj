@@ -87,8 +87,8 @@ $tabs=array(
 );
 if(strlen($model->input)>0) $tabs[$attrs['input']]='<div>'.($model->input).'</div>';
 if(strlen($model->output)>0) $tabs[$attrs['output']]='<div>'.($model->output).'</div>';
-if(strlen($model->input_sample)>0) $tabs[$attrs['input_sample']]='<pre style="border: 1px solid blue">'.($model->input_sample).'\n</pre>';
-if(strlen($model->output_sample)>0) $tabs[$attrs['output_sample']]='<pre style="border: 1px solid blue">'.($model->output_sample).'\n</pre>';
+if(strlen($model->input_sample)>0) $tabs[$attrs['input_sample']]='<pre style="border: 1px solid blue">'.($model->input_sample)."\r\n".'</pre>';
+if(strlen($model->output_sample)>0) $tabs[$attrs['output_sample']]='<pre style="border: 1px solid blue">'.($model->output_sample)."\r\n".'</pre>';
 if(strlen(trim($model->hint))>0) $tabs[$attrs['hint']]='<div>'.($model->hint).'</div>';
 
 $this->widget('zii.widgets.jui.CJuiTabs', array(
