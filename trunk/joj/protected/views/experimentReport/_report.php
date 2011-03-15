@@ -107,9 +107,6 @@
 <tr >
 	<td style="font-size: 14pt;  font-family: 宋体;"><b>三、实验内容</b></td>
 </tr>
-<tr >
-	<td style="font-size: 12pt;  font-family: 宋体;"><?php echo $model->experiment->description;?></td>
-</tr>
 <?php foreach($model->experiment->exercise->exercise_problems as $exerciseProblem){ ?>
 <tr >
 	<td style="font-size: 13pt;  font-family: 宋体;"><b><?php echo $exerciseProblem->sequence.CHtml::encode($exerciseProblem->title);?></b></td>
@@ -118,6 +115,9 @@
 	<td style="font-size: 12pt;  font-family: 宋体;"><?php echo $exerciseProblem->problem->description;?></td>
 </tr>
 <?php } ?>
+<tr >
+	<td style="font-size: 12pt;  font-family: 宋体;"><?php echo $model->experiment->description;?></td>
+</tr>
 </table>
 
 <table style="height:31pt;margin:0px""  width="100%">
