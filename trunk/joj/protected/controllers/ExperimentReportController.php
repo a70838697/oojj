@@ -96,7 +96,10 @@ class ExperimentReportController extends Controller
 	 */
 	public function actionWrite($id)
 	{
-		if(UUserIdentity::isStudent());
+		if(!UUserIdentity::isStudent())
+		{
+			throw new CHttpException(404,'The requested page does not exist.');
+		}		
 		$experiment=Experiment::model()->findByPk((int)$id);
 		if($experiment===null)
 			throw new CHttpException(404,'The requested page does not exist.');		
@@ -105,12 +108,25 @@ class ExperimentReportController extends Controller
 		    'params'=>array(':experimentID'=>(int)$id),
 		));
 		
+		$nowt=CDateTimeParser::parse(date("Y-m-d"),"yyyy-MM-dd");
+		$begin_date=CDateTimeParser::parse($experiment->begin,"yyyy-MM-dd") ;
+		$end_date=CDateTimeParser::parse($experiment->end,"yyyy-MM-dd") ;
+		$timeout=$nowt>$end_date || $nowt<$begin_date;
 		if($model==null){
+			if($timeout)
+			{
+				throw new CHttpException(403,'Your submition is beyond the deadline ' .$experiment->begin."~".$experiment->end.'.');
+			}
 			$model=new ExperimentReport;
 			$model->user_id=Yii::app()->user->id;
 			$model->experiment_id=(int)$id;
 		}
-
+		
+		if($model->user_id!=Yii::app()->user->id)
+		{
+			throw new CHttpException(404,'The requested page does not exist.');
+		}
+		
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
@@ -128,10 +144,20 @@ class ExperimentReportController extends Controller
 			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
-			'experiment'=>$experiment
-		));
+		if($timeout)
+		{
+			$this->render('view',array(
+				'model'=>$model,
+				'experiment'=>$experiment
+			));			
+		}
+		else
+		{
+			$this->render('update',array(
+				'model'=>$model,
+				'experiment'=>$experiment
+			));
+		}
 	}
 	
 	/**
@@ -145,12 +171,26 @@ class ExperimentReportController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
+		$nowt=CDateTimeParser::parse(date("Y-m-d"),"yyyy-MM-dd");
+		$begin_date=CDateTimeParser::parse($model->experiment->begin,"yyyy-MM-dd") ;
+		$end_date=CDateTimeParser::parse($model->experiment->end,"yyyy-MM-dd") ;
+		$timeout=$nowt>$end_date || $nowt<$begin_date;
+		if($timeout&& UUserIdentity::isStudent())
+		{
+			throw new CHttpException(403,'Your operation is beyond the deadline ' .$model->experiment->begin."~".$model->experiment->end.'.');
+		}
 		if(isset($_POST['ExperimentReport']))
 		{
 			$model->attributes=$_POST['ExperimentReport'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if(Yii::app()->request->getQuery('preview',null)!==null)
+			{
+				$this->renderPartial('report',array(
+					'model'=>$model));
+				die;
+			}else{
+				if($model->save())
+					$this->redirect(array('view','id'=>$model->id));
+			}			
 		}
 
 		$this->render('update',array(

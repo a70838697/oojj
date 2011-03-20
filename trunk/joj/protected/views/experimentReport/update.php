@@ -44,7 +44,7 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon-position'=>'left',
             'icon'=>'plus', // This a CSS class starting with ".ui-icon-"
             'url'=>'#',
-	        'visible'=>$canEdit,
+	        'visible'=>false,
         	'linkOptions'=>array('onclick'=>'return submitr();',)
         ),
         
