@@ -108,12 +108,8 @@ class ExperimentReportController extends Controller
 		    'params'=>array(':experimentID'=>(int)$id),
 		));
 		
-		$nowt=CDateTimeParser::parse(date("Y-m-d"),"yyyy-MM-dd");
-		$begin_date=CDateTimeParser::parse($experiment->begin,"yyyy-MM-dd") ;
-		$end_date=CDateTimeParser::parse($experiment->end,"yyyy-MM-dd") ;
-		$timeout=$nowt>$end_date || $nowt<$begin_date;
 		if($model==null){
-			if($timeout)
+			if($experiment->isTimeOut())
 			{
 				throw new CHttpException(403,'Your submition is beyond the deadline ' .$experiment->begin."~".$experiment->end.'.');
 			}
@@ -144,7 +140,7 @@ class ExperimentReportController extends Controller
 			}
 		}
 
-		if($timeout)
+		if($experiment->isTimeOut())
 		{
 			$this->render('view',array(
 				'model'=>$model,
@@ -171,11 +167,8 @@ class ExperimentReportController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-		$nowt=CDateTimeParser::parse(date("Y-m-d"),"yyyy-MM-dd");
-		$begin_date=CDateTimeParser::parse($model->experiment->begin,"yyyy-MM-dd") ;
-		$end_date=CDateTimeParser::parse($model->experiment->end,"yyyy-MM-dd") ;
-		$timeout=$nowt>$end_date || $nowt<$begin_date;
-		if($timeout&& UUserIdentity::isStudent())
+
+		if($model->experiment->isTimeOut() && UUserIdentity::isStudent())
 		{
 			throw new CHttpException(403,'Your operation is beyond the deadline ' .$model->experiment->begin."~".$model->experiment->end.'.');
 		}

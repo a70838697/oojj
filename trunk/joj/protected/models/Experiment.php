@@ -28,6 +28,13 @@ class Experiment extends CActiveRecord
 		return parent::model($className);
 	}
 
+	public function isTimeOut()
+	{
+		$nowt=CDateTimeParser::parse(date("Y-m-d"),"yyyy-MM-dd");
+		$begin_date=CDateTimeParser::parse($this->begin,"yyyy-MM-dd") ;
+		$end_date=CDateTimeParser::parse($this->end,"yyyy-MM-dd") ;
+		return ($nowt>$end_date || $nowt<$begin_date);		
+	}
 	/**
 	 * @return string the associated database table name
 	 */
