@@ -79,6 +79,7 @@ class Experiment extends CActiveRecord
 		return array(
 			'course' => array(self::BELONGS_TO, 'Course', 'course_id'),
 			'exercise' => array(self::BELONGS_TO, 'Exercise', 'exercise_id', 'with'=>'exercise_problems'),
+			'myreport' => array(self::HAS_ONE, 'ExperimentReport', 'experiment_id','condition'=>'user_id='.Yii::app()->user->id),
 		);
 	}
 	/**

@@ -1,5 +1,12 @@
 <table>
-<tr><th>Sequence</th><th>Name</th><th>Due time</th><th>Deadline</th></tr>
+<tr><th>Sequence</th><th>Name</th><th>Due time</th><th>Deadline</th>
+<?php 
+if(UUserIdentity::isStudent())
+{
+	echo "<th>Score</th>";
+}
+?>
+</tr>
 <?php
  foreach($experiments as $experiment): 
  ?>
@@ -22,6 +29,13 @@
 		<?php echo $experiment->begin."~".$experiment->end; ?>
 	</div>
 </td>
+<?php 
+if(UUserIdentity::isStudent())
+{
+	echo "<td>".( ($experiment->myreport && $experiment->myreport->score>0)?$experiment->myreport->score:"")."</td>";
+}
+?>
+
 <!-- experiment -->
 </tr>
 <?php

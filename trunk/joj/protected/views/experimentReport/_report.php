@@ -5,7 +5,7 @@
 	<td style="font-size: 14pt; width:80px; font-family: 楷体_GB2312;">课程名称</td>
 	<td style="border-bottom: solid 2px black; text-align:center; width:500px;font-size: 14pt; font-family: 楷体_GB2312;">《<?php echo $model->experiment->course->title?>》</td>
 	<td style="width:80px;font-size: 14pt; font-family: 楷体_GB2312;">成绩评定</td>
-	<td style="font-size: 14pt;border-bottom: solid 2px black;"><?php echo $model->score==0?'&nbsp;':$model->score?></td></tr>
+	<td style="font-size: 14pt;border-bottom: solid 2px black;"><?php echo ($model->score==0)?'&nbsp;':$model->score?></td></tr>
 </table>
 <table  style="height:21pt;margin:0px"" width="100%" >
 <tr>

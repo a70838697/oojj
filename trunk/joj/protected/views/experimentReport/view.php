@@ -18,6 +18,7 @@ $this->menu=array(
 
 <h1>View ExperimentReport #<?php echo $model->id; ?></h1>
 <?php
+$canscore=UUserIdentity::isAdmin()||(UUserIdentity::isTeacher()&&Yii::app()->user->id==$model->experiment->course->user_id);
 if(UUserIdentity::isAdmin()||Yii::app()->user->id==$model->user_id||(UUserIdentity::isTeacher()&&Yii::app()->user->id==$model->experiment->course->user_id))
 $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
     'items' => array(
@@ -27,7 +28,15 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
             'icon'=>'plus', // This a CSS class starting with ".ui-icon-"
             'url'=>array('update', 'id'=>$model->id),
         ),
-    ),
+        array(
+            'label'=>'Score',
+            'icon-position'=>'left',
+            'visible'=>$canscore,
+	        'linkOptions'=>array('onclick'=>'return showDialogue();',),
+            'icon'=>'plus', // This a CSS class starting with ".ui-icon-"
+            'url'=>array('view', 'id'=>$model->id),
+        ),
+     ),
     'htmlOptions' => array('style' => 'clear: both;'),
 ));
 ?>
@@ -44,3 +53,63 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
 	),
 ));*/ ?>
 <?php $this->renderPartial('_report',array('model'=>$model));?>
+<?php 
+if($canscore){
+echo CHtml::script('
+function showDialogue()
+{
+	$("#scoredialog").dialog("open");
+	//this.blur();
+	return false;	
+}
+');
+$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+    'id'=>'scoredialog',
+    'options'=>array(
+		'dialogClass'=>'rbam-dialog',
+        'title'=>'Give a score',
+        'autoOpen'=>false,
+		'minWidth'=>800,
+		'height'=>500,
+		'modal'=>true,
+    ),
+));
+?>
+
+<div id="submition">
+	<?php if(Yii::app()->user->hasFlash('scoreSubmitted')): ?>
+		<div class="flash-success">
+			<?php echo Yii::app()->user->getFlash('scoreSubmitted'); ?>
+		</div>
+	<?php else: ?>
+<div class="form">
+
+<?php $form=$this->beginWidget('CActiveForm', array(
+	'id'=>'score-form',
+	'enableAjaxValidation'=>false,
+));
+
+ ?>
+
+	<?php echo $form->errorSummary($model); ?>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'score'); ?>
+		<?php echo $form->textField ($model,'score'); ?>
+		<?php echo $form->error($model,'score'); ?>
+	</div>
+
+	<div class="row buttons">
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+	</div>
+
+<?php $this->endWidget(); ?>
+
+</div><!-- form -->
+	<?php endif; ?>
+
+</div><!-- score -->
+<?php 
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+}
+?>

@@ -33,7 +33,12 @@ echo UCHtml::cssFile('pager.css');
 			'type'=>'raw',
 			'value'=>'CHtml::link(CHtml::encode($data->user->username),array("user/user/view","id"=>$data->user_id),  array("target"=>"_blank"))',
 		),	
-       array(
+		array(
+			'header'=>'Score',
+			'type'=>'raw',
+			'value'=>'$data->score!=0?$data->score:""',
+		),
+		array(
             'class'=>'CButtonColumn',
             'template' => '{view} ',
        		'viewButtonUrl'=>'array("/experimentReport/view/".$data->data)',

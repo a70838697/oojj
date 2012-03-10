@@ -229,7 +229,7 @@ class ExperimentController extends Controller
 			array(
 				'scopes'=>array('common'),
 				'criteria' => array(
-					'select'=>'t.user_id,{{experiment_reports}}.id as data',
+					'select'=>'t.user_id,{{experiment_reports}}.id as data,{{experiment_reports}}.score as score',
 					'join' => 'LEFT JOIN {{experiment_reports}} ON t.user_id = {{experiment_reports}}.user_id and {{experiment_reports}}.experiment_id='.(int)$id,
 					'condition'=>'t.group_id='.$model->course->student_group_id.' and t.status='.GroupUser::USER_STATUS_ACCEPTED,
 				),

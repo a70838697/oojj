@@ -51,8 +51,16 @@ class ExperimentReportController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model=$this->loadModel($id);
+		
+		if(isset($_POST['ExperimentReport']))
+		{
+			$model->attributes=$_POST['ExperimentReport'];
+			$model->save();
+		}
+		
 		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+			'model'=>$model,
 		));
 	}
 	/**
