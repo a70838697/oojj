@@ -89,6 +89,11 @@ $this->widget('ext.JuiButtonSet.JuiButtonSet', array(
 )); ?>
 <?php if(!(Yii::app()->user->isGuest)){?>
 <div id="exercise">
+		<h3>
+	<?php if($model->exercise!==null && count($model->exercise->exercise_problems)>=1){ ?>
+			<?php echo count($model->exercise->exercise_problems)>1 ? count($model->exercise->exercise_problems) . ' problems' : 'One problem'; ?>
+	<?php }else echo "0 problems"; ?>		
+		</h3>
 	<?php if($model->exercise!==null && count($model->exercise->exercise_problems)>=1): ?>
 		<?php $this->renderPartial('/exerciseProblem/_exercise_problems',array(
 			'exercise'=>$model->exercise,
