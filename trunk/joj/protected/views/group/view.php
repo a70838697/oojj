@@ -40,4 +40,3 @@ echo UCHtml::cssFile('pager.css');
 	),
 ));
 ?>
-
